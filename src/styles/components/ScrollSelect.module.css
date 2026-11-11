@@ -1,0 +1,27 @@
+.item {
+  display: flex;
+  align-items: center;
+  padding: 8px var(--mantine-spacing-sm);
+  margin-top: 2pt;
+  user-select: none;
+  cursor: pointer;
+  border-radius: var(--yy-radius);
+  border: 1px solid transparent;
+
+  &:hover {
+    border-color: rgba(107, 238, 177, 0.16);
+    background:
+      radial-gradient(ellipse at 16% 50%, rgba(107, 238, 177, 0.07), transparent 44%), rgba(255, 255, 255, 0.035);
+  }
+
+  &[data-active] {
+    color: var(--yy-green);
+    border-color: rgba(107, 238, 177, 0.28);
+    background: linear-gradient(180deg, rgba(107, 238, 177, 0.08), rgba(255, 255, 255, 0.024)), rgba(107, 238, 177, 0.05);
+  }
+
+  &[data-disabled] {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}

@@ -1,0 +1,74 @@
+import { Burger, Group, Menu, AppShell } from '@mantine/core'
+import {
+  mdiAccountCircleOutline,
+  mdiAccountGroupOutline,
+  mdiCached,
+  mdiLogout,
+} from '@mdi/js'
+import { Icon } from '@mdi/react'
+import { FC, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link, useLocation, useNavigate } from 'react-router'
+import { LogoHeader } from '@Components/LogoHeader'
+import { clearLocalCache } from '@Utils/Cache'
+import { useIsMobile } from '@Utils/ThemeOverride'
+import { useLogOut, useUser } from '@Hooks/useUser'
+import classes from '@Styles/AppHeader.module.css'
+
+export const AppHeader: FC = () => {
+  const [opened, setOpened] = useState(false)
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const { user, error } = useUser()
+
+  const logout = useLogOut()
+  const isMobile = useIsMobile()
+
+  const { t } = useTranslation()
+  return (
+    <AppShell.Header hidden={!isMobile} h={isMobile ? 60 : 0} className={classes.header}>
+      <Group h="100%" p="0 1rem" justify="space-between" wrap="nowrap">
+        <LogoHeader onClick={() => navigate('/')} />
+        <Group justify="flex-end" wrap="nowrap">
+          <Menu shadow="md" opened={opened} onClose={() => setOpened(false)} width={200} offset={13}>
+            <Menu.Target>
+              <Burger opened={opened} onClick={() => setOpened((o) => !o)} />
+            </Menu.Target>
+            <Menu.Dropdown>
+              {user && !error ? (
+                <>
+                  <Menu.Item component={Link} to="/teams" leftSection={<Icon path={mdiAccountGroupOutline} size={1} />}>
+                    {t('common.tab.team')}
+                  </Menu.Item>
+                  <Menu.Item
+                    component={Link}
+                    to="/account/profile"
+                    leftSection={<Icon path={mdiAccountCircleOutline} size={1} />}
+                  >
+                    {t('common.tab.account.profile')}
+                  </Menu.Item>
+                  <Menu.Item color="red" onClick={logout} leftSection={<Icon path={mdiLogout} size={1} />}>
+                    {t('common.tab.account.logout')}
+                  </Menu.Item>
+                </>
+              ) : (
+                <Menu.Item
+                  component={Link}
+                  to={`/account/login?from=${location.pathname}`}
+                  leftSection={<Icon path={mdiAccountCircleOutline} size={1} />}
+                >
+                  {t('common.tab.account.login')}
+                </Menu.Item>
+              )}
+              <Menu.Divider />
+              <Menu.Item onClick={clearLocalCache} leftSection={<Icon path={mdiCached} size={1} />}>
+                {t('common.tab.account.clean_cache')}
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </Group>
+      </Group>
+    </AppShell.Header>
+  )
+}

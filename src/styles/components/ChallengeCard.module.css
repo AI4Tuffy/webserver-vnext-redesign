@@ -1,0 +1,117 @@
+.root {
+  min-height: 9.5rem;
+  border: 1px solid rgba(120, 248, 190, 0.18);
+  background:
+    linear-gradient(135deg, rgba(13, 28, 23, 0.76), rgba(6, 9, 9, 0.72)),
+    rgba(5, 8, 8, 0.72);
+  backdrop-filter: blur(1rem) saturate(1.22);
+  -webkit-backdrop-filter: blur(1rem) saturate(1.22);
+  transform: translateZ(0);
+
+  &[data-faded] {
+    @mixin dark {
+      opacity: 0.72;
+    }
+
+    @mixin light {
+      opacity: 0.86;
+    }
+  }
+}
+
+.root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, transparent 12%, rgba(120, 248, 190, 0.075) 44%, transparent 72%);
+  background-size: auto;
+  opacity: 0.3;
+  filter: none;
+}
+
+.root::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(107, 238, 177, 0.5), rgba(245, 245, 247, 0.2), transparent);
+  opacity: 0.42;
+}
+
+.root:hover {
+  border-color: rgba(107, 238, 177, 0.28);
+}
+
+.root:hover::before {
+  opacity: 0.66;
+}
+
+.flag {
+  position: absolute;
+  width: 2.4rem;
+  height: 2.1rem;
+  z-index: 130;
+  pointer-events: none;
+  top: 0.45rem;
+  right: 0.45rem;
+  padding: calc(0.25 * var(--mantine-spacing-xs));
+  clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0 50%);
+  background: rgba(107, 238, 177, 0.78);
+  color: #06100c;
+  box-shadow: 0 0 1.2rem rgba(107, 238, 177, 0.18);
+  animation: solved-hex 2.8s ease-in-out infinite;
+}
+
+.icon {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: translateY(35%);
+  z-index: 80;
+}
+
+.bloodRack {
+  padding: 0.08rem 0.12rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.bloodMedalTarget {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.bloodMedal {
+  display: inline-flex;
+  width: auto;
+  height: auto;
+  color: inherit;
+  background: transparent;
+  box-shadow: none;
+  opacity: 1;
+  transform: none;
+  transition:
+    transform 150ms ease,
+    filter 150ms ease;
+}
+
+.bloodMedal:hover {
+  transform: translateY(-1px);
+}
+
+@keyframes solved-hex {
+  0%,
+  100% {
+    transform: translateY(0) scale(0.96);
+  }
+  50% {
+    transform: translateY(-1px) scale(1);
+  }
+}
+
+.bloodMedal::before,
+.bloodMedal::after {
+  display: none;
+}

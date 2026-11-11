@@ -1,0 +1,60 @@
+import { Check, X } from 'lucide-react'
+import { TeamJoinRequestModel, TeamJoinRequestStatus } from '@Api'
+import { ActionButton } from '../../shared/Interaction'
+import { DataState } from '../../shared/Primitives'
+import styles from './TeamsPage.module.css'
+
+interface TeamRequestsPanelProps {
+  requests?: TeamJoinRequestModel[]
+  submitting: boolean
+  onReview: (requestId: number | undefined, accepted: boolean) => Promise<void>
+}
+
+export function TeamRequestsPanel({ requests, submitting, onReview }: TeamRequestsPanelProps) {
+  const pendingRequests = requests?.filter((request) => request.status === TeamJoinRequestStatus.Pending)
+
+  return (
+    <section className={styles.memberTableSection}>
+      <header>
+        <span>JOIN REQUESTS</span>
+        <h3>待审核申请</h3>
+      </header>
+      {!requests ? (
+        <DataState loading title="申请加载中" />
+      ) : pendingRequests?.length ? (
+        <div className={styles.requestList}>
+          {pendingRequests.map((request) => (
+            <article key={request.id}>
+              <div>
+                <strong>{request.user?.userName || '未命名用户'}</strong>
+                <p>{request.message || '未填写申请说明。'}</p>
+              </div>
+              <div className={styles.requestActions}>
+                <ActionButton
+                  disabled={submitting}
+                  icon={<X size={15} />}
+                  onClick={() => onReview(request.id, false)}
+                  tone="danger"
+                  type="button"
+                >
+                  拒绝
+                </ActionButton>
+                <ActionButton
+                  disabled={submitting}
+                  icon={<Check size={15} />}
+                  onClick={() => onReview(request.id, true)}
+                  tone="primary"
+                  type="button"
+                >
+                  通过
+                </ActionButton>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <DataState title="暂无待处理申请" />
+      )}
+    </section>
+  )
+}

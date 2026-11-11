@@ -1,0 +1,8 @@
+.icon[data-proxied] {
+  color: var(--yy-green);
+  filter: drop-shadow(0 0 0.65rem rgba(107, 238, 177, 0.22));
+}
+
+.icon {
+  color: var(--yy-muted);
+}

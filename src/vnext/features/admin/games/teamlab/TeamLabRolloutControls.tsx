@@ -1,0 +1,51 @@
+import { DoorClosed, DoorOpen, PackageCheck, Power } from 'lucide-react'
+import { useState } from 'react'
+import { ActionButton, VNextConfirmDialog } from '../../../../shared/Interaction'
+import type { TeamLabGameBinding, TeamLabGameRollout } from '../../api/teamlabGameAdminApi'
+import styles from './TeamLabGame.module.css'
+
+export function TeamLabRolloutControls({
+  binding,
+  rollout,
+  busy,
+  configurationDirty,
+  onPrepare,
+  onAccess,
+  onDrain,
+}: {
+  binding: TeamLabGameBinding | null
+  rollout: TeamLabGameRollout | null
+  busy: boolean
+  configurationDirty: boolean
+  onPrepare: () => Promise<void>
+  onAccess: (open: boolean) => Promise<void>
+  onDrain: () => Promise<void>
+}) {
+  const [drainOpen, setDrainOpen] = useState(false)
+  const prepared = rollout?.status === 'ready'
+  const finished = rollout?.status === 'completed' || rollout?.status === 'draining'
+  const preparing = rollout?.status === 'preparing'
+  return (
+    <section className={styles.controlSection} aria-labelledby="teamlab-controls-title">
+      <header className={styles.sectionHeader}><div><h2 id="teamlab-controls-title">比赛环境控制</h2></div></header>
+      <div className={styles.controlActions}>
+        <ActionButton disabled={!binding?.activeReleaseId || busy || configurationDirty || rollout?.status === 'draining' || preparing} icon={<PackageCheck size={16} />} onClick={() => onPrepare()} tone="primary" type="button">提前准备环境</ActionButton>
+        {rollout && (rollout.desiredAccessOpen || rollout.counts.accessOpen > 0) ? (
+          <ActionButton disabled={busy || finished} icon={<DoorClosed size={16} />} onClick={() => onAccess(false)} type="button">{rollout.desiredAccessOpen ? '关闭选手入口' : '重试关闭入口'}</ActionButton>
+        ) : (
+          <ActionButton disabled={!prepared || busy || finished} icon={<DoorOpen size={16} />} onClick={() => onAccess(true)} type="button">开放选手入口</ActionButton>
+        )}
+        <ActionButton disabled={!rollout || busy || rollout.status === 'completed' || rollout.status === 'draining'} icon={<Power size={16} />} onClick={() => setDrainOpen(true)} tone="danger" type="button">结束并清理</ActionButton>
+      </div>
+      <VNextConfirmDialog
+        confirmLabel="开始清理"
+        description="关闭选手入口并删除所有队伍环境。"
+        message="各队环境中的修改将被清除。"
+        onClose={() => setDrainOpen(false)}
+        onConfirm={async () => { await onDrain(); return true }}
+        open={drainOpen}
+        title="结束比赛环境"
+      />
+    </section>
+  )
+}

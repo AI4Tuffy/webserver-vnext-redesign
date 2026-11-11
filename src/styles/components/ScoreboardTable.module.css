@@ -1,0 +1,193 @@
+.table {
+  table-layout: fixed;
+  width: auto;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  & thead tr th,
+  & tbody tr td {
+    text-align: center;
+    padding: 8px 6px;
+    white-space: nowrap;
+    font-size: 12.5px;
+    border-color: var(--yy-line);
+    color: var(--yy-muted-readable);
+  }
+
+  & tbody tr td {
+    background: rgba(255, 255, 255, 0.032);
+  }
+
+  & tbody tr:hover td {
+    background: rgba(107, 238, 177, 0.07);
+  }
+}
+
+.thead {
+  z-index: 5;
+  position: relative;
+}
+
+.left {
+  position: sticky;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.036)), rgba(11, 14, 14, 0.98);
+  box-shadow: 1px 0 0 var(--yy-line);
+}
+
+.header {
+  font-weight: bold;
+  color: var(--yy-text);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.mono {
+  font-weight: bold;
+  font-family: var(--mantine-font-family-monospace);
+}
+
+.teamCell {
+  max-width: 0;
+  width: auto;
+  overflow: hidden;
+}
+
+.tableStage {
+  min-height: clamp(20rem, 42vh, 34rem);
+}
+
+.topScrollBar {
+  width: 100%;
+  height: 1.05rem;
+  margin: 0 0 0.55rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-gutter: stable;
+  opacity: 0.82;
+  transition: opacity 150ms ease;
+}
+
+.topScrollBar[data-visible='true'],
+.topScrollBar:hover,
+.topScrollBar:focus-within {
+  opacity: 1;
+}
+
+.topScrollBar::-webkit-scrollbar {
+  height: 0.72rem;
+}
+
+.topScrollBar::-webkit-scrollbar-track {
+  border: 1px solid rgba(107, 238, 177, 0.16);
+  border-radius: 999px;
+  background: rgba(8, 12, 12, 0.72);
+}
+
+.topScrollBar::-webkit-scrollbar-thumb {
+  border: 2px solid rgba(8, 12, 12, 0.72);
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(107, 238, 177, 0.9), rgba(157, 255, 213, 0.78));
+}
+
+.topScrollBar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(107, 238, 177, 0.78) rgba(8, 12, 12, 0.72);
+}
+
+.topScrollBar > div {
+  height: 1px;
+}
+
+.topScrollBar[data-visible='true'] > div {
+  min-width: 100%;
+}
+
+.topScrollBar:not([data-visible='true']) {
+  visibility: hidden;
+}
+
+.topScrollBar:not([data-visible='true']) > div {
+  width: 100% !important;
+}
+
+.scoreboardScrollContainer,
+.tableStage :global(.mantine-TableScrollContainer-scrollContainer) {
+  max-height: clamp(18rem, 40vh, 31rem);
+  overflow: auto;
+}
+
+.legend {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 0.62rem;
+  margin-top: 0.68rem;
+  width: fit-content;
+  z-index: 20;
+  border: 1px solid var(--yy-line);
+  border-radius: var(--yy-radius);
+  background: rgba(15, 18, 18, 0.92);
+  backdrop-filter: blur(0.7rem);
+}
+
+.bloodLegendItem {
+  --blood-core: linear-gradient(145deg, rgba(226, 242, 236, 0.55), rgba(107, 238, 177, 0.22));
+  --blood-line: rgba(213, 233, 225, 0.55);
+  --blood-glow: rgba(107, 238, 177, 0.12);
+  min-height: 1.9rem;
+  padding: 0.12rem 0.42rem 0.12rem 0.14rem;
+  border: 1px solid rgba(107, 238, 177, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.026);
+}
+
+.bloodLegendItem[data-tier='1'] {
+  --blood-core: linear-gradient(145deg, rgba(255, 229, 111, 0.98), rgba(95, 222, 151, 0.48));
+  --blood-line: rgba(255, 230, 128, 0.82);
+  --blood-glow: rgba(255, 220, 92, 0.24);
+}
+
+.bloodLegendItem[data-tier='2'] {
+  --blood-core: linear-gradient(145deg, rgba(226, 241, 236, 0.96), rgba(107, 238, 177, 0.34));
+  --blood-line: rgba(228, 244, 238, 0.76);
+  --blood-glow: rgba(207, 235, 224, 0.2);
+}
+
+.bloodLegendItem[data-tier='3'] {
+  --blood-core: linear-gradient(145deg, rgba(220, 161, 91, 0.94), rgba(107, 238, 177, 0.28));
+  --blood-line: rgba(233, 182, 112, 0.78);
+  --blood-glow: rgba(220, 161, 91, 0.2);
+}
+
+.bloodLegendText {
+  color: rgba(235, 247, 241, 0.9);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.text {
+  font-size: 0.9em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pointer {
+  &:hover {
+    cursor: pointer;
+    background: rgba(107, 238, 177, 0.065);
+  }
+}
+
+.wrapper {
+  width: 100%;
+  height: var(--mantine-line-height-sm);
+}
+
+.input {
+  user-select: none;
+  font-weight: 600;
+  line-height: var(--mantine-line-height-sm);
+  height: var(--mantine-line-height-sm);
+}

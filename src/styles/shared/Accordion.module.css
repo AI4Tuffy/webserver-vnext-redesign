@@ -1,0 +1,31 @@
+.root {
+  border-radius: var(--yy-radius);
+  border: 1px solid var(--yy-line);
+  background:
+    radial-gradient(ellipse at 12% 0%, rgba(107, 238, 177, 0.055), transparent 44%), rgba(255, 255, 255, 0.024);
+}
+
+.item {
+  border: 1px solid var(--yy-line);
+  position: relative;
+  background:
+    radial-gradient(ellipse at 16% 0%, rgba(107, 238, 177, 0.045), transparent 42%), rgba(255, 255, 255, 0.018);
+
+  &[data-active] {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.24);
+    background: linear-gradient(180deg, rgba(107, 238, 177, 0.08), rgba(255, 255, 255, 0.028)), rgba(255, 255, 255, 0.028);
+  }
+}
+
+.label {
+  padding: 0;
+}
+
+.control {
+  padding: 8px 4px;
+
+  &:hover {
+    cursor: pointer;
+    background: transparent;
+  }
+}

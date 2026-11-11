@@ -1,0 +1,33 @@
+.main {
+  fill: var(--yy-text);
+}
+
+.logoImage {
+  filter: drop-shadow(0 0 0.42rem rgba(107, 238, 177, 0.16));
+}
+
+.front {
+  fill: var(--mantine-primary-color-4);
+}
+
+.mid {
+  fill: var(--mantine-primary-color-6);
+}
+
+.back {
+  fill: var(--mantine-primary-color-8);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  transform-origin: 50% 50%;
+  animation: spin 8s linear infinite;
+}

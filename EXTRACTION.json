@@ -1,0 +1,11 @@
+{
+  "sourceRepository": "https://github.com/Y3X1L2/newGZCTF.git",
+  "sourceCommit": "2d1d236f5eabb7d69eef1fd4ee77861ec51ce260",
+  "sourcePath": "src/GZCTF/ClientApp",
+  "extractedOn": "2026-11-11",
+  "trackedFilesCopied": 994,
+  "excluded": [
+    ".env*"
+  ],
+  "history": "Snapshot extraction; original history remains in source repository."
+}

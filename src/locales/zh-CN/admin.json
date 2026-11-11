@@ -1,0 +1,1204 @@
+{
+  "button": {
+    "back": "返回上级",
+    "challenges": {
+      "attachment": {
+        "save_url": "保存链接",
+        "upload": "上传附件",
+        "uploading": "上传中……"
+      },
+      "bonus": "三血奖励",
+      "delete": "删除题目",
+      "disable": "禁用题目",
+      "edit": "编辑题目",
+      "edit_more": "编辑附件及 flag",
+      "enable": "启用题目",
+      "flag": {
+        "add": {
+          "dynamic": "上传动态附件",
+          "normal": "添加 flag",
+          "remote": "添加远程附件"
+        },
+        "delete": "删除 flag",
+        "save": "保存 flag 模版"
+      },
+      "flush_scoreboard": "刷新积分榜",
+      "hint": {
+        "add": "添加提示"
+      },
+      "new": "新建题目",
+      "next": "下一题",
+      "preview": "预览题目",
+      "previous": "上一题",
+      "test_container": {
+        "create": "创建测试容器",
+        "destroy": "销毁测试容器"
+      }
+    },
+    "divisions": {
+      "edit": "编辑分组",
+      "new": "新建分组"
+    },
+    "games": {
+      "challenges": {
+        "attachment": {
+          "batch_add": "批量添加"
+        }
+      },
+      "screen": {
+        "back": "返回管理页",
+        "charts_view": "图表屏",
+        "logs_view": "日志屏",
+        "copy_link": "复制大屏链接",
+        "exit_fullscreen": "退出全屏",
+        "fullscreen": "全屏展示"
+      },
+      "copy_public_key": "复制公钥",
+      "delete": "删除比赛",
+      "export": "导出比赛",
+      "import": "导入比赛",
+      "new": "新建比赛"
+    },
+    "notices": {
+      "delete": "删除公告",
+      "edit": "编辑公告",
+      "new": "新建公告"
+    },
+    "save": "保存更改",
+    "teams": {
+      "do_lock": "锁定",
+      "do_unlock": "解锁",
+      "edit": "编辑队伍"
+    },
+    "users": {
+      "edit": "编辑用户"
+    },
+    "writeups": {
+      "download_all": "下载全部 Writeup"
+    }
+  },
+  "content": {
+    "games": {
+      "challenges": {
+        "attachment": {
+          "clear": {
+            "description": "你确定要清除本题的附件吗？",
+            "title": "清除附件"
+          },
+          "instruction": {
+            "amount_double": "建议上传预期参赛队伍数量的两倍的动态附件。",
+            "dynamic": {
+              "content": "批量上传动态附件，所有附件上传后将会以统一的文件名进行下发。",
+              "format": "请以每个 flag 作为对应附件的文件名。"
+            },
+            "remote": {
+              "content": "批量设置远程附件及对应 flag，每行一组。",
+              "format": "请将 flag 字符串与 url 以空格隔开。"
+            }
+          },
+          "link": "附件链接",
+          "title": "附件管理",
+          "type": "附件类型"
+        },
+        "attachment_name": {
+          "description": "所有动态附件均会以此文件名下载",
+          "label": "全局附件名"
+        },
+        "blood_bonus": {
+          "description": "启用题目的三血加分",
+          "label": "三血奖励"
+        },
+        "bonus": {
+          "description": "三血奖励加成是指当一个题目被前三个队伍解出时，每个队伍可以得到的分值奖励。三血的奖励基于题目的当前分值，并以一个固定百分比的形式累加至该队伍的得分中。",
+          "first_blood": "一血奖励 (%)",
+          "second_blood": "二血奖励 (%)",
+          "third_blood": "三血奖励 (%)"
+        },
+        "category": "题目类别",
+        "container_image": "容器镜像",
+        "cpu_limit": {
+          "description": "乘以 0.1 即为 CPU 核心数",
+          "label": "CPU 限制 (0.1 CPUs)"
+        },
+        "deadline": {
+          "label": "截止时间",
+          "placeholder": "不设截止时间"
+        },
+        "delete": "你确定要删除题目 {{name}} 吗？",
+        "description": "题目描述",
+        "difficulty": "难度系数",
+        "disable": "你确定要禁用题目 {{name}} 吗？",
+        "empty": {
+          "description": "点击右上角创建第一个题目",
+          "title": "Ouch! 这个比赛还没有题目"
+        },
+        "enable": "你确定要启用题目 {{name}} 吗？",
+        "flag": {
+          "create": "创建 flag，多个 flag 按行分割，每行一个。<br/>每道题目可以拥有多个 flag，获取任意 flag 均可得分。",
+          "delete": "确定删除此 flag 吗？",
+          "empty": {
+            "description": "请通过右上角添加 flag",
+            "title": "flag 列表为空"
+          },
+          "instructions": {
+            "both": "若需要在指定 <1>[TEAM_HASH]</1> 的情况下启用 Leet 字符串功能，请在 flag 模版字符串 <strong> 之前 </strong> 添加 <2>[LEET]</2> 标记，此时不会检查 flag 模版字符串的熵",
+            "complex": "如果需要在 flag 生成中启用特殊字符，请在字符串开头用 <1>[CLEET]</1> 代替 <2>[LEET]</2>，这可能造成对于题目的注入问题",
+            "description": "请输入 flag 模版字符串，留空以生成随机 GUID 作为 flag",
+            "example": "flag 模板编写示例",
+            "guid": "指定 <1>[GUID]</1>则会仅替换此处的占位符为随机 GUID",
+            "leave_empty": "留空",
+            "leet": "若未指定 <1>[TEAM_HASH]</1> 则将启用 Leet 字符串功能，将会基于模版对花括号内字符串进行变换，需要确保 flag 模版字符串的熵足够高",
+            "team_hash": "若指定 <1>[TEAM_HASH]</1> 则它将会被自动替换为队伍 Token 和比赛信息所生成的哈希值",
+            "will_generate": "将会生成"
+          },
+          "template": "flag 模版",
+          "title": "flag 管理"
+        },
+        "hints": "题目提示",
+        "memory_limit": {
+          "description": "限制容器使用的 RAM",
+          "label": "内存限制 (MB)"
+        },
+        "min_score_radio": {
+          "description": "最低分值：{{min_score}}pts",
+          "label": "最低分比例"
+        },
+        "network_mode": {
+          "description": "公共网络访问",
+          "label": "网络模式",
+          "modes": {
+            "custom": "自定义",
+            "isolated": "隔离",
+            "open": "开放"
+          }
+        },
+        "score": "题目分值",
+        "service_port": {
+          "description": "容器内服务的端口号",
+          "label": "服务端口"
+        },
+        "solve_count": "解出次数",
+        "storage_limit": {
+          "description": "限制存储空间，含镜像大小",
+          "label": "存储限制 (MB)"
+        },
+        "submission_limit": {
+          "description": "0 表示不限制",
+          "label": "最大提交次数",
+          "placeholder": "不限制"
+        },
+        "title": "题目标题",
+        "traffic_capture": {
+          "description": "捕获队伍解题流量，需要开启平台代理",
+          "label": "开启流量捕获"
+        },
+        "type": {
+          "description": "创建后不可更改",
+          "label": "题目类型"
+        }
+      },
+      "divisions": {
+        "default_permission_label": "默认权限",
+        "delete_confirm": "确定删除分组 {{name}} 吗？",
+        "empty": {
+          "description": "点击右上角的新建分组创建第一个分组",
+          "title": "暂无分组"
+        },
+        "form": {
+          "challenge_overrides": {
+            "description": "选择需要自定义权限的题目",
+            "label": "题目权限覆盖",
+            "placeholder": "搜索需要覆盖权限的题目"
+          },
+          "default_permissions": {
+            "description": "当题目未单独设置权限时将使用默认权限",
+            "label": "默认权限"
+          },
+          "invite_code": {
+            "description": "非空则覆盖比赛邀请码",
+            "label": "邀请码"
+          },
+          "name": {
+            "description": "分组的名称",
+            "label": "分组名称"
+          }
+        },
+        "no_permission": "未授予任何权限",
+        "override_label": "题目权限覆盖",
+        "permissions": {
+          "affect_dynamic_score": {
+            "description": "影响动态分值计算",
+            "label": "影响动态分值"
+          },
+          "all": "全部权限",
+          "get_blood": {
+            "description": "允许获得题目的三血加分",
+            "label": "获取三血奖励"
+          },
+          "get_score": {
+            "description": "允许获取题目得分",
+            "label": "获取得分"
+          },
+          "join_game": {
+            "description": "允许此分组的用户加入比赛",
+            "label": "加入比赛"
+          },
+          "rank_overall": {
+            "description": "允许在全局排行榜排名",
+            "label": "总榜排名"
+          },
+          "require_review": {
+            "description": "队伍报名需要手动审核",
+            "label": "需要审核"
+          },
+          "submit_flags": {
+            "description": "允许提交 flag",
+            "label": "提交 flag"
+          },
+          "view_challenge": {
+            "description": "允许浏览题目详情",
+            "label": "查看题目"
+          }
+        },
+        "unknown_challenge": "题目 #{{id}}"
+      },
+      "info": {
+        "accept_without_review": {
+          "description": "会被分组配置覆盖",
+          "label": "队伍报名免审核"
+        },
+        "container_limit": {
+          "description": "队伍共享的容器数量 (0 表示不限制)",
+          "label": "队伍容器限制"
+        },
+        "content": "比赛详情",
+        "delete": "你确定要删除比赛 {{name}} 吗？",
+        "divisions": {
+          "description": "添加参赛分组以开启分组榜单,留空则不分组",
+          "label": "参赛可选分组列表"
+        },
+        "end_date": "结束日期",
+        "end_time": "结束时间",
+        "invite_code": {
+          "description": "可被分组覆盖",
+          "label": "邀请码",
+          "placeholder": "留空以禁用"
+        },
+        "is_test": {
+          "description": "仅影响管理端大屏，启用后大屏自动展示演示数据而非真实比赛数据",
+          "label": "测试比赛"
+        },
+        "member_limit": {
+          "description": "0 表示不限制队伍人数",
+          "label": "队伍人数限制"
+        },
+        "poster": "比赛海报",
+        "practice_mode": {
+          "description": "比赛结束后仍然可以查看题目和提交",
+          "label": "练习模式"
+        },
+        "start_date": "开始日期",
+        "start_time": "开始时间",
+        "summary": {
+          "description": "将会显示在比赛列表中",
+          "label": "比赛简介"
+        },
+        "title": {
+          "description": "过长会影响显示效果",
+          "label": "比赛标题"
+        },
+        "writeup_deadline": {
+          "description": "比赛结束后允许提交 Writeup 的小时数",
+          "label": "Writeup 提交时限"
+        },
+        "writeup_instruction": "Writeup 提交说明",
+        "writeup_required": {
+          "description": "是否启用比赛的 Writeup 提交功能",
+          "label": "需要 Writeup"
+        }
+      },
+      "notices": {
+        "delete": "你确定要删除通知该通知吗？",
+        "empty": {
+          "description": "点击右上角按钮新建公告",
+          "title": "暂无公告"
+        }
+      },
+      "review": {
+        "edit_division": "编辑队伍分组",
+        "empty": {
+          "description": "在路上了……别急！",
+          "title": "Ouch! 还没有队伍报名这个比赛"
+        },
+        "participation": {
+          "joined": "已报名",
+          "no_division": "未分组",
+          "not_joined": "未报名",
+          "stats": "{{count}}/{{total}} 已报名",
+          "update": "确定要设为 \"{{status}}\" 吗？"
+        }
+      },
+      "stats": "已显示 <1>{{current}}</1>/<1>{{total}}</1> 比赛",
+      "writeups": {
+        "empty": {
+          "description": "新提交的 Writeup 会显示在这里",
+          "title": "Ouch! 还没有队伍提交 Writeup"
+        },
+        "pdf_fallback": "未能成功加载 PDF"
+      }
+    },
+    "instances": {
+      "destroy": "你确定要销毁容器实例 {{name}} 吗？",
+      "note": "注：容器实例统计不包括管理员测试容器、已销毁的容器",
+      "stats": "共计 <1>{{count}}</1> 个已分发容器实例"
+    },
+    "markdown_inline_support": "支持 Inline Markdown 语法",
+    "markdown_support": "支持 Markdown 语法",
+    "nothing_found": "什么都没有找到",
+    "settings": {
+      "account": {
+        "allow_register": {
+          "description": "是否允许用户注册新账户",
+          "label": "允许新用户注册"
+        },
+        "auto_active": {
+          "description": "是否在新用户注册后自动激活账户",
+          "label": "注册后自动激活"
+        },
+        "email_confirmation_required": {
+          "description": "是否需要用户验证邮箱",
+          "label": "需要邮箱验证"
+        },
+        "email_domain_list": {
+          "description": "允许注册的邮箱域名列表，多个域名用逗号分隔，留空则不限制",
+          "label": "邮箱域名白名单"
+        },
+        "title": "账户策略",
+        "use_captcha": {
+          "description": "是否在登录、注册和找回时进行校验",
+          "label": "启用验证码"
+        }
+      },
+      "container": {
+        "auto_destroy": {
+          "description": "是否在用户实例达到上限时自动销毁旧实例",
+          "label": "自动销毁旧实例"
+        },
+        "default_lifetime": {
+          "description": "容器默认生命周期",
+          "label": "默认有效期（分钟）"
+        },
+        "extension_duration": {
+          "description": "容器每次续期的时长",
+          "label": "续期时长（分钟）"
+        },
+        "renewal_window": {
+          "description": "容器到期前多少分钟内可以续期",
+          "label": "续期窗口（分钟）"
+        },
+        "title": "容器策略"
+      },
+      "platform": {
+        "description": {
+          "description": "向搜索引擎和爬虫程序提供的平台摘要",
+          "label": "平台摘要"
+        },
+        "logo": {
+          "description": "平台 Logo 将会被用于页面顶部和页面 favicon",
+          "label": "平台 Logo"
+        },
+        "name": {
+          "description": "用于浏览器标题、首页、介绍页和平台品牌展示",
+          "label": "平台名称"
+        },
+        "slogan": {
+          "description": "平台标语将显示在页面顶部和关于页面",
+          "label": "平台标语"
+        },
+        "title": "平台设置"
+      }
+    },
+    "screen": {
+      "title": "攻防实时指挥大屏",
+      "subtitle": "面向攻防演练场景的实时态势总览与播报中枢。",
+      "metrics": {
+        "teams": "活跃战队",
+        "players": "参赛选手",
+        "challenges": "题目总数",
+        "solves": "累计解题"
+      },
+      "sections": {
+        "rankings": "实时排名",
+        "feed": "实时提交流",
+        "divisions": "分组分布",
+        "hot": "热点题目",
+        "active": "活跃战队",
+        "categories": "分类热度"
+      },
+      "labels": {
+        "updated": "更新时间",
+        "start": "开始时间",
+        "end": "结束时间",
+        "score": "积分",
+        "solves": "解题",
+        "last_attack": "最近提交",
+        "attempts": "近期尝试",
+        "first_blood": "一血",
+        "ticker": "实时播报",
+        "teams": "战队数",
+        "undivided": "未分组"
+      },
+      "state": {
+        "coming": "准备中",
+        "ongoing": "进行中",
+        "ended": "已结束",
+        "no_rank": "比赛开始后将显示实时排名。",
+        "no_feed": "当前暂无实时事件。",
+        "no_hot": "首批解题出现后将显示热点题目。",
+        "no_active": "出现提交后将展示活跃战队。",
+        "no_teams": "当前暂无已通过审核的战队。",
+        "no_blood": "当前暂无一血记录。"
+      },
+      "tags": {
+        "accepted": "攻破",
+        "alert": "告警",
+        "submit": "提交",
+        "live": "动态"
+      },
+      "defaults": {
+        "challenge": "未知题目",
+        "team": "未知战队",
+        "system": "YINYU 安全综合演练平台"
+      },
+      "messages": {
+        "accepted": "{{team}} 已完成突破，判定：{{result}}",
+        "suspicious": "{{team}} 触发疑似违规告警，来源：{{source}}",
+        "submitted": "{{team}} 发起提交，结果：{{result}}",
+        "live": "{{actor}} 推送了一条实时动态"
+      }
+    },
+    "show_all": "显示全部",
+    "teams": {
+      "delete": "你确定要删除队伍 {{name}} 吗？",
+      "lock": "确定要{{action}}队伍 {{name}} 吗？",
+      "locked": "已锁定",
+      "stats": "已显示 <1>{{current}}</1>/<1>{{total}}</1> 队伍",
+      "unlocked": "已解锁"
+    },
+    "users": {
+      "delete": "你确定要删除用户 {{name}} 吗？",
+        "delete_effects": "删除账号将清除登录凭据和个人资料，并自动退出所有战队；队长交给其他成员，无成员战队保留历史且停止接纳成员。排行榜和业务历史保留，当前账号与最后一名超级管理员无法删除。",
+      "reset": {
+        "content": "用户密码已重置，<strong>此密码只会显示一次</strong>，请妥善保存。",
+        "message": "你确定重置用户 {{name}} 的密码吗？",
+        "title": "为 {{name}} 重置密码"
+      },
+      "stats": "已显示 <1>{{current}}</1>/<1>{{total}}</1> 用户"
+    }
+  },
+  "label": {
+    "games": {
+      "hide": "隐藏",
+      "summary": "简介"
+    },
+    "instances": {
+      "container_id": "容器 ID",
+      "entry": "访问入口",
+      "life_cycle": "生命周期"
+    },
+    "logs": {
+      "message": "信息",
+      "status": "状态"
+    },
+    "teams": {
+      "bio": "签名",
+      "members": "队员"
+    },
+    "users": {
+      "active": "激活",
+      "last_visit": "最后访问时间",
+      "role": "用户角色"
+    }
+  },
+  "notification": {
+    "games": {
+      "challenges": {
+        "attachment": {
+          "no_selected": "请选择至少一个文件",
+          "updated": "附件已更新"
+        },
+        "created": "题目已创建",
+        "deleted": "题目已删除",
+        "flag": {
+          "copied": "flag 已复制到剪贴板",
+          "created": "flag 已创建",
+          "deleted": "flag 已删除"
+        },
+        "flag_template": {
+          "updated": "flag 模板已更新"
+        },
+        "preview": {
+          "attachment_downloaded": "假装附件已经下载了！",
+          "flag_submitted": "flag 似乎被正确提交了！"
+        },
+        "updated": "题目已更新"
+      },
+      "created": "比赛已创建",
+      "divisions": {
+        "created": "分组已创建",
+        "deleted": "分组已删除",
+        "invite_copied": "邀请码已复制到剪贴板",
+        "updated": "分组已更新"
+      },
+      "export": {
+        "exported": "比赛导出成功",
+        "exporting": "正在导出比赛..."
+      },
+      "import": {
+        "imported": "比赛导入成功",
+        "importing": "正在导入比赛..."
+      },
+      "info": {
+        "deleted": "比赛已删除",
+        "info_updated": "比赛信息已更新",
+        "poster": {
+          "upload_failed": "海报上传失败",
+          "uploaded": "海报上传成功",
+          "uploading": "正在上传海报..."
+        },
+        "public_key_copied": "公钥已复制到剪贴板",
+        "scoreboard_flushed": "积分榜缓存已刷新"
+      },
+      "instances": {
+        "created": "实例已创建",
+        "deleted": "实例已销毁"
+      },
+      "no_title_time": "请输入标题和时间信息",
+      "notices": {
+        "created": "公告已创建",
+        "deleted": "公告已删除",
+        "updated": "公告已更新"
+      },
+      "participation": {
+        "updated": "队伍审核状态已更新"
+      },
+      "screen": {
+        "link_copied": "大屏链接已复制到剪贴板"
+      }
+    },
+    "instances": {
+      "destroyed": "实例已销毁",
+      "entry_copied": "访问入口已复制到剪贴板",
+      "url_copied": {
+        "message": "请使用客户端进行访问",
+        "title": "代理 URL 已复制到剪贴板"
+      }
+    },
+    "logs": {
+      "connected": "实时日志连接成功",
+      "fetch_failed": "获取日志失败"
+    },
+    "teams": {
+      "deleted": "{{name}} 已删除"
+    },
+    "users": {
+      "deleted": "{{name}} 已删除",
+      "password_copied": "密码已复制到剪贴板",
+      "updated": "用户信息已更新"
+    }
+  },
+  "placeholder": {
+    "empty": "未填写",
+    "games": {
+      "challenges": {
+        "attachment": {
+          "no_file_selected": {
+            "comment": "你选择的文件将会显示在这里",
+            "title": "你还没有选择任何文件"
+          }
+        }
+      },
+      "divisions": "输入分组名称",
+      "participation": {
+        "bio": "（无简介）",
+        "team": "（无名队伍）"
+      }
+    },
+    "instances": {
+      "challenges": {
+        "not_found": "未找到题目",
+        "select": "所有题目"
+      },
+      "teams": {
+        "not_found": "未找到队伍",
+        "select": "所有队伍"
+      }
+    },
+    "settings": {
+      "email_domain_list": "不限制注册域名",
+      "footer": "`Test` <mbr/> [某 IPC 备 XXXXXXXX 号-X](http://beian.miit.gov.cn/)",
+      "logo": {
+        "custom": "自定义 Logo",
+        "default": "使用 YINYU 安全综合演练平台图标"
+      }
+    },
+    "teams": {
+      "search": "搜索队伍名称"
+    },
+    "users": {
+      "real_name": "用户未填写",
+      "search": "搜索用户ID/用户名/邮箱/学号/姓名",
+      "student_id": "00000000"
+    }
+  },
+  "awd": {
+    "title": "AWDP 管理",
+    "new_service": "新建服务",
+    "edit_service": "编辑服务",
+    "create_service": "创建服务",
+    "save_changes": "保存更改",
+    "service_name": "服务名称",
+    "container_image": "容器镜像",
+    "expose_port": "暴露端口",
+    "attack_points": "攻击得分",
+    "sla_points": "SLA 得分",
+    "round_duration": "轮次时长（分钟）",
+    "total_rounds": "总轮次",
+    "checker_script": "Checker 脚本",
+    "checker_entrypoint": "Checker 入口",
+    "refresh": "刷新",
+    "start_game": "开始比赛",
+    "stop_game": "停止比赛",
+    "game_status": "AWDP 比赛状态",
+    "current_round": "当前轮次",
+    "current_round_with_number": "第 {{round}} 轮",
+    "round_started": "开始时间 {{time}}",
+    "idle": "空闲",
+    "phase_status": "当前阶段",
+    "phase_minutes": "{{attack}}+{{patch}} 分钟",
+    "running": "进行中",
+    "finished": "已结束",
+    "preparing": "准备中",
+    "service": "服务",
+    "service_list": "服务列表",
+    "no_services": "暂无服务，点击右上角创建",
+    "name": "名称",
+    "image": "镜像",
+    "port": "端口",
+    "original_score": "初始分",
+    "attack_score": "攻击分",
+    "sla_score": "SLA 分",
+    "patch_points": "修补分",
+    "penalty": "异常扣分",
+    "max_attacks": "最大攻击次数",
+    "attack_minutes": "攻击阶段分钟",
+    "patch_minutes": "修补阶段分钟",
+    "resets": "重置次数",
+    "recoveries": "恢复次数",
+    "configured_services": "{{count}} 个服务",
+    "successful_patches": "{{count}} 个已验证",
+    "service_defaults": "服务默认配置",
+    "total_rounds_with_count": "{{count}} 轮",
+    "basic_config": "基础配置",
+    "scoring_config": "计分配置",
+    "round_config": "轮次配置",
+    "script_config": "Checker 与 Exp",
+    "exp_script": "Exp 脚本",
+    "exp_entrypoint": "Exp 入口",
+    "round_duration_col": "轮次时长",
+    "total_rounds_col": "总轮次",
+    "actions": "操作",
+    "edit": "编辑",
+    "delete": "删除",
+    "instance_status": "实例状态",
+    "no_instances": "暂无实例",
+    "team": "队伍",
+    "address": "地址",
+    "endpoint": "访问地址",
+    "checker": "Checker",
+    "exp": "Exp",
+    "status": "状态",
+    "status_labels": {
+      "OK": "正常",
+      "Mumble": "部分异常",
+      "Down": "离线",
+      "Corrupt": "数据损坏",
+      "Skipped": "已跳过",
+      "AttackPhase": "攻击阶段",
+      "PatchPhase": "修补阶段",
+      "Finished": "已结束",
+      "Pending": "待验证",
+      "CheckerFailed": "服务异常",
+      "ExpSucceeded": "仍可利用",
+      "ExpFailed": "漏洞已阻断",
+      "Timeout": "超时",
+      "Unsupported": "不支持",
+      "Unattacked": "未攻击",
+      "Attacked": "已攻击",
+      "Undefended": "未防守",
+      "Defended": "已防守",
+      "DefenseAbnormal": "防守异常",
+      "DefenseFailed": "防守失败"
+    },
+    "reset": "重置",
+    "recover": "恢复",
+    "running_status": "运行中",
+    "stopped": "已停止",
+    "service_created": "服务已创建",
+    "service_updated": "服务已更新",
+    "service_deleted": "服务已删除",
+    "game_started": "比赛已开始",
+    "game_stopped": "比赛已停止",
+    "instance_reset": "实例已重置",
+    "instance_recovered": "实例已恢复",
+    "patch_submissions": "修补包提交记录",
+    "no_patch_submissions": "暂无修补包提交",
+    "round": "轮次",
+    "result": "结果",
+    "time": "时间",
+    "message": "消息",
+    "confirm_delete": "删除服务",
+    "confirm_delete_msg": "确定要删除服务 {{name}} 吗？",
+    "confirm_reset": "重置实例",
+    "confirm_reset_msg": "确定要重置此实例吗？"
+  },
+  "tab": {
+    "games": {
+      "awd": "AWDP 管理",
+      "challenges": "题目管理",
+      "divisions": "分组管理",
+      "index": "比赛管理",
+      "info": "信息编辑",
+      "notices": "比赛公告",
+      "review": "队伍审核",
+      "screen": "大屏展示",
+      "writeups": "Writeups"
+    },
+    "instances": "实例管理",
+    "logs": "系统日志",
+    "settings": "系统设置",
+    "teams": "队伍管理",
+    "users": "用户管理"
+  },
+  "logs": {
+    "title": "系统日志",
+    "description": "查看何时、由谁、对什么执行了操作，以及记录的结果。",
+    "eyebrow": "操作与运行记录",
+    "time": "时间",
+    "actor_label": "操作人",
+    "event_label": "事件与对象",
+    "result_label": "结果",
+    "level_label": "级别",
+    "details": "查看日志详情",
+    "current_name": "当前名称",
+    "details_column": "详情",
+    "summary_counts": "本页 {{count}} 条 · 异常 {{errors}} · 警告 {{warnings}}",
+    "detail_title": "日志详情",
+    "summary": "操作摘要",
+    "object_label": "操作对象",
+    "node": "执行节点",
+    "source": "记录来源",
+    "ip_background": "后台事件，无请求 IP",
+    "ip_unrecorded": "IP 未记录",
+    "ip": "来源 IP",
+    "message": "原始消息",
+    "no_message": "此记录没有消息正文。",
+    "diagnostics": "异常诊断",
+    "technical": "技术详情",
+    "technical_hint": "事件代码、标识和原始记录供排查使用。",
+    "error_category": "错误分类",
+    "error_code": "错误代码",
+    "retryable": "允许重试",
+    "yes": "是",
+    "no": "否",
+    "detail": "结构化诊断",
+    "log_id": "日志 ID",
+    "actor_id": "用户 ID",
+    "actor_kind": "操作人类型",
+    "resource_type": "资源类型",
+    "resource_id": "资源 ID",
+    "node_id": "节点 ID",
+    "correlation_id": "关联 ID",
+    "ticket_id": "部署任务 ID",
+    "trace_id": "Trace ID",
+    "event_code": "事件代码",
+    "raw_status": "原始状态",
+    "raw_outcome": "原始结果",
+    "raw_name": "原始操作人",
+    "raw": "原始记录",
+    "refresh": "刷新历史",
+    "reconnect": "重连实时日志",
+    "stream": "实时通道",
+    "visible": "本页记录",
+    "new": "新日志",
+    "errors": "异常",
+    "warnings": "警告",
+    "filtered": "当前页筛选结果",
+    "waiting": "等待手动合并",
+    "current_page": "当前页",
+    "search": "搜索当前页日志",
+    "search_placeholder": "当前页事件、对象、消息或错误代码",
+    "identity": "筛选当前页操作人或 IP",
+    "identity_placeholder": "当前页操作人 / IP",
+    "all_levels": "全部级别",
+    "all_results": "全部结果",
+    "result_filter": "筛选当前页结果",
+    "filter_hint": "关键词、操作人和结果仅筛选当前页；级别与关联条件查询全部历史。",
+    "refresh_hint": "历史记录按需刷新",
+    "scope": "正在按关联运行上下文查询。",
+    "clear_scope": "清除关联筛选",
+    "merge": "合并到第一页",
+    "buffer": "有 {{count}} 条符合条件的新日志，等待手动合并。",
+    "dropped": "实时缓冲已满，已丢弃 {{count}} 条最旧日志。",
+    "offline": "仍可查询持久化历史记录，实时日志恢复后继续接收。",
+    "loading": "系统日志加载中",
+    "loading_description": "正在读取持久化系统日志。",
+    "load_failed": "系统日志加载失败",
+    "load_failed_description": "查询接口暂时不可用，请刷新重试。",
+    "list": "系统日志列表",
+    "empty": "没有符合条件的日志",
+    "empty_description": "调整级别、关联条件或当前页筛选后重试。",
+    "pagination": "分页",
+    "unrecorded": "未记录",
+    "actor": {
+      "user": "用户（姓名未记录）",
+      "system": "平台系统",
+      "anonymous": "未登录请求",
+      "agent": "节点 Agent",
+      "api_token": "API 调用方",
+      "unknown": "操作人未记录",
+      "kind_unknown": "类型未记录"
+    },
+    "object": {
+      "unnamed": "未记录对象名称",
+      "unrecorded": "未记录操作对象",
+      "name_missing": "名称未记录"
+    },
+    "event": {
+      "unknown": "未识别的运行事件",
+      "legacy": "历史系统日志"
+    },
+    "connection": {
+      "connected": "实时已连接",
+      "reconnecting": "正在重连",
+      "connecting": "正在连接",
+      "disconnected": "实时已离线"
+    },
+    "level": {
+      "information": "信息",
+      "warning": "警告",
+      "error": "错误",
+      "critical": "严重错误",
+      "debug": "调试",
+      "trace": "跟踪",
+      "unknown": "级别未记录"
+    },
+    "result": {
+      "started": "已开始",
+      "pending": "等待处理",
+      "blocked": "已阻止",
+      "succeeded": "成功",
+      "failed": "失败",
+      "cancelled": "已取消",
+      "recovered": "已恢复",
+      "observed": "已观测",
+      "degraded": "已降级",
+      "unknown": "结果未记录"
+    },
+    "events": {
+      "runtime_ticket_enqueued": "运行任务 · 任务已加入队列",
+      "runtime_ticket_duplicate": "运行任务 · 任务重复请求",
+      "runtime_ticket_cancelled": "运行任务 · 任务已取消",
+      "runtime_admission_blocked": "运行任务 · 准入已阻止",
+      "runtime_admission_accepted": "运行任务 · 准入已通过",
+      "runtime_scheduling_started": "运行任务 · 调度已开始",
+      "runtime_scheduling_blocked": "运行任务 · 调度已阻止",
+      "runtime_scheduling_assigned": "运行任务已分配节点",
+      "runtime_execution_started": "运行任务 · 执行已开始",
+      "runtime_execution_succeeded": "运行任务执行完成",
+      "runtime_execution_failed": "运行任务执行失败",
+      "runtime_execution_replay_queued": "运行任务 · 执行重放已排队",
+      "runtime_execution_claim_recovered": "运行任务 · 执行租约已恢复",
+      "runtime_execution_failed_closed": "运行任务 · 执行失败已关闭",
+      "runtime_control_extend_started": "运行任务 · 控制续期已开始",
+      "runtime_control_stop_started": "运行任务 · 控制停止已开始",
+      "runtime_control_reset_started": "运行任务 · 控制重置已开始",
+      "runtime_control_destroy_started": "运行任务 · 控制销毁已开始",
+      "runtime_rollback_started": "运行任务 · 回滚已开始",
+      "runtime_rollback_succeeded": "运行任务 · 回滚已完成",
+      "runtime_rollback_failed": "运行任务 · 回滚失败",
+      "runtime_snapshot_imported": "运行任务 · 快照已导入",
+      "runtime_capacity_reserved": "运行任务 · 容量已预留",
+      "runtime_capacity_blocked": "运行任务 · 容量已阻止",
+      "runtime_capacity_confirmed": "运行任务 · 容量已确认",
+      "runtime_capacity_released": "运行任务 · 容量已释放",
+      "runtime_capacity_expired": "运行任务 · 容量已过期",
+      "runtime_capacity_reconciled": "运行容量核对完成",
+      "runtime_capacity_conflict": "运行任务 · 容量冲突",
+      "image_distribution_queued": "镜像 · 分发已排队",
+      "image_distribution_claimed": "镜像 · 分发已领取",
+      "image_transfer_started": "镜像 · 传输已开始",
+      "image_transfer_succeeded": "镜像 · 传输已完成",
+      "image_verify_started": "镜像 · 校验已开始",
+      "image_verify_succeeded": "镜像 · 校验已完成",
+      "image_distribution_ready": "镜像 · 分发已就绪",
+      "image_distribution_retry_queued": "镜像 · 分发重试已排队",
+      "image_distribution_failed": "镜像 · 分发失败",
+      "image_cleanup_queued": "镜像 · 清理已排队",
+      "image_cleanup_started": "镜像 · 清理已开始",
+      "image_cleanup_succeeded": "镜像 · 清理已完成",
+      "image_cleanup_failed": "镜像 · 清理失败",
+      "image_reference_attached": "镜像 · 引用已绑定",
+      "image_reference_released": "镜像 · 引用已释放",
+      "image_reconcile_corrected": "镜像 · 核对已修正",
+      "image_snapshot_imported": "镜像 · 快照已导入",
+      "node_registration_started": "节点 · 注册已开始",
+      "node_registration_succeeded": "节点 · 注册已完成",
+      "node_registration_failed": "节点 · 注册失败",
+      "node_deregistered": "节点 · 已注销",
+      "node_online": "节点上线",
+      "node_offline": "节点离线",
+      "node_capability_changed": "节点能力变化",
+      "node_schedulable_enabled": "节点 · 调度开关已启用",
+      "node_schedulable_disabled": "节点 · 调度开关已禁用",
+      "node_health_degraded": "节点健康状态降级",
+      "node_health_recovered": "节点 · 健康检查已恢复",
+      "agent_sync_started": "开始更新节点 Agent",
+      "agent_sync_succeeded": "节点 Agent 更新完成",
+      "agent_sync_failed": "节点 Agent 更新失败",
+      "agent_call_failed": "Agent · 调用失败",
+      "agent_inventory_unavailable": "Agent · 库存不可用",
+      "container_create_started": "容器 · 创建已开始",
+      "container_create_succeeded": "容器 · 创建已完成",
+      "container_create_failed": "容器 · 创建失败",
+      "container_stop_succeeded": "容器 · 停止已完成",
+      "container_destroy_succeeded": "容器 · 销毁已完成",
+      "container_destroy_failed": "容器 · 销毁失败",
+      "vm_create_started": "虚拟机 · 创建已开始",
+      "vm_create_succeeded": "虚拟机 · 创建已完成",
+      "vm_create_failed": "虚拟机 · 创建失败",
+      "vm_boot_probe_started": "虚拟机 · 启动探测已开始",
+      "vm_boot_ready": "虚拟机 · 启动已就绪",
+      "vm_boot_failed": "虚拟机 · 启动失败",
+      "vm_stop_succeeded": "虚拟机 · 停止已完成",
+      "vm_destroy_succeeded": "虚拟机 · 销毁已完成",
+      "vm_destroy_failed": "虚拟机 · 销毁失败",
+      "vm_access_opened": "虚拟机 · 访问已开启",
+      "vm_access_failed": "虚拟机 · 访问失败",
+      "teamlab_scene_deleted": "TeamLab · 场景已删除",
+      "teamlab_runtime_record_deleted": "TeamLab · 运行记录已删除",
+      "teamlab_remote_session_created": "TeamLab · 远程会话已创建",
+      "teamlab_remote_session_connected": "TeamLab · 远程会话已连接",
+      "teamlab_remote_session_ended": "TeamLab · 远程会话已结束",
+      "teamlab_remote_session_failed": "TeamLab · 远程会话失败",
+      "teamlab_plan_started": "TeamLab · 规划已开始",
+      "teamlab_plan_succeeded": "TeamLab · 规划已完成",
+      "teamlab_placement_succeeded": "TeamLab · 放置已完成",
+      "teamlab_deploy_started": "TeamLab · 部署已开始",
+      "teamlab_infrastructure_apply_started": "TeamLab · 基础设施应用已开始",
+      "teamlab_infrastructure_applied": "TeamLab · 基础设施已应用",
+      "teamlab_infrastructure_apply_failed": "TeamLab · 基础设施应用失败",
+      "teamlab_infrastructure_drift_detected": "TeamLab · 基础设施漂移已发现",
+      "teamlab_infrastructure_replay_queued": "TeamLab · 基础设施重放已排队",
+      "teamlab_infrastructure_replayed": "TeamLab · 基础设施已重放",
+      "teamlab_fabric_lease_allocated": "TeamLab · 组网租约已分配",
+      "teamlab_fabric_lease_released": "TeamLab · 组网租约已释放",
+      "teamlab_network_applied": "TeamLab · 网络已应用",
+      "teamlab_asset_created": "TeamLab · 资产已创建",
+      "teamlab_asset_diagnostics_read": "TeamLab · 资产诊断已读取",
+      "teamlab_asset_files_accessed": "TeamLab · 资产文件已访问",
+      "teamlab_asset_controlled": "TeamLab · 资产已操作",
+      "teamlab_remote_audit_downloaded": "TeamLab · 远程审计已下载",
+      "teamlab_asset_create_failed": "TeamLab · 资产创建失败",
+      "teamlab_guest_ready": "TeamLab · 来宾已就绪",
+      "teamlab_guest_readiness_failed": "TeamLab · 来宾就绪检查失败",
+      "teamlab_bootstrap_succeeded": "TeamLab · 初始化已完成",
+      "teamlab_bootstrap_failed": "TeamLab · 初始化失败",
+      "teamlab_bootstrap_rebooted": "TeamLab · 初始化已重启",
+      "teamlab_health_succeeded": "TeamLab · 健康检查已完成",
+      "teamlab_health_failed": "TeamLab · 健康检查失败",
+      "teamlab_route_applied": "TeamLab · 路由已应用",
+      "teamlab_probe_succeeded": "TeamLab · 探测已完成",
+      "teamlab_ready": "TeamLab · 已就绪",
+      "teamlab_deploy_failed": "TeamLab · 部署失败",
+      "teamlab_reset_queued": "TeamLab · 重置已排队",
+      "teamlab_reset_started": "TeamLab · 重置已开始",
+      "teamlab_reset_succeeded": "TeamLab · 重置已完成",
+      "teamlab_reset_failed": "TeamLab · 重置失败",
+      "teamlab_runtime_update_succeeded": "TeamLab · 运行记录更新已完成",
+      "teamlab_runtime_update_failed": "TeamLab · 运行记录更新失败",
+      "teamlab_pause_started": "TeamLab · 暂停已开始",
+      "teamlab_pause_succeeded": "TeamLab · 暂停已完成",
+      "teamlab_pause_failed": "TeamLab · 暂停失败",
+      "teamlab_resume_started": "TeamLab · 恢复已开始",
+      "teamlab_resume_succeeded": "TeamLab · 恢复已完成",
+      "teamlab_resume_blocked": "TeamLab · 恢复已阻止",
+      "teamlab_destroy_started": "TeamLab · 销毁已开始",
+      "teamlab_destroy_succeeded": "TeamLab · 销毁已完成",
+      "teamlab_destroy_failed": "TeamLab · 销毁失败",
+      "teamlab_cleanup_started": "TeamLab · 清理已开始",
+      "teamlab_cleanup_succeeded": "TeamLab · 清理已完成",
+      "teamlab_cleanup_failed": "TeamLab · 清理失败",
+      "teamlab_capture_started": "TeamLab · 抓包已开始",
+      "teamlab_capture_stopped": "TeamLab · 抓包已停止",
+      "teamlab_capture_failed": "TeamLab · 抓包失败",
+      "teamlab_capture_segment_uploaded": "TeamLab · 抓包分段已上传",
+      "teamlab_capture_downloaded": "TeamLab · 抓包已下载",
+      "teamlab_capture_expired": "TeamLab · 抓包已过期",
+      "teamlab_observation_degraded": "TeamLab · 观测已降级",
+      "teamlab_observation_dropped": "TeamLab · 观测已丢弃",
+      "teamlab_observation_recovered": "TeamLab · 观测已恢复",
+      "teamlab_traffic_path_derived": "TeamLab · 流量路径已推导",
+      "teamlab_recovery_rebuild_allowed": "TeamLab · 恢复重建已允许",
+      "teamlab_recovery_rebuild_blocked": "TeamLab · 恢复重建已阻止",
+      "teamlab_access_opened": "TeamLab · 访问已开启",
+      "teamlab_access_revoked": "TeamLab · 访问已撤销",
+      "teamlab_snapshot_imported": "TeamLab · 快照已导入",
+      "teamlab_protocol_event": "TeamLab · 协议事件",
+      "teamlab_device-health_changed": "TeamLab · 设备健康已变化",
+      "recovery_run_started": "运行恢复 · 执行已开始",
+      "recovery_run_succeeded": "运行恢复 · 执行已完成",
+      "recovery_run_failed": "运行恢复 · 执行失败",
+      "recovery_fact_confirmed": "运行恢复 · 事实已确认",
+      "recovery_resource_missing": "运行恢复 · 资源缺失",
+      "recovery_identity_conflict": "运行恢复 · 身份冲突",
+      "recovery_ticket_replayed": "运行恢复 · 任务已重放",
+      "recovery_state_corrected": "运行恢复 · 状态已修正",
+      "recovery_node_unavailable": "运行恢复 · 节点不可用",
+      "recovery_inventory_unsupported": "运行恢复 · 库存不支持",
+      "recovery_ticket_deferral_expired": "运行恢复 · 任务延期已过期",
+      "recovery_orphan_observed": "运行恢复 · 孤立资源已观测",
+      "audit_admin_mutation_succeeded": "管理变更已完成",
+      "audit_admin_mutation_failed": "管理变更失败",
+      "audit_external_request": "外部 API 请求",
+      "audit_sensitive_download": "审计 · 敏感资源下载",
+      "audit_access_vm_opened": "审计 · 访问虚拟机已开启",
+      "audit_access_pcap_downloaded": "审计 · 访问抓包文件已下载"
+    },
+    "operations": {
+      "Admin_UpdateConfigs": "修改平台配置",
+      "Admin_UpdateLogo": "更新平台标志",
+      "Admin_ResetLogo": "恢复平台标志",
+      "Admin_AddUsers": "批量创建用户",
+      "Admin_SearchUsers": "查询用户",
+      "Admin_SearchTeams": "查询队伍",
+      "Admin_UpdateTeam": "修改队伍信息",
+      "Admin_UpdateUserInfo": "修改用户信息",
+      "Admin_ResetPassword": "重置用户密码",
+      "Admin_DeleteUser": "删除用户",
+      "Admin_DeleteTeam": "删除队伍",
+      "Admin_Participation": "修改参赛状态",
+      "Admin_DestroyInstance": "销毁运行实例",
+      "WorkerNodes_Register": "注册节点",
+      "WorkerNodes_Update": "修改节点配置",
+      "WorkerNodes_Delete": "删除节点",
+      "Nodes_Register": "注册节点",
+      "Nodes_Deregister": "注销节点",
+      "Nodes_UpdateNode": "修改节点配置",
+      "Nodes_EnableTeamLabNetwork": "启用节点组网",
+      "Nodes_SyncAgent": "同步节点状态",
+      "Nodes_DestroyVm": "销毁虚拟机",
+      "Nodes_DestroyVmAsAdmin": "管理员销毁虚拟机",
+      "Edit_AddPost": "创建公告",
+      "Edit_UpdatePost": "修改公告",
+      "Edit_DeletePost": "删除公告",
+      "Edit_AddGame": "创建赛事",
+      "Edit_UpdateGame": "修改赛事",
+      "Edit_DeleteGame": "删除赛事",
+      "Edit_DeleteGameWriteUps": "删除解题报告",
+      "Edit_UpdateGamePoster": "更新赛事海报",
+      "Edit_AddGameNotice": "创建赛事通知",
+      "Edit_UpdateGameNotice": "修改赛事通知",
+      "Edit_DeleteGameNotice": "删除赛事通知",
+      "Edit_CreateDivision": "创建分组",
+      "Edit_UpdateDivision": "修改分组",
+      "Edit_DeleteDivision": "删除分组",
+      "Edit_AddGameChallenge": "添加赛事题目",
+      "Edit_FlushScoreboardCache": "刷新榜单缓存",
+      "Edit_UpdateGameChallenge": "修改赛事题目",
+      "Edit_CreateTestContainer": "启动预览容器",
+      "Edit_DestroyTestContainer": "销毁预览容器",
+      "Edit_RemoveGameChallenge": "移除赛事题目",
+      "Edit_UpdateAttachment": "更新题目附件",
+      "Edit_AddFlags": "添加 Flag",
+      "Edit_RemoveFlag": "移除 Flag",
+      "Edit_UpdateFlag": "修改 Flag",
+      "Edit_ExportGame": "导出赛事",
+      "Edit_ImportGame": "导入赛事",
+      "DeploymentQueue_Cancel": "取消部署任务",
+      "ImageTemplate_Upload": "上传镜像模板",
+      "ImageTemplate_UpdateRemoteAccess": "修改远程访问配置",
+      "ImageTemplate_ImportFromLocal": "从本地导入镜像",
+      "ImageTemplate_RegisterDocker": "注册 Docker 镜像",
+      "ImageTemplate_UploadDockerArchive": "上传 Docker 归档",
+      "ImageTemplate_UploadArchive": "上传镜像归档",
+      "ImageTemplate_Delete": "删除镜像模板",
+      "TheoryAdmin_CreateQuestion": "创建理论题目",
+      "TheoryAdmin_UpdateQuestion": "修改理论题目",
+      "TheoryAdmin_DeleteQuestion": "删除理论题目",
+      "TheoryAdmin_SavePaper": "保存试卷",
+      "TheoryAdmin_PublishPaper": "发布试卷",
+      "TheoryAdmin_RecalculateResults": "重算成绩",
+      "StudentGroupAdmin_CreateGroup": "创建学员组",
+      "StudentGroupAdmin_UpdateGroup": "修改学员组",
+      "StudentGroupAdmin_ArchiveGroup": "归档学员组",
+      "StudentGroupAdmin_AddMember": "添加学员组成员",
+      "StudentGroupAdmin_RemoveMember": "移除学员组成员",
+      "StudentGroupAdmin_AddManager": "添加学员组管理员",
+      "StudentGroupAdmin_RemoveManager": "移除学员组管理员",
+      "AwdpAdmin_CreateService": "创建 AWDP 服务",
+      "AwdpAdmin_UpdateService": "修改 AWDP 服务",
+      "AwdpAdmin_DeleteService": "删除 AWDP 服务",
+      "AwdpAdmin_StartGame": "开始 AWDP 赛事",
+      "AwdpAdmin_StopGame": "停止 AWDP 赛事",
+      "AwdpAdmin_ResetInstance": "重置 AWDP 实例",
+      "AwdpAdmin_RecoverInstance": "恢复 AWDP 实例"
+    },
+    "resource_missing": {
+      "node": "节点名称未记录",
+      "image": "镜像名称未记录",
+      "deployment": "部署任务名称未记录",
+      "user": "用户姓名未记录",
+      "team": "队伍名称未记录",
+      "game": "赛事名称未记录",
+      "challenge": "题目名称未记录",
+      "course": "课程名称未记录",
+      "container": "容器名称未记录",
+      "vm": "虚拟机名称未记录",
+      "teamlab": "组网环境名称未记录"
+    },
+    "resource": {
+      "node": "节点",
+      "image": "镜像",
+      "deployment": "部署任务",
+      "user": "用户",
+      "team": "队伍",
+      "game": "赛事",
+      "challenge": "题目",
+      "course": "课程",
+      "container": "容器",
+      "vm": "虚拟机",
+      "teamlab": "组网环境"
+    },
+    "error": {
+      "authorization": "权限校验",
+      "validation": "参数校验",
+      "conflict": "状态冲突",
+      "scheduling": "调度",
+      "capacity": "容量不足",
+      "imageregistry": "镜像仓库",
+      "imagetransfer": "镜像传输",
+      "nodeunavailable": "节点不可用",
+      "agentprotocol": "Agent 协议",
+      "agenttransport": "Agent 通信",
+      "docker": "Docker 执行",
+      "kvm": "KVM 执行",
+      "network": "网络",
+      "healthcheck": "健康检查",
+      "storage": "存储",
+      "database": "数据库",
+      "cache": "缓存",
+      "unknown": "未分类错误"
+    }
+  }
+}
