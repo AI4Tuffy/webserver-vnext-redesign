@@ -1,0 +1,9 @@
+.git
+node_modules
+build
+.env
+.env.*
+coverage
+test-results
+playwright-report
+*.log

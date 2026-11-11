@@ -7,11 +7,13 @@ import { optimizeCssModules } from 'vite-plugin-optimize-css-modules'
 import webfontDownload from 'vite-plugin-webfont-dl'
 import { i18nVirtualManifest } from './plugins/vite-i18n-virtual-manifest'
 import { sanitizeGeneratedOutput } from './plugins/vite-sanitize-generated-output'
+import { backendOrigin, backendPathPattern } from './server/routes.mjs'
+import { renderIndex } from './server/html.mjs'
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd())
+  const env = loadEnv(mode, process.cwd(), '')
 
-  const TARGET = env.VITE_BACKEND_URL ?? 'http://localhost:8080'
+  const TARGET = backendOrigin(env.BACKEND_URL ?? env.VITE_BACKEND_URL)
   const current = new Date()
   const buildId = (env.VITE_APP_BUILD_TIMESTAMP ?? current.toISOString()).replace(/[^0-9A-Za-z]+/g, '').slice(0, 14)
 
@@ -27,11 +29,7 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 63000,
       proxy: {
-        '/api': { target: TARGET, ws: true },
-        '/swagger': TARGET,
-        '/assets': TARGET,
-        '/hub': { target: TARGET.replace('http', 'ws'), ws: true },
-        '/favicon.webp': TARGET,
+        [backendPathPattern]: { target: TARGET, ws: true, changeOrigin: false },
       },
     },
     resolve: {
@@ -62,6 +60,11 @@ export default defineConfig(({ mode }) => {
     html: { cspNonce: '%nonce%' },
     plugins: [
       react(),
+      {
+        name: 'standalone-dev-html',
+        apply: 'serve',
+        transformIndexHtml: { order: 'post', handler: (html) => renderIndex(html).html },
+      },
       {
         name: 'scope-netlab-mantine',
         enforce: 'pre',

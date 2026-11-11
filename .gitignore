@@ -38,3 +38,4 @@ template/swagger*.json
 !.env.example
 /test-results/
 /playwright-report/
+*.log
