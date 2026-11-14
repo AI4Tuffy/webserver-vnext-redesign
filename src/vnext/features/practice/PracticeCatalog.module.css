@@ -245,6 +245,9 @@
 
 .difficultySlider {
   --range-fill: 0%;
+  --range-rail-height: 16px;
+  --range-thumb-size: 24px;
+  --range-stop-size: 4px;
   position: relative;
 }
 
@@ -253,13 +256,25 @@
 .difficultySlider[data-level='3'] { --range-fill: 75%; }
 .difficultySlider[data-level='4'] { --range-fill: 100%; }
 
+.difficultySlider::before,
 .difficultyRail {
   position: absolute;
-  inset: 13px 12px auto;
-  height: 16px;
+  top: 50%;
+  height: var(--range-rail-height);
   border-radius: var(--yn-radius-pill);
-  background: var(--yn-color-canvas-raised);
+  transform: translateY(-50%);
   pointer-events: none;
+}
+
+.difficultySlider::before {
+  inset-inline: calc((var(--range-thumb-size) - var(--range-rail-height)) / 2);
+  background: var(--yn-color-canvas-raised);
+  content: '';
+}
+
+.difficultyRail {
+  /* The stop centers follow the native thumb's travel inside the rail. */
+  inset-inline: calc(var(--range-thumb-size) / 2);
 }
 
 .difficultyRail::before,
@@ -271,74 +286,68 @@
 }
 
 .difficultyRail::before {
-  inset: 0 auto 0 0;
-  width: var(--range-fill);
+  inset: 0 auto 0 calc(var(--range-rail-height) / -2);
+  width: calc(var(--range-fill) + var(--range-rail-height) / 2);
   transition: width var(--yn-motion-fast) var(--yn-ease-emphasized);
 }
 
 .difficultyRail::after {
-  top: -4px;
+  top: 50%;
   left: var(--range-fill);
-  width: 24px;
-  height: 24px;
+  width: var(--range-thumb-size);
+  height: var(--range-thumb-size);
   box-sizing: border-box;
   border: 1px solid var(--yn-color-border-strong);
   background: var(--yn-color-surface);
   box-shadow: var(--yn-shadow-surface);
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   transition: left var(--yn-motion-fast) var(--yn-ease-emphasized);
 }
 
 .difficultyStops {
   position: absolute;
-  inset: 0;
+  inset-block: 0;
+  inset-inline: calc(var(--range-stop-size) / -2);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .difficultyStops > span {
-  position: relative;
-}
-
-.difficultyStops > span::before {
-  position: absolute;
-  width: 5px;
-  height: 5px;
+  width: var(--range-stop-size);
+  height: var(--range-stop-size);
   border-radius: 50%;
-  background: color-mix(in srgb, var(--yn-color-text) 26%, var(--yn-color-canvas-raised));
-  content: '';
-  transform: translate(-50%, -50%);
+  background: color-mix(in srgb, var(--yn-color-text) 16%, var(--yn-color-canvas-raised));
 }
 
-.difficultyStops > [data-passed='true']::before {
-  background: color-mix(in srgb, var(--yn-color-nav-active-text) 36%, var(--yn-color-nav-active));
+.difficultyStops > [data-passed='true'] {
+  background: color-mix(in srgb, var(--yn-color-nav-active-text) 24%, var(--yn-color-nav-active));
 }
 
 .difficultyRange::-webkit-slider-runnable-track {
-  height: 16px;
+  height: var(--range-rail-height);
   border-radius: var(--yn-radius-pill);
   background: transparent;
 }
 
 .difficultyRange::-moz-range-track {
-  height: 16px;
+  height: var(--range-rail-height);
   border-radius: var(--yn-radius-pill);
   background: transparent;
 }
 
 .difficultyRange::-webkit-slider-thumb {
-  width: 24px;
-  height: 24px;
+  width: var(--range-thumb-size);
+  height: var(--range-thumb-size);
   appearance: none;
-  margin-top: -4px;
+  margin-top: calc((var(--range-rail-height) - var(--range-thumb-size)) / 2);
   border: 0;
   background: transparent;
 }
 
 .difficultyRange::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
+  width: var(--range-thumb-size);
+  height: var(--range-thumb-size);
   border: 0;
   background: transparent;
 }
