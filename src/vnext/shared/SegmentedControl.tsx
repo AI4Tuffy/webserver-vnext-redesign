@@ -15,6 +15,8 @@ interface SegmentedControlProps {
   as?: 'nav' | 'div'
   children: ReactNode
   className?: string
+  /** 窄屏也保持竖排，适合可展开的侧栏。 */
+  keepVertical?: boolean
   /** vertical 在 900px 以下自动转为横排。 */
   orientation?: 'horizontal' | 'vertical'
   role?: 'group' | 'tablist'
@@ -27,6 +29,7 @@ export function SegmentedControl({
   as: Element = 'div',
   children,
   className,
+  keepVertical = false,
   orientation = 'horizontal',
   role,
   size = 'md',
@@ -45,6 +48,7 @@ export function SegmentedControl({
       aria-label={ariaLabel}
       className={className ? `${styles.frame} ${className}` : styles.frame}
       data-orientation={orientation}
+      data-keep-vertical={keepVertical || undefined}
       data-size={size}
       onFocus={reveal}
       ref={(node: HTMLElement | null) => {
