@@ -35,7 +35,6 @@ export function SecuritySettings() {
   return (
     <div className={styles.settingsContent}>
       <section className={styles.sectionIntro}>
-        <span>SECURITY</span>
         <h2>账户安全</h2>
         <p>修改密码后当前会话会退出，需要使用新密码重新登录。</p>
       </section>

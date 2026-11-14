@@ -1,0 +1,182 @@
+/*
+ * 标准胶囊切换（取自顶栏主导航）：描边长条里放等宽选项，选中块在选项间滑动；
+ * 悬停时底色加深为描边色并外扩 1px 同色描边。最多支持 12 个选项。
+ */
+.frame {
+  --segment-selection-fill: color-mix(in srgb, var(--yn-color-text) 11%, var(--yn-color-surface-muted));
+  --segment-selection-border: color-mix(in srgb, var(--yn-color-border-strong) 75%, var(--yn-color-text));
+  --segment-height: 44px;
+  --segment-padding: clamp(12px, 1.5vw, 24px);
+  --segment-font: var(--yn-font-md);
+  display: flex;
+  box-sizing: border-box;
+  width: fit-content;
+  min-width: 0;
+  max-width: 100%;
+  align-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 3px;
+  border: 1px solid var(--yn-color-border-strong);
+  border-radius: var(--yn-radius-pill);
+  scrollbar-width: none;
+}
+
+.frame::-webkit-scrollbar {
+  display: none;
+}
+
+.frame[data-size='sm'] {
+  --segment-height: 34px;
+  --segment-padding: 14px;
+  --segment-font: var(--yn-font-sm);
+}
+
+.rail {
+  --segment-index: 0;
+  position: relative;
+  display: grid;
+  flex: 1 0 auto;
+  grid-auto-columns: minmax(44px, 1fr);
+  grid-auto-flow: column;
+  isolation: isolate;
+}
+
+.rail::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  box-sizing: border-box;
+  grid-area: 1 / 1 / 2 / 2;
+  border: 1px solid var(--segment-selection-border);
+  border-radius: var(--yn-radius-pill);
+  background: var(--segment-selection-fill);
+  content: '';
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(calc(var(--segment-index) * 100%));
+  transition: transform var(--yn-motion-normal) var(--yn-ease-emphasized);
+}
+
+.rail:has(> :is([aria-current='page'], [aria-pressed='true'], [aria-selected='true']))::before {
+  opacity: 1;
+}
+
+.rail:has(> :nth-child(2):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 1;
+}
+
+.rail:has(> :nth-child(3):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 2;
+}
+
+.rail:has(> :nth-child(4):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 3;
+}
+
+.rail:has(> :nth-child(5):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 4;
+}
+
+.rail:has(> :nth-child(6):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 5;
+}
+
+.rail:has(> :nth-child(7):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 6;
+}
+
+.rail:has(> :nth-child(8):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 7;
+}
+
+.rail:has(> :nth-child(9):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 8;
+}
+
+.rail:has(> :nth-child(10):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 9;
+}
+
+.rail:has(> :nth-child(11):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 10;
+}
+
+.rail:has(> :nth-child(12):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 11;
+}
+
+.item {
+  display: inline-flex;
+  box-sizing: border-box;
+  min-width: 44px;
+  min-height: var(--segment-height);
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0 var(--segment-padding);
+  border: 0;
+  border-radius: var(--yn-radius-pill);
+  background: transparent;
+  color: var(--yn-color-text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--segment-font);
+  white-space: nowrap;
+  scroll-margin-inline: 3px;
+  transition:
+    background-color var(--yn-motion-fast) ease-in-out,
+    box-shadow var(--yn-motion-fast) ease-in-out,
+    color var(--yn-motion-fast) ease-in-out;
+}
+
+.item:hover:not(:is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  background: var(--yn-color-border);
+  box-shadow: 0 0 0 1px var(--yn-color-border);
+  color: var(--yn-color-text);
+}
+
+.item:focus-visible {
+  outline-offset: 1px;
+}
+
+.item:is([aria-current='page'], [aria-pressed='true'], [aria-selected='true']) {
+  color: var(--yn-color-text);
+}
+
+.item svg {
+  flex: 0 0 auto;
+}
+
+/* 竖排：等高行，选中块纵向滑动；900px 以下回到横排。 */
+@media (min-width: 901px) {
+  .frame[data-orientation='vertical'] {
+    width: auto;
+    overflow: visible;
+    border-radius: 25px;
+  }
+
+  .frame[data-orientation='vertical'] .rail {
+    grid-auto-columns: auto;
+    grid-auto-flow: row;
+    grid-auto-rows: 1fr;
+  }
+
+  .frame[data-orientation='vertical'] .rail::before {
+    transform: translateY(calc(var(--segment-index) * 100%));
+  }
+
+  .frame[data-orientation='vertical'] .item {
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 0 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail::before,
+  .item {
+    transition: none;
+  }
+}

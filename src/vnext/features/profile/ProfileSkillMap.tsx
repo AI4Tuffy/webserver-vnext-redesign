@@ -19,7 +19,6 @@ export function ProfileSkillMap({ dimensions }: { dimensions: UserSkillDimension
     <section className={styles.profilePanel}>
       <header className={styles.panelHeading}>
         <div>
-          <span className={styles.panelEyebrow}>CHALLENGE PROFILE</span>
           <h2>分类解题画像</h2>
         </div>
         <span>按平台 P90 基准归一化</span>

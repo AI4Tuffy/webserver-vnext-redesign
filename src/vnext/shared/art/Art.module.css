@@ -1,0 +1,114 @@
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mono {
+  font-family: var(--yn-font-mono);
+}
+
+.pre {
+  font-family: var(--yn-font-mono);
+  white-space: pre;
+}
+
+.hand {
+  font-family: var(--yn-font-hand);
+  font-weight: 700;
+}
+
+.display {
+  font-family: var(--yn-font-display);
+  font-stretch: 125%;
+  font-weight: 800;
+}
+
+.serif {
+  font-family: var(--yn-font-serif);
+}
+
+
+/* 正片叠底：孔版套色与纸张颗粒。 */
+.multiply {
+  mix-blend-mode: multiply;
+}
+
+.screen {
+  mix-blend-mode: screen;
+}
+
+/* ---------- 小组件手绘图标（spot.tsx / spotIcons.tsx） ---------- */
+
+.spot {
+  --spot-ink: var(--yn-spot-ink);
+  --spot-field: var(--yn-spot-sand);
+  --spot-badge: var(--yn-spot-sand-badge);
+  --spot-accent: var(--yn-spot-sand-accent);
+}
+
+.spot[data-palette='peach'] {
+  --spot-field: var(--yn-spot-peach);
+  --spot-badge: var(--yn-spot-peach-badge);
+  --spot-accent: var(--yn-spot-peach-accent);
+}
+
+.spot[data-palette='lavender'] {
+  --spot-field: var(--yn-spot-lavender);
+  --spot-badge: var(--yn-spot-lavender-badge);
+  --spot-accent: var(--yn-spot-lavender-accent);
+}
+
+.spot[data-palette='sage'] {
+  --spot-field: var(--yn-spot-sage);
+  --spot-badge: var(--yn-spot-sage-badge);
+  --spot-accent: var(--yn-spot-sage-accent);
+}
+
+.spot[data-palette='sky'] {
+  --spot-field: var(--yn-spot-sky);
+  --spot-badge: var(--yn-spot-sky-badge);
+  --spot-accent: var(--yn-spot-sky-accent);
+}
+
+/* 只给颜色；线宽与端点由 SVG 属性控制，元素上的 strokeWidth 才能生效。 */
+.spotField {
+  fill: var(--spot-field);
+}
+
+.spotBadge {
+  fill: var(--spot-badge);
+}
+
+/* 没有色底的小图标：日间用色底颜色做徽章，夜间用浅色徽章，保证在卡片上都看得清。 */
+.spotChip {
+  fill: var(--spot-field);
+}
+
+:global(:root[data-yinyu-theme='dark']) .spotChip {
+  fill: var(--spot-badge);
+}
+
+.spotInk {
+  fill: none;
+  stroke: var(--spot-ink);
+}
+
+.spotAccent {
+  fill: var(--spot-accent);
+  stroke: var(--spot-ink);
+}
+
+.spotInkFill {
+  fill: var(--spot-ink);
+}
+
+.spotPaperFill {
+  fill: var(--spot-badge);
+  stroke: var(--spot-ink);
+}
+
+.spotGlare {
+  fill: none;
+  stroke: var(--spot-badge);
+}

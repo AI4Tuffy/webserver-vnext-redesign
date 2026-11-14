@@ -1,6 +1,6 @@
 import { KeyboardEvent, PointerEvent, useEffect, useMemo, useState } from 'react'
 import type { UserProfileTrendPoint } from './api/userProfileApi'
-import { buildTrendGeometry, type ProfileWindow } from './profileDomain'
+import { buildTrendGeometry } from './profileDomain'
 import styles from './UserProfilePage.module.css'
 
 function formatDate(value: string) {
@@ -9,7 +9,7 @@ function formatDate(value: string) {
   )
 }
 
-export function ProfileGrowthChart({ trend, window }: { trend: UserProfileTrendPoint[]; window: ProfileWindow }) {
+export function ProfileGrowthChart({ trend }: { trend: UserProfileTrendPoint[] }) {
   const geometry = useMemo(() => buildTrendGeometry(trend), [trend])
   const [activeIndex, setActiveIndex] = useState(Math.max(0, trend.length - 1))
   const active = geometry.points[Math.min(activeIndex, Math.max(0, geometry.points.length - 1))]
@@ -35,10 +35,9 @@ export function ProfileGrowthChart({ trend, window }: { trend: UserProfileTrendP
     <section className={styles.profilePanel}>
       <header className={styles.panelHeading}>
         <div>
-          <span className={styles.panelEyebrow}>GROWTH</span>
           <h2>个人解题成长趋势</h2>
         </div>
-        <span>{window === '365d' ? '最近一年' : '最近 90 天'}</span>
+        <span>最近一年</span>
       </header>
       {active && geometry.line ? (
         <div className={styles.trendLayout}>

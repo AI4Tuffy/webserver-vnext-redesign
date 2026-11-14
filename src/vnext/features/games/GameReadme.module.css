@@ -1,0 +1,107 @@
+/*
+ * 比赛说明：不加卡片框，直接是正文。有附件时，正文上方是一条附件栏（文件类型徽标 + 文件名 + 下载图标），
+ * 没有附件时直接从正文开始。
+ */
+.readme {
+  max-width: 780px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* 附件栏 */
+.attachments {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--yn-color-border);
+}
+
+.attachmentsLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--yn-color-text-secondary);
+  font-size: var(--yn-font-sm);
+  font-weight: 600;
+}
+
+.attachments ul {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.attachments li {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.attachments a {
+  display: inline-flex;
+  max-width: 100%;
+  min-height: 36px;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 4px;
+  border: 1px solid var(--yn-color-border);
+  border-radius: var(--yn-radius-pill);
+  background: var(--yn-color-surface);
+  color: var(--yn-color-text);
+  transition: border-color var(--yn-motion-fast) ease-in-out;
+}
+
+.attachments a:hover {
+  border-color: var(--yn-color-border-strong);
+}
+
+.attachments a > svg {
+  flex: 0 0 auto;
+  color: var(--yn-color-muted);
+}
+
+.fileBadge {
+  display: grid;
+  min-width: 34px;
+  height: 26px;
+  flex: 0 0 auto;
+  place-items: center;
+  padding: 0 6px;
+  border-radius: var(--yn-radius-pill);
+  background: var(--yn-color-canvas-raised);
+  color: var(--yn-color-text-secondary);
+  font-family: var(--yn-font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.fileName {
+  overflow: hidden;
+  font-size: var(--yn-font-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.readmeBody {
+  min-width: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .attachments a {
+    transition: none;
+  }
+}

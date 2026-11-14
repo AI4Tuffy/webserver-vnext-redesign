@@ -7,18 +7,12 @@ import {
   orderedDimensions,
   profileDateRange,
   radarPolygon,
-  resolveProfileTab,
-  resolveProfileWindow,
 } from './profileDomain'
 
 describe('profile domain', () => {
-  it('normalizes URL state and date windows', () => {
-    expect(resolveProfileTab('games')).toBe('games')
-    expect(resolveProfileTab('invalid')).toBe('overview')
-    expect(resolveProfileWindow('90d')).toBe('90d')
-    expect(resolveProfileWindow('7d')).toBe('365d')
-    expect(profileDateRange('90d', new Date('2026-07-17T09:00:00Z'))).toEqual({
-      from: '2026-04-19',
+  it('covers the latest 365 days', () => {
+    expect(profileDateRange(new Date('2026-07-17T09:00:00Z'))).toEqual({
+      from: '2025-07-18',
       to: '2026-07-17',
     })
   })

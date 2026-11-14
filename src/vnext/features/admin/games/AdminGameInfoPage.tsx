@@ -5,7 +5,7 @@ import { GameInfoModel, GameType } from '@Api'
 import { FileField, SelectField, TextAreaField, TextField, ToggleField } from '../../../shared/FormControls'
 import { ActionButton, InlineFeedback, VNextConfirmDialog } from '../../../shared/Interaction'
 import { MarkdownContent } from '../../../shared/MarkdownContent'
-import { GeometricPoster } from '../../../shared/Primitives'
+import { PosterImage } from '../../../shared/Primitives'
 import { errorMessage } from '../../../shared/errors'
 import { useVNextPageTitle } from '../../../shared/useVNextPageTitle'
 import { gameAdminApi } from '../api'
@@ -257,7 +257,7 @@ export function AdminGameInfoPage() {
 
         <AdminEditorSection description="海报独立上传并立即生效，支持 PNG、JPEG 和 WebP，最大 3 MB。" title="比赛海报">
           <div className={styles.posterGrid}>
-            <div className={styles.poster}><GeometricPoster alt={`${game.title} 海报`} src={game.poster} tone="green" /></div>
+            <div className={styles.poster}><PosterImage alt={`${game.title} 海报`} seed={game.id} src={game.poster} theme="game" tone="green" /></div>
             <div className={styles.stack}>
               <FileField accept="image/png,image/jpeg,image/webp" hint={posterFile?.name} label="选择海报" onChange={setPosterFile} />
               <ActionButton disabled={!posterFile || auxiliaryPending} icon={<Upload size={16} />} onClick={() => uploadPoster()} type="button">上传海报</ActionButton>

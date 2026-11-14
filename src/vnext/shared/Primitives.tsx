@@ -1,6 +1,7 @@
-import { ArrowRight, ImageOff } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { ReactNode, useState } from 'react'
 import { Link } from 'react-router'
+import { posterIcon, posterSeed, PosterTheme, SpotPalette, SpotTile } from './art/spot'
 import styles from './Primitives.module.css'
 
 export function PageHeading({
@@ -8,20 +9,23 @@ export function PageHeading({
   title,
   description,
   actions,
+  illustration,
 }: {
   eyebrow: string
   title: string
   description?: string
   actions?: ReactNode
+  illustration?: ReactNode
 }) {
   return (
-    <header className={styles.pageHeading}>
+    <header className={styles.pageHeading} data-illustrated={illustration ? '' : undefined}>
       <div>
         <span>{eyebrow}</span>
         <h1>{title}</h1>
         {description ? <p>{description}</p> : null}
       </div>
       {actions ? <div className={styles.pageActions}>{actions}</div> : null}
+      {illustration ? <div className={styles.pageIllustration}>{illustration}</div> : null}
     </header>
   )
 }
@@ -94,16 +98,31 @@ export function DataState<T>({
   )
 }
 
-type PosterTone = 'green' | 'blue' | 'orange' | 'neutral'
+type PosterTone = 'green' | 'blue' | 'orange'
 
-const posterToneClasses: Record<PosterTone, string> = {
-  green: styles.posterFallback_green,
-  blue: styles.posterFallback_blue,
-  orange: styles.posterFallback_orange,
-  neutral: styles.posterFallback_neutral,
+const posterTonePalettes: Record<PosterTone, SpotPalette> = {
+  green: 'sage',
+  blue: 'lavender',
+  orange: 'peach',
 }
 
-export function GeometricPoster({ src, alt, tone = 'green' }: { src?: string | null; alt: string; tone?: PosterTone }) {
+/**
+ * 海报图片；没有上传或加载失败时显示手绘图标卡（小组件样式，不是大幅插图）。
+ * seed 决定图标（缺省时由 alt 推出），theme 决定图标组，tone 决定色调。
+ */
+export function PosterImage({
+  src,
+  alt,
+  seed,
+  theme = 'course',
+  tone = 'green',
+}: {
+  src?: string | null
+  alt: string
+  seed?: number | null
+  theme?: PosterTheme
+  tone?: PosterTone
+}) {
   const [failed, setFailed] = useState(false)
 
   if (src && !failed) {
@@ -111,11 +130,8 @@ export function GeometricPoster({ src, alt, tone = 'green' }: { src?: string | n
   }
 
   return (
-    <div className={`${styles.posterFallback} ${posterToneClasses[tone]}`}>
-      <span className={styles.posterPlaneA} />
-      <span className={styles.posterPlaneB} />
-      <span className={styles.posterRoute} />
-      <ImageOff aria-hidden="true" size={18} />
-    </div>
+    <span className={styles.posterArt}>
+      <SpotTile icon={posterIcon(theme, seed ?? posterSeed(alt))} palette={posterTonePalettes[tone]} seed={seed ?? posterSeed(alt)} />
+    </span>
   )
 }

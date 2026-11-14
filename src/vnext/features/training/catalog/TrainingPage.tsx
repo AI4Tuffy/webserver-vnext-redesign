@@ -2,8 +2,9 @@ import { ArrowRight, BookOpenCheck, CalendarCheck, ChevronLeft, ChevronRight, Pl
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { TrainingCourseModel, TrainingCourseStatus } from '@Api'
+import { ModulePageArt } from '../../../shared/art/ModulePageArt'
 import { ActionButton, InlineFeedback } from '../../../shared/Interaction'
-import { DataState, GeometricPoster, PageHeading, SectionHeading, StatusPill } from '../../../shared/Primitives'
+import { DataState, PageHeading, PosterImage, SectionHeading, StatusPill } from '../../../shared/Primitives'
 import { useVNextPageTitle } from '../../../shared/useVNextPageTitle'
 import { useCurrentAccount } from '../../account/useCurrentAccount'
 import { trainingLearnerApi, useTrainingCourses, useTrainingOverview } from '../api/trainingLearnerApi'
@@ -135,6 +136,7 @@ export function TrainingPage() {
           </>
         }
         eyebrow="LEARNING CENTER"
+        illustration={<ModulePageArt kind="training" />}
         title="培训"
       />
 
@@ -156,7 +158,12 @@ export function TrainingPage() {
                 onMouseLeave={() => setFeaturedPaused(false)}
               >
                 <div className={styles.featuredPoster} key={`poster-${featured.id}`}>
-                  <GeometricPoster alt={`${featured.title ?? '课程'}课程海报`} src={featured.coverUrl} tone="blue" />
+                  <PosterImage
+                    alt={`${featured.title ?? '课程'}课程海报`}
+                    seed={featured.id}
+                    src={featured.coverUrl}
+                    tone="blue"
+                  />
                 </div>
                 <div className={styles.featuredBody} key={`body-${featured.id}`}>
                   <div className={styles.featuredLabel}>

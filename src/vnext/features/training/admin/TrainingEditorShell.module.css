@@ -4,20 +4,7 @@
   min-width: 0;
   gap: var(--yn-space-5);
   margin: 0 auto;
-  padding: var(--yn-space-7) var(--yn-page-gutter) 112px;
-}
-
-.backLink {
-  display: inline-flex;
-  width: fit-content;
-  align-items: center;
-  gap: 7px;
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-sm);
-}
-
-.backLink:hover {
-  color: var(--yn-color-brand-strong);
+  padding: clamp(20px, 3vw, 36px) var(--yn-page-gutter) 112px;
 }
 
 .header {

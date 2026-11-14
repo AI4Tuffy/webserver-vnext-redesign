@@ -1,15 +1,18 @@
-import { ArrowLeft, ArrowRight, Clock3, ShieldCheck, Users } from 'lucide-react'
+import { ArrowRight, ShieldCheck } from 'lucide-react'
 import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router'
-import { GameType, NoticeType, ParticipationStatus } from '@Api'
+import { ParticipationStatus } from '@Api'
 import { ActionButton, InlineFeedback, VNextConfirmDialog, VNextDialog } from '../../shared/Interaction'
-import { MarkdownContent } from '../../shared/MarkdownContent'
-import { DataState, GeometricPoster, StatusPill } from '../../shared/Primitives'
+import { DataState, StatusPill } from '../../shared/Primitives'
 import { errorMessage } from '../../shared/errors'
 import { useVNextPageTitle } from '../../shared/useVNextPageTitle'
 import { useCurrentAccount } from '../account/useCurrentAccount'
 import styles from './GameDetailPage.module.css'
-import { gameStatusLabel, gameStatusTone, participationLabel } from './gameCatalog'
+import { GameFacts, GameTimeline } from './GameFacts'
+import { GameNoticeCards } from './GameNoticeCards'
+import { GamePoster } from './GamePosterArt'
+import { GameReadme } from './GameReadme'
+import { gameStatusLabel, gameStatusTone } from './gameCatalog'
 import { gameModulesFor } from './gameModules'
 import { gamePlayerApi, useGameJoinCheck, useGameNotices, usePlayerGame, usePlayerTeams } from './gamePlayerApi'
 
@@ -18,18 +21,6 @@ function gameStatus(start?: number, end?: number) {
   if (start && now < start) return 'upcoming' as const
   if (end && now >= end) return 'ended' as const
   return 'ongoing' as const
-}
-
-function formatFullDate(value?: number) {
-  if (!value) return '未设置'
-  return new Intl.DateTimeFormat('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  }).format(value)
 }
 
 function durationLabel(target?: number, now = Date.now()) {
@@ -42,14 +33,6 @@ function durationLabel(target?: number, now = Date.now()) {
   if (days) return `${days} 天 ${hours} 小时`
   if (hours) return `${hours} 小时 ${minutes} 分`
   return `${minutes} 分 ${String(rest).padStart(2, '0')} 秒`
-}
-
-function typeLabel(type?: GameType) {
-  if (type === GameType.Theory) return '理论考试'
-  if (type === GameType.AWDP) return 'AWDP'
-  if (type === GameType.Penetration) return '渗透演练'
-  if (type === GameType.Mixed) return '混合赛制'
-  return 'CTF'
 }
 
 function participationStatus(status?: ParticipationStatus) {
@@ -65,16 +48,6 @@ function participationStatus(status?: ParticipationStatus) {
     default:
       return { label: '未报名', tone: 'neutral' as const }
   }
-}
-
-function noticeText(type: NoticeType, values: string[]) {
-  const last = values.at(-1) || '比赛状态已更新'
-  if (type === NoticeType.NewChallenge) return `新题目已开放：${last}`
-  if (type === NoticeType.NewHint) return `新提示已发布：${last}`
-  if (type === NoticeType.FirstBlood) return `一血产生：${values.join(' · ')}`
-  if (type === NoticeType.SecondBlood) return `二血产生：${values.join(' · ')}`
-  if (type === NoticeType.ThirdBlood) return `三血产生：${values.join(' · ')}`
-  return last
 }
 
 export function GameDetailPage() {
@@ -189,111 +162,61 @@ export function GameDetailPage() {
 
   const countdownTarget = status === 'upcoming' ? game.start : status === 'ongoing' ? game.end : undefined
   const countdownLabel = status === 'upcoming' ? '距离开始' : '距离结束'
+  const rulesSource = game.content || game.summary || '暂无比赛说明。'
 
   return (
     <div className={styles.page}>
-      <Link className={styles.backLink} to="/games">
-        <ArrowLeft size={16} />
-        返回赛事中心
-      </Link>
-
       {feedback ? (
         <div className={styles.pageFeedback}>
           <InlineFeedback tone={feedback.tone}>{feedback.message}</InlineFeedback>
         </div>
       ) : null}
 
-      <section className={styles.hero}>
-        <div className={styles.poster}>
-          <GeometricPoster
-            alt={`${game.title || '赛事'}海报`}
-            src={game.poster}
-            tone={status === 'upcoming' ? 'blue' : status === 'ended' ? 'neutral' : 'green'}
-          />
-        </div>
-        <div className={styles.heroContent}>
+      {/*
+       * 两栏：左列自上而下是标题、简介、比赛进程、事实栏，以及附件与 README 样式的比赛说明；
+       * 右列是活动卡（海报 + 参赛状态 + 进入按钮），下面接比赛公告。
+       */}
+      <div className={styles.layout}>
+        <header className={styles.head}>
           <div className={styles.badges}>
             <StatusPill tone={gameStatusTone(status)}>{gameStatusLabel(status)}</StatusPill>
-            <StatusPill tone="info">{typeLabel(game.gameType)}</StatusPill>
-            {game.practiceMode ? <StatusPill>赛后练习开放</StatusPill> : null}
           </div>
           <h1>{game.title || `赛事 ${id}`}</h1>
-          <p>{game.summary || '赛事简介尚未填写。'}</p>
-          <div className={styles.heroMeta}>
-            <span>
-              <Clock3 size={16} />
-              {formatFullDate(game.start)} 至 {formatFullDate(game.end)}
-            </span>
-            <span>
-              <Users size={16} />
-              {participationLabel(game.limit)} · {game.teamCount ?? 0} 支队伍
-            </span>
-          </div>
-        </div>
-      </section>
+          <GameTimeline end={game.end} now={now} start={game.start} />
+          <GameFacts game={game} />
+        </header>
 
-      <div className={styles.layout}>
-        <main className={styles.mainContent}>
-          {(accepted || status === 'ended') && modules.length ? (
-            <section className={styles.moduleSection}>
-              <header>
-                <span>COMPETITION MODULES</span>
-                <h2>{status === 'ended' ? '比赛结果与赛后入口' : '进入比赛'}</h2>
-              </header>
-              <div className={styles.moduleGrid}>
-                {modules.map((module) => {
-                  const Icon = module.icon
-                  return (
-                    <Link className={styles.moduleCard} key={module.id} to={`/games/${id}/${module.id}`}>
-                      <span className={styles.moduleIcon}>
-                        <Icon size={20} />
-                      </span>
-                      <span>
-                        <strong>{module.label}</strong>
-                      </span>
-                      <ArrowRight size={17} />
-                    </Link>
-                  )
-                })}
+        <aside className={styles.aside}>
+          <section aria-labelledby="game-participation-title" className={styles.ticket}>
+            <span className={styles.poster}>
+              <GamePoster seed={id} src={game.poster} status={status} title={game.title} />
+            </span>
+            <div className={styles.ticketBody}>
+              <div className={styles.panelHeader}>
+                <h2 id="game-participation-title">参赛状态</h2>
+                <StatusPill tone={participation.tone}>{participation.label}</StatusPill>
               </div>
-            </section>
-          ) : null}
-
-          <section className={styles.rulesHeader}>
-            <span>RULES & BRIEFING</span>
-            <h2>比赛说明</h2>
-          </section>
-          <article className={styles.rules}>
-            <MarkdownContent source={game.content || game.summary || '暂无比赛说明。'} />
-          </article>
-        </main>
-
-        <aside className={styles.sidebar}>
-          <section className={styles.participationPanel}>
-            <div className={styles.panelHeader}>
-              <span>PARTICIPATION</span>
-              <StatusPill tone={participation.tone}>{participation.label}</StatusPill>
+              {game.teamName ? (
+                <div className={styles.currentTeam}>
+                  <ShieldCheck aria-hidden="true" size={18} />
+                  <span>
+                    <small>参赛战队</small>
+                    <strong>{game.teamName}</strong>
+                  </span>
+                </div>
+              ) : null}
+              {countdownTarget && countdownTarget > now ? (
+                <div className={styles.countdown}>
+                  <span>{countdownLabel}</span>
+                  <strong>{durationLabel(countdownTarget, now)}</strong>
+                </div>
+              ) : null}
             </div>
-            {game.teamName ? (
-              <div className={styles.currentTeam}>
-                <ShieldCheck size={18} />
-                <span>
-                  <small>参赛战队</small>
-                  <strong>{game.teamName}</strong>
-                </span>
-              </div>
-            ) : null}
-            {countdownTarget && countdownTarget > now ? (
-              <div className={styles.countdown}>
-                <span>{countdownLabel}</span>
-                <strong>{durationLabel(countdownTarget, now)}</strong>
-              </div>
-            ) : null}
-            <div className={styles.primaryAction}>
+            <div className={styles.ticketStub}>
               {!account.isAuthenticated ? (
                 <Link className={styles.primaryLink} to={`/account/login?returnUrl=/games/${id}`}>
                   登录后报名
-                  <ArrowRight size={16} />
+                  <ArrowRight aria-hidden="true" size={16} />
                 </Link>
               ) : null}
               {account.isAuthenticated &&
@@ -319,31 +242,31 @@ export function GameDetailPage() {
               {game.status === ParticipationStatus.Accepted && status === 'ongoing' && modules[0] ? (
                 <Link className={styles.primaryLink} to={`/games/${id}/${modules[0].id}`}>
                   进入{modules[0].label}
-                  <ArrowRight size={16} />
+                  <ArrowRight aria-hidden="true" size={16} />
                 </Link>
               ) : null}
               {game.status === ParticipationStatus.Suspended ? <p>当前参赛资格已暂停，请联系比赛管理员。</p> : null}
               {status === 'ended' && !accepted ? <p>比赛已结束，可查看公开结果或管理员允许的赛后内容。</p> : null}
+              {status === 'ended' && modules[0] ? (
+                <Link className={styles.primaryLink} to={`/games/${id}/${modules[0].id}`}>
+                  查看{modules[0].label}
+                  <ArrowRight aria-hidden="true" size={16} />
+                </Link>
+              ) : null}
             </div>
           </section>
 
-          <section className={styles.noticePanel}>
-            <header>
-              <span>GAME NOTICE</span>
-              <h2>比赛公告</h2>
-            </header>
-            <div>
-              {(notices ?? []).slice(0, 5).map((notice) => (
-                <article key={notice.id}>
-                  <p>{noticeText(notice.type, notice.values)}</p>
-                  <time>{formatFullDate(notice.time)}</time>
-                </article>
-              ))}
-              {notices && !notices.length ? <p className={styles.emptyNotice}>暂无比赛公告。</p> : null}
-              {!notices ? <p className={styles.emptyNotice}>正在读取公告...</p> : null}
-            </div>
-          </section>
+          {notices?.length ? (
+            <section aria-labelledby="game-notice-title" className={styles.noticePanel}>
+              <h2 id="game-notice-title">比赛公告</h2>
+              <GameNoticeCards idPrefix="game-notice" notices={notices.slice(0, 5)} />
+            </section>
+          ) : null}
         </aside>
+
+        <main className={styles.body}>
+          <GameReadme source={rulesSource} />
+        </main>
       </div>
 
       <VNextDialog

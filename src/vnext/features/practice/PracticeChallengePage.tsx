@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useParams, Link } from 'react-router'
-import { ArrowLeft, Download, FileArchive } from 'lucide-react'
+import { useParams } from 'react-router'
+import { Download, FileArchive } from 'lucide-react'
 import { AnswerResult } from '@Api'
 import { useExerciseDetail, submitFlag } from './api/practiceApi'
 import { useVNextPageTitle } from '../../shared/useVNextPageTitle'
@@ -101,10 +101,6 @@ export function PracticeChallengePage() {
 
   return (
     <div className={styles.page}>
-      <Link to="/practice/browse" className={styles.backLink}>
-        <ArrowLeft size={16} /> 返回题库
-      </Link>
-
       <DataState data={detail} error={error} loading={!detail && !error}>
         {detail && (
           <>

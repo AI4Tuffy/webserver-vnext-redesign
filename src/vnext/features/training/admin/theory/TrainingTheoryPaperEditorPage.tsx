@@ -187,8 +187,6 @@ export function TrainingTheoryPaperEditorPage() {
 
   return (
     <TrainingEditorShell
-      backLabel="返回课后练习"
-      backTo={`/training/courses/${courseNumber}?tab=homework`}
       eyebrow="CHAPTER ASSESSMENT"
       meta={
         <>

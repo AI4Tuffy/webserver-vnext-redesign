@@ -99,7 +99,6 @@ export function ProfileSettings() {
   return (
     <div className={styles.settingsContent}>
       <section className={styles.sectionIntro}>
-        <span>PROFILE</span>
         <h2>个人资料</h2>
         <p>公开资料用于平台内展示；真实姓名、学号和手机号仅用于内部管理。</p>
       </section>

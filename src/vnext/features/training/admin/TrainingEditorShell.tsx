@@ -1,11 +1,7 @@
-import { ArrowLeft } from 'lucide-react'
 import { ReactNode } from 'react'
-import { Link } from 'react-router'
 import styles from './TrainingEditorShell.module.css'
 
 export function TrainingEditorShell({
-  backTo,
-  backLabel,
   eyebrow,
   title,
   description,
@@ -13,8 +9,6 @@ export function TrainingEditorShell({
   actions,
   children,
 }: {
-  backTo: string
-  backLabel: string
   eyebrow: string
   title: string
   description?: string
@@ -24,10 +18,6 @@ export function TrainingEditorShell({
 }) {
   return (
     <div className={styles.page}>
-      <Link className={styles.backLink} to={backTo}>
-        <ArrowLeft size={16} />
-        {backLabel}
-      </Link>
       <header className={styles.header}>
         <div>
           <span>{eyebrow}</span>

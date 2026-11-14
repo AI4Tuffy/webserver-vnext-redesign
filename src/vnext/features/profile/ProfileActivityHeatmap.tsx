@@ -1,5 +1,5 @@
 import type { UserActivityPoint } from './api/userProfileApi'
-import { buildHeatmapCells, type ProfileWindow } from './profileDomain'
+import { buildHeatmapCells } from './profileDomain'
 import styles from './UserProfilePage.module.css'
 
 function activityLabel(date: string, point: UserActivityPoint | null) {
@@ -14,14 +14,12 @@ export function ProfileActivityHeatmap({
   points,
   from,
   to,
-  window,
   loading,
   failed,
 }: {
   points?: UserActivityPoint[]
   from: string
   to: string
-  window: ProfileWindow
   loading: boolean
   failed: boolean
 }) {
@@ -33,10 +31,9 @@ export function ProfileActivityHeatmap({
     <section className={styles.profilePanel}>
       <header className={styles.panelHeading}>
         <div>
-          <span className={styles.panelEyebrow}>ACTIVITY</span>
           <h2>学习与解题活跃度</h2>
         </div>
-        <span>{window === '365d' ? '最近 52 周' : '最近 90 天'}</span>
+        <span>最近 52 周</span>
       </header>
       {loading ? (
         <div className={styles.panelLoading}>正在汇总公开活动...</div>
@@ -45,8 +42,8 @@ export function ProfileActivityHeatmap({
       ) : (
         <>
           <div
-            aria-label={`${window === '365d' ? '最近 52 周' : '最近 90 天'}活动热力图`}
-            className={window === '365d' ? styles.heatmapYear : styles.heatmapQuarter}
+            aria-label="最近 52 周活动热力图"
+            className={styles.heatmapYear}
             role="img"
           >
             {cells.map((cell) =>

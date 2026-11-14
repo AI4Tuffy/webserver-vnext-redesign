@@ -1,39 +1,147 @@
-:root {
+/*
+ * YINYU 解题手账：纸面底色、墨色控件、单一提示色。
+ * [data-yn-band] 是反相色带：日间主题下为深色，夜间主题下为浅色。
+ */
+:root,
+:root[data-yinyu-theme='dark'] [data-yn-band] {
   color-scheme: light;
-  --yn-color-canvas: #f3f6f5;
-  --yn-color-canvas-raised: #edf2ef;
-  --yn-color-surface: #ffffff;
-  --yn-color-surface-muted: #f7f9f8;
-  --yn-color-surface-strong: #17201c;
-  --yn-color-border: #d8e0dc;
-  --yn-color-border-strong: #b7c5be;
-  --yn-color-text: #17201c;
-  --yn-color-text-secondary: #3e4e46;
-  --yn-color-muted: #6b7b73;
-  --yn-color-brand: #15996a;
-  --yn-color-brand-strong: #0d7650;
-  --yn-color-brand-soft: #dff4eb;
-  --yn-color-info: #2e67d1;
-  --yn-color-info-soft: #e4ecfb;
-  --yn-color-warning: #c9683d;
-  --yn-color-warning-soft: #fce9df;
-  --yn-color-danger: #c74444;
-  --yn-color-danger-soft: #f9e5e5;
-  --yn-color-control-strong: #17201c;
-  --yn-color-control-strong-hover: #26332d;
-  --yn-color-control-strong-text: #ffffff;
-  --yn-color-nav-active: #17201c;
-  --yn-color-nav-active-text: #ffffff;
-  --yn-color-header: rgba(250, 252, 251, 0.94);
-  --yn-color-grid: rgba(53, 85, 68, 0.045);
-  --yn-color-game-ongoing: #173a2c;
-  --yn-color-game-upcoming: #294d91;
-  --yn-color-game-ended: #3e4b45;
-  --yn-color-game-visual-text: #edf7f2;
-  --yn-shadow-surface: 0 14px 36px rgba(24, 43, 34, 0.08);
-  --yn-shadow-overlay: 0 24px 64px rgba(14, 24, 19, 0.16);
-  --yn-shadow-focus: 0 0 0 3px rgba(21, 153, 106, 0.2);
+  --yn-color-canvas: #f4f3ee;
+  --yn-color-canvas-raised: #eae8e0;
+  --yn-color-surface: #fbfaf7;
+  --yn-color-surface-muted: #f0eee7;
+  --yn-color-surface-strong: #151514;
+  --yn-color-border: #dad8cf;
+  --yn-color-border-strong: #b4b1a6;
+  --yn-color-text: #151514;
+  --yn-color-text-secondary: #3e3d39;
+  --yn-color-muted: #67655d;
+  --yn-color-dim: #85827a;
+  --yn-color-brand: #2b744c;
+  --yn-color-brand-strong: #1f5a3a;
+  --yn-color-brand-soft: #e1eddf;
+  --yn-color-info: #3263b8;
+  --yn-color-info-soft: #e3eaf7;
+  --yn-color-warning: #8a5600;
+  --yn-color-warning-soft: #f5e8d0;
+  --yn-color-danger: #b3402a;
+  --yn-color-danger-soft: #f6e0da;
+  --yn-color-signal: #8a5600;
+  --yn-color-ink: #151514;
+  --yn-color-on-ink: #f4f3ee;
+  --yn-color-hatch: rgba(21, 21, 20, 0.45);
+  --yn-color-control-strong: #151514;
+  --yn-color-control-strong-hover: #2e2e2a;
+  --yn-color-control-strong-text: #f4f3ee;
+  --yn-color-nav-active: #151514;
+  --yn-color-nav-active-text: #f4f3ee;
+  --yn-color-header: rgba(244, 243, 238, 0.94);
+  --yn-color-grid: rgba(21, 21, 20, 0.045);
+  --yn-color-game-ongoing: #2f8a5b;
+  --yn-color-game-upcoming: #3263b8;
+  --yn-color-game-ended: #3e3d39;
+  --yn-color-game-visual-text: #efe8d8;
+  --yn-shadow-surface: 0 1px 0 rgba(21, 21, 20, 0.04);
+  --yn-shadow-overlay: 0 24px 64px rgba(21, 21, 20, 0.16);
+  --yn-shadow-focus: 0 0 0 3px rgba(21, 21, 20, 0.16);
+  /* 小组件手绘图标（shared/art/spot.tsx）：低饱和图块、浅色不规则徽章、墨线图标与一处同色系点缀。 */
+  --yn-spot-ink: #141413;
+  --yn-spot-peach: #ebc9b7;
+  --yn-spot-peach-badge: #f9ebe5;
+  --yn-spot-peach-accent: #d97757;
+  --yn-spot-lavender: #cbcadb;
+  --yn-spot-lavender-badge: #eeeef4;
+  --yn-spot-lavender-accent: #827dbd;
+  --yn-spot-sage: #bcd1ca;
+  --yn-spot-sage-badge: #e9f0ee;
+  --yn-spot-sage-accent: #629987;
+  --yn-spot-sky: #c9d8e3;
+  --yn-spot-sky-badge: #edf2f6;
+  --yn-spot-sky-accent: #d97757;
+  --yn-spot-sand: #e2ddcd;
+  --yn-spot-sand-badge: #f5f2ea;
+  --yn-spot-sand-accent: #d97757;
+}
+
+:root[data-yinyu-theme='dark'],
+:root:not([data-yinyu-theme='dark']) [data-yn-band] {
+  color-scheme: dark;
+  --yn-color-canvas: #121211;
+  --yn-color-canvas-raised: #191917;
+  --yn-color-surface: #1c1c1a;
+  --yn-color-surface-muted: #242421;
+  --yn-color-surface-strong: #edebe4;
+  --yn-color-border: #2e2d2a;
+  --yn-color-border-strong: #4a4944;
+  --yn-color-text: #edebe4;
+  --yn-color-text-secondary: #c4c2ba;
+  --yn-color-muted: #9c9a91;
+  --yn-color-dim: #6e6c65;
+  --yn-color-brand: #8fd6a6;
+  --yn-color-brand-strong: #b4e6c4;
+  --yn-color-brand-soft: #1d3326;
+  --yn-color-info: #8fb3f0;
+  --yn-color-info-soft: #1d2a44;
+  --yn-color-warning: #f0b44c;
+  --yn-color-warning-soft: #3d2e14;
+  --yn-color-danger: #f2937a;
+  --yn-color-danger-soft: #45231b;
+  --yn-color-signal: #f0b44c;
+  --yn-color-ink: #edebe4;
+  --yn-color-on-ink: #121211;
+  --yn-color-hatch: rgba(237, 235, 228, 0.5);
+  --yn-color-control-strong: #edebe4;
+  --yn-color-control-strong-hover: #d6d4cc;
+  --yn-color-control-strong-text: #121211;
+  --yn-color-nav-active: #edebe4;
+  --yn-color-nav-active-text: #121211;
+  --yn-color-header: rgba(18, 18, 17, 0.94);
+  --yn-color-grid: rgba(255, 255, 255, 0.035);
+  --yn-color-game-ongoing: #2f8a5b;
+  --yn-color-game-upcoming: #3263b8;
+  --yn-color-game-ended: #2e2d2a;
+  --yn-color-game-visual-text: #efe8d8;
+  --yn-shadow-surface: 0 1px 0 rgba(0, 0, 0, 0.3);
+  --yn-shadow-overlay: 0 28px 72px rgba(0, 0, 0, 0.42);
+  --yn-shadow-focus: 0 0 0 3px rgba(237, 235, 228, 0.22);
+  --yn-spot-ink: #141413;
+  --yn-spot-peach: #5a4036;
+  --yn-spot-peach-badge: #e6d6ce;
+  --yn-spot-peach-accent: #d97757;
+  --yn-spot-lavender: #3f3d55;
+  --yn-spot-lavender-badge: #dcdbe7;
+  --yn-spot-lavender-accent: #827dbd;
+  --yn-spot-sage: #2f4740;
+  --yn-spot-sage-badge: #d6e2de;
+  --yn-spot-sage-accent: #629987;
+  --yn-spot-sky: #34414c;
+  --yn-spot-sky-badge: #d9e1e8;
+  --yn-spot-sky-accent: #d97757;
+  --yn-spot-sand: #3d3a33;
+  --yn-spot-sand-badge: #e2ded5;
+  --yn-spot-sand-accent: #d97757;
+}
+
+[data-yn-band] {
+  background: var(--yn-color-canvas);
+  color: var(--yn-color-text);
+}
+
+:root {
+  /* 拼贴插图使用的固定印刷色，不随主题变化。 */
+  --yn-art-ink: #1b1b19;
+  --yn-art-paper: #efe8d8;
+  --yn-art-kraft: #d9c29c;
+  --yn-art-blue: #7fa4e2;
+  --yn-art-green: #2f8a5b;
+  --yn-art-pink: #eba7b7;
+  --yn-art-ochre: #e4ae45;
+  --yn-art-red: #d3472c;
+  --yn-art-term-green: #8fd6a6;
+  --yn-art-term-red: #f2937a;
   --yn-font-sans: Lexend, 'Microsoft YaHei', 'PingFang SC', system-ui, sans-serif;
+  --yn-font-serif: Newsreader, 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --yn-font-display: Archivo, Lexend, 'Microsoft YaHei', sans-serif;
+  --yn-font-hand: Caveat, 'Comic Sans MS', cursive;
   --yn-font-mono: 'JetBrains Mono', 'IBM Plex Mono', Consolas, monospace;
   --yn-font-xs: 11px;
   --yn-font-sm: 12px;
@@ -49,63 +157,25 @@
   --yn-space-6: 24px;
   --yn-space-7: 32px;
   --yn-space-8: 40px;
-  --yn-radius-sm: 4px;
-  --yn-radius-md: 6px;
-  --yn-radius-lg: 8px;
+  --yn-radius-sm: 6px;
+  --yn-radius-md: 10px;
+  --yn-radius-lg: 14px;
+  --yn-radius-pill: 999px;
   --yn-motion-fast: 160ms;
   --yn-motion-normal: 240ms;
   --yn-motion-drawer: 360ms;
   --yn-motion-expressive: 420ms;
   --yn-ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --yn-ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --yn-rail-width: 72px;
-  --yn-context-height: 64px;
-  --yn-page-max-width: 1520px;
-  --yn-page-gutter: clamp(24px, 3vw, 48px);
+  --yn-rail-width: 0px;
+  --yn-context-height: 72px;
+  --yn-page-max-width: 1440px;
+  --yn-page-gutter: clamp(16px, 4vw, 64px);
   letter-spacing: 0;
 }
 
-:root[data-yinyu-theme='dark'] {
-  color-scheme: dark;
-  --yn-color-canvas: #080a09;
-  --yn-color-canvas-raised: #0f1210;
-  --yn-color-surface: #151816;
-  --yn-color-surface-muted: #1b1f1c;
-  --yn-color-surface-strong: #f0f3f1;
-  --yn-color-border: #2a2f2c;
-  --yn-color-border-strong: #454c48;
-  --yn-color-text: #f0f3f1;
-  --yn-color-text-secondary: #c7ceca;
-  --yn-color-muted: #929a96;
-  --yn-color-brand: #59e6b0;
-  --yn-color-brand-strong: #82f0c7;
-  --yn-color-brand-soft: #123528;
-  --yn-color-info: #7ba3f5;
-  --yn-color-info-soft: #1d3155;
-  --yn-color-warning: #f19569;
-  --yn-color-warning-soft: #4a2b20;
-  --yn-color-danger: #ff8585;
-  --yn-color-danger-soft: #4d2525;
-  --yn-color-control-strong: #23875f;
-  --yn-color-control-strong-hover: #2da675;
-  --yn-color-control-strong-text: #f4fff9;
-  --yn-color-nav-active: #17241f;
-  --yn-color-nav-active-text: #68e8b7;
-  --yn-color-header: rgba(8, 10, 9, 0.94);
-  --yn-color-grid: rgba(255, 255, 255, 0.035);
-  --yn-color-game-ongoing: #245a43;
-  --yn-color-game-upcoming: #294d91;
-  --yn-color-game-ended: #2b302d;
-  --yn-color-game-visual-text: #edf7f2;
-  --yn-shadow-surface: 0 18px 48px rgba(0, 0, 0, 0.24);
-  --yn-shadow-overlay: 0 28px 72px rgba(0, 0, 0, 0.42);
-  --yn-shadow-focus: 0 0 0 3px rgba(89, 230, 176, 0.24);
-}
-
-@media (max-width: 820px) {
+@media (max-width: 1000px) {
   :root {
-    --yn-rail-width: 0px;
-    --yn-context-height: 56px;
-    --yn-page-gutter: 18px;
+    --yn-context-height: 112px;
   }
 }

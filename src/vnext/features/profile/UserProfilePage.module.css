@@ -1,89 +1,91 @@
+/*
+ * 个人档案：沿用首页设计语言——衬线大标题、纸面卡片（浅底、20px 圆角）、
+ * 胶囊按钮与切换、墨色数据图形，提示色只用于强调。
+ */
 .page,
 .statePage {
-  width: min(100%, 1320px);
+  width: 100%;
+  max-width: var(--yn-page-max-width);
   margin: 0 auto;
-  padding: clamp(28px, 4vw, 54px) clamp(20px, 4vw, 54px) 72px;
+  padding: clamp(20px, 3vw, 36px) var(--yn-page-gutter) clamp(56px, 7vw, 96px);
 }
 
 .statePage {
   min-height: calc(100vh - var(--yn-context-height));
 }
 
+/* 卡片共用外观 */
+.profilePanel,
+.factsRail section {
+  border: 1px solid color-mix(in srgb, var(--yn-color-border) 70%, transparent);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--yn-color-surface) 60%, var(--yn-color-canvas));
+}
+
+/* 身份区：手账页——贴着纸胶带的拍立得头像、衬线大名字，右侧手账拼贴插图 */
 .identityHero {
-  position: relative;
   display: grid;
-  min-height: 230px;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) clamp(320px, 34vw, 500px);
   align-items: center;
-  gap: clamp(22px, 3vw, 42px);
-  overflow: hidden;
-  padding: clamp(30px, 4.5vw, 58px) clamp(24px, 4vw, 52px);
-  border-block: 1px solid var(--yn-color-border-strong);
-  background:
-    linear-gradient(112deg, var(--yn-color-surface) 0 58%, transparent 58%),
-    var(--yn-color-surface-muted);
+  gap: clamp(20px, 3vw, 44px);
+  padding-block: 0 clamp(24px, 3vw, 40px);
 }
 
-.identityPlane,
-.identityRoute {
-  position: absolute;
-  right: 4%;
-  display: block;
-  pointer-events: none;
-}
-
-.identityPlane {
-  width: 34%;
-  height: 58%;
-  border: 1px solid var(--yn-color-border-strong);
-  opacity: 0.55;
-  transform: skewX(-18deg) rotate(-5deg);
-}
-
-.identityRoute {
-  width: 43%;
-  height: 1px;
-  background: var(--yn-color-brand);
-  opacity: 0.55;
-  transform: rotate(-21deg);
-  transform-origin: right;
-  animation: identity-route-enter 680ms var(--yn-ease-standard) both;
-}
-
-.identityHero[data-variant='1'] .identityPlane {
-  transform: skewX(14deg) rotate(7deg);
-}
-
-.identityHero[data-variant='2'] .identityRoute {
-  transform: rotate(17deg);
-}
-
+/* 拍立得相纸：纸色边框、底边留白、轻微倾斜，顶端一段纸胶带 */
 .profileAvatar {
   position: relative;
-  z-index: 1;
-  display: grid;
-  width: clamp(88px, 10vw, 124px);
-  height: clamp(88px, 10vw, 124px);
-  place-items: center;
-  overflow: hidden;
-  border: 1px solid var(--yn-color-border-strong);
-  border-radius: 50%;
-  background: var(--yn-color-control-strong);
-  color: var(--yn-color-control-strong-text);
-  font-size: clamp(24px, 3vw, 34px);
-  font-weight: 800;
+  display: block;
+  align-self: start;
+  margin-top: clamp(12px, 2vw, 28px);
+  padding: 8px 8px 26px;
+  border-radius: 3px;
+  background: var(--yn-art-paper);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 12%),
+    0 8px 18px -10px rgb(0 0 0 / 35%);
+  transform: rotate(-4deg);
 }
 
-.profileAvatar img {
+.profileAvatar::before {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  width: 62px;
+  height: 20px;
+  background: color-mix(in srgb, var(--yn-art-ochre) 80%, transparent);
+  clip-path: polygon(0 0, 4px 25%, 0 50%, 4px 75%, 0 100%, 100% 100%, calc(100% - 4px) 75%, 100% 50%, calc(100% - 4px) 25%, 100% 0);
+  content: '';
+  transform: translateX(-50%) rotate(6deg);
+}
+
+.avatarFace {
+  display: grid;
+  width: clamp(76px, 8vw, 108px);
+  aspect-ratio: 1;
+  place-items: center;
+  overflow: hidden;
+  background: var(--yn-art-ink);
+  color: var(--yn-art-paper);
+  font-family: var(--yn-font-display);
+  font-size: clamp(24px, 2.6vw, 34px);
+  font-weight: 700;
+}
+
+.avatarFace img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
 .identityCopy {
-  position: relative;
-  z-index: 1;
   min-width: 0;
+}
+
+.identityArt {
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--yn-radius-lg);
+  background: var(--yn-art-kraft);
 }
 
 .identityTags {
@@ -96,33 +98,42 @@
 .identityTags > span,
 .identityTags > a {
   display: inline-flex;
-  min-height: 27px;
+  min-height: 28px;
   align-items: center;
   gap: 6px;
-  padding: 3px 8px;
+  padding: 0 12px;
   border: 1px solid var(--yn-color-border);
-  border-radius: var(--yn-radius-sm);
+  border-radius: var(--yn-radius-pill);
   background: var(--yn-color-canvas-raised);
   color: var(--yn-color-text-secondary);
-  font-size: var(--yn-font-xs);
-  font-weight: 650;
+  font-size: var(--yn-font-sm);
+  transition: background-color var(--yn-motion-fast) ease-in-out;
+}
+
+.identityTags > a:hover {
+  background: var(--yn-color-border);
+  color: var(--yn-color-text);
 }
 
 .identityCopy h1 {
-  margin: var(--yn-space-3) 0 0;
-  overflow-wrap: anywhere;
-  font-size: clamp(34px, 5vw, 60px);
+  margin: 14px 0 0;
+  font-family: var(--yn-font-serif);
+  font-size: clamp(40px, 5.6vw, 80px);
+  font-weight: 400;
   line-height: 1.05;
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
 }
 
 .identityCopy p {
   display: -webkit-box;
-  max-width: 680px;
-  margin: var(--yn-space-4) 0 0;
+  max-width: 30em;
+  margin: 12px 0 0;
   overflow: hidden;
   color: var(--yn-color-text-secondary);
-  font-size: var(--yn-font-md);
-  line-height: 1.75;
+  font-family: var(--yn-font-serif);
+  font-size: clamp(17px, 1.7vw, 22px);
+  line-height: 1.45;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
 }
@@ -131,166 +142,53 @@
   display: inline-flex;
   align-items: center;
   gap: var(--yn-space-2);
-  margin-top: var(--yn-space-4);
+  margin-top: 12px;
   color: var(--yn-color-muted);
   font-size: var(--yn-font-sm);
 }
 
 .editProfile {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  min-height: 40px;
+  display: flex;
+  width: fit-content;
+  min-height: 44px;
   align-items: center;
   gap: var(--yn-space-2);
-  align-self: start;
-  padding: 0 var(--yn-space-4);
+  margin-top: 20px;
+  padding: 0 20px;
   border: 1px solid var(--yn-color-border-strong);
-  border-radius: var(--yn-radius-md);
-  background: var(--yn-color-surface);
+  border-radius: var(--yn-radius-pill);
   color: var(--yn-color-text);
-  font-size: var(--yn-font-sm);
-  font-weight: 650;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background-color var(--yn-motion-fast) ease-in-out,
+    border-color var(--yn-motion-fast) ease-in-out;
 }
 
 .editProfile:hover {
-  background: var(--yn-color-control-strong);
-  color: var(--yn-color-control-strong-text);
-}
-
-.metricStrip {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  border-bottom: 1px solid var(--yn-color-border-strong);
-}
-
-.metricStrip > div {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: var(--yn-space-3);
-  padding: 20px clamp(12px, 1.6vw, 22px);
-  border-right: 1px solid var(--yn-color-border);
-}
-
-.metricStrip > div:last-child {
-  border-right: 0;
-}
-
-.metricStrip svg {
-  flex: 0 0 auto;
-  color: var(--yn-color-brand);
-}
-
-.metricStrip span {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.metricStrip strong {
-  font-family: var(--yn-font-mono);
-  font-size: clamp(18px, 2vw, 25px);
-  line-height: 1.1;
-}
-
-.metricStrip small {
-  overflow: hidden;
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-xs);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.profileToolbar {
-  display: flex;
-  min-height: 66px;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--yn-space-5);
-  margin-top: var(--yn-space-7);
-  border-bottom: 1px solid var(--yn-color-border-strong);
-}
-
-.profileTabs,
-.windowControl {
-  display: flex;
-  align-items: center;
-}
-
-.profileTabs {
-  align-self: stretch;
-  gap: clamp(18px, 3vw, 34px);
-}
-
-.profileTab,
-.profileTabActive {
-  position: relative;
-  border: 0;
-  background: transparent;
-  color: var(--yn-color-muted);
-  cursor: pointer;
-  font-size: var(--yn-font-md);
-  font-weight: 650;
-}
-
-.profileTab:hover,
-.profileTabActive {
-  color: var(--yn-color-text);
-}
-
-.profileTabActive::after {
-  position: absolute;
-  inset: auto 0 -23px;
-  height: 2px;
-  background: var(--yn-color-brand);
-  content: '';
-}
-
-.windowControl {
-  gap: 3px;
-  padding: 3px;
-  border: 1px solid var(--yn-color-border);
-  border-radius: var(--yn-radius-md);
+  border-color: var(--yn-color-text);
   background: var(--yn-color-surface-muted);
 }
 
-.windowButton,
-.windowActive {
-  min-height: 32px;
-  padding: 0 11px;
-  border: 0;
-  border-radius: var(--yn-radius-sm);
-  background: transparent;
-  color: var(--yn-color-muted);
-  cursor: pointer;
-  font-size: var(--yn-font-xs);
-}
-
-.windowActive {
-  background: var(--yn-color-control-strong);
-  color: var(--yn-color-control-strong-text);
-}
-
+/* 统计卡片：墨色图标块、衬线数字 */
+/* 内容区：主栏卡片 + 右侧卡片栏 */
 .contentGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 232px;
+  grid-template-columns: minmax(0, 1fr) 280px;
   align-items: start;
-  gap: clamp(32px, 4vw, 52px);
-  margin-top: var(--yn-space-7);
+  gap: clamp(20px, 2.4vw, 32px);
 }
 
 .profileMain {
   display: grid;
   min-width: 0;
-  gap: clamp(34px, 5vw, 58px);
+  gap: clamp(20px, 2.4vw, 32px);
 }
 
 .profilePanel {
   min-width: 0;
-  padding-top: var(--yn-space-5);
-  border-top: 1px solid var(--yn-color-border);
+  padding: clamp(20px, 2.4vw, 32px);
 }
 
 .panelHeading {
@@ -298,27 +196,28 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: var(--yn-space-4);
-  margin-bottom: var(--yn-space-5);
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--yn-color-border);
 }
 
 .panelHeading > div {
   min-width: 0;
 }
 
-.panelEyebrow {
-  color: var(--yn-color-muted);
-  font-family: var(--yn-font-mono);
-  font-size: var(--yn-font-xs);
-}
-
+/* 模块标题：与首页一致的衬线字体 */
 .panelHeading h2 {
-  margin: 5px 0 0;
-  font-size: var(--yn-font-xl);
+  margin: 0;
+  font-family: var(--yn-font-serif);
+  font-size: clamp(22px, 2vw, 28px);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .panelHeading > span {
   color: var(--yn-color-muted);
-  font-size: var(--yn-font-xs);
+  font-size: var(--yn-font-sm);
   text-align: right;
 }
 
@@ -331,21 +230,14 @@
   text-align: center;
 }
 
-.heatmapYear,
-.heatmapQuarter {
+/* 活跃度热力图：墨色分级 */
+.heatmapYear {
   display: grid;
   grid-auto-flow: column;
-  grid-template-rows: repeat(7, minmax(0, 1fr));
-  gap: clamp(1px, 0.25vw, 3px);
-  width: 100%;
-}
-
-.heatmapYear {
   grid-template-columns: repeat(53, minmax(3px, 1fr));
-}
-
-.heatmapQuarter {
-  grid-template-columns: repeat(14, minmax(8px, 1fr));
+  grid-template-rows: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+  width: 100%;
 }
 
 .heatCell,
@@ -356,9 +248,9 @@
   border-radius: 2px;
 }
 
-.heatCell {
-  border: 1px solid color-mix(in srgb, var(--yn-color-border) 70%, transparent);
-  background: var(--yn-color-canvas-raised);
+.heatCell,
+.heatLegend i {
+  background: var(--cell, color-mix(in srgb, var(--yn-color-text) 8%, transparent));
 }
 
 .heatCell:focus-visible {
@@ -367,24 +259,20 @@
   outline-offset: 1px;
 }
 
-.heatCell[data-level='1'],
-.heatLegend i[data-level='1'] {
-  background: color-mix(in srgb, var(--yn-color-brand) 24%, var(--yn-color-canvas-raised));
+.page [data-level='1'] {
+  --cell: color-mix(in srgb, var(--yn-color-text) 24%, transparent);
 }
 
-.heatCell[data-level='2'],
-.heatLegend i[data-level='2'] {
-  background: color-mix(in srgb, var(--yn-color-brand) 44%, var(--yn-color-canvas-raised));
+.page [data-level='2'] {
+  --cell: color-mix(in srgb, var(--yn-color-text) 46%, transparent);
 }
 
-.heatCell[data-level='3'],
-.heatLegend i[data-level='3'] {
-  background: color-mix(in srgb, var(--yn-color-brand) 70%, var(--yn-color-canvas-raised));
+.page [data-level='3'] {
+  --cell: color-mix(in srgb, var(--yn-color-text) 70%, transparent);
 }
 
-.heatCell[data-level='4'],
-.heatLegend i[data-level='4'] {
-  background: var(--yn-color-brand);
+.page [data-level='4'] {
+  --cell: var(--yn-color-text);
 }
 
 .heatmapFooter {
@@ -394,7 +282,7 @@
   gap: var(--yn-space-4);
   margin-top: var(--yn-space-4);
   color: var(--yn-color-muted);
-  font-size: var(--yn-font-xs);
+  font-size: var(--yn-font-sm);
 }
 
 .heatmapFooter > div:first-child,
@@ -404,18 +292,22 @@
   gap: var(--yn-space-2);
 }
 
+.heatLegend {
+  gap: 3px;
+}
+
 .heatmapFooter strong {
   color: var(--yn-color-text);
-  font-family: var(--yn-font-mono);
-  font-size: var(--yn-font-md);
+  font-family: var(--yn-font-serif);
+  font-size: 20px;
+  font-weight: 400;
 }
 
 .heatLegend i {
-  width: 11px;
-  border: 1px solid var(--yn-color-border);
-  background: var(--yn-color-canvas-raised);
+  width: 10px;
 }
 
+/* 分类解题画像：墨色雷达，提示色标出当前方向 */
 .skillLayout {
   display: grid;
   grid-template-columns: minmax(240px, 0.8fr) minmax(390px, 1.2fr);
@@ -446,7 +338,8 @@
 }
 
 .radar g[data-active] .radarAxis {
-  stroke: var(--yn-color-brand);
+  opacity: 1;
+  stroke: var(--yn-color-signal);
   stroke-width: 2;
 }
 
@@ -461,8 +354,9 @@
 }
 
 .radarValue {
-  fill: color-mix(in srgb, var(--yn-color-brand) 20%, transparent);
-  stroke: var(--yn-color-brand);
+  fill: color-mix(in srgb, var(--yn-color-text) 12%, transparent);
+  stroke: var(--yn-color-text);
+  stroke-linejoin: round;
   stroke-width: 2;
   transform-box: fill-box;
   transform-origin: center;
@@ -471,7 +365,6 @@
 
 .dimensionTable {
   min-width: 0;
-  border-top: 1px solid var(--yn-color-border);
 }
 
 .dimensionHeader,
@@ -481,13 +374,21 @@
   align-items: center;
   gap: 8px;
   min-height: 48px;
+  padding-inline: 8px;
   border-bottom: 1px solid var(--yn-color-border);
-  font-size: var(--yn-font-xs);
+  font-size: var(--yn-font-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.dimensionRow {
+  border-radius: 10px;
+  transition: background-color var(--yn-motion-fast) ease-in-out;
 }
 
 .dimensionHeader {
   min-height: 36px;
   color: var(--yn-color-muted);
+  font-size: var(--yn-font-xs);
 }
 
 .dimensionHeader span:not(:first-child),
@@ -496,7 +397,7 @@
 }
 
 .dimensionRow[data-active] {
-  background: var(--yn-color-surface-muted);
+  background: color-mix(in srgb, var(--yn-color-text) 6%, transparent);
 }
 
 .dimensionRow button {
@@ -505,7 +406,7 @@
   grid-template-columns: 1fr auto;
   align-items: center;
   gap: 5px;
-  padding: 5px 4px;
+  padding: 5px 0;
   border: 0;
   background: transparent;
   color: var(--yn-color-text);
@@ -515,11 +416,12 @@
 
 .dimensionRow button strong {
   overflow: hidden;
+  font-weight: 650;
   text-overflow: ellipsis;
 }
 
 .dimensionRow button small {
-  color: var(--yn-color-warning);
+  color: var(--yn-color-signal);
   font-size: 10px;
   white-space: nowrap;
 }
@@ -528,9 +430,10 @@
   display: none;
 }
 
+/* 成长趋势：墨色折线，衬线读数 */
 .trendLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 150px;
+  grid-template-columns: minmax(0, 1fr) 160px;
   align-items: center;
   gap: var(--yn-space-5);
 }
@@ -541,18 +444,24 @@
   overflow: visible;
 }
 
+.trendChart:focus-visible {
+  border-radius: 8px;
+  outline: 2px solid var(--yn-color-text);
+  outline-offset: 4px;
+}
+
 .trendGrid {
   stroke: var(--yn-color-border);
   stroke-width: 1;
 }
 
 .trendArea {
-  fill: color-mix(in srgb, var(--yn-color-brand) 10%, transparent);
+  fill: color-mix(in srgb, var(--yn-color-text) 6%, transparent);
 }
 
 .trendLine {
   fill: none;
-  stroke: var(--yn-color-brand);
+  stroke: var(--yn-color-text);
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 2.5;
@@ -566,8 +475,8 @@
 }
 
 .trendDot {
-  fill: var(--yn-color-surface);
-  stroke: var(--yn-color-brand);
+  fill: var(--yn-color-signal);
+  stroke: var(--yn-color-surface);
   stroke-width: 3;
 }
 
@@ -582,80 +491,83 @@
 .trendReading span,
 .trendReading small {
   color: var(--yn-color-muted);
-  font-size: var(--yn-font-xs);
+  font-size: var(--yn-font-sm);
 }
 
 .trendReading strong {
   margin-top: var(--yn-space-3);
-  font-family: var(--yn-font-mono);
-  font-size: 38px;
+  font-family: var(--yn-font-serif);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1;
 }
 
 .trendReading em {
   margin-top: var(--yn-space-3);
-  color: var(--yn-color-brand-strong);
-  font-size: var(--yn-font-xs);
+  color: var(--yn-color-signal);
+  font-size: var(--yn-font-sm);
   font-style: normal;
 }
 
+/* 经历：与首页项目行一致的图标块、标题与说明 */
 .historyTimeline {
-  position: relative;
   display: grid;
-}
-
-.historyTimeline::before {
-  position: absolute;
-  inset: 8px auto 8px 17px;
-  width: 1px;
-  background: var(--yn-color-border-strong);
-  content: '';
 }
 
 .historyItem {
-  position: relative;
   display: grid;
   min-width: 0;
   grid-template-columns: 36px minmax(0, 1fr);
-  gap: var(--yn-space-4);
-  padding: 11px 12px;
-  border-radius: var(--yn-radius-md);
+  align-items: center;
+  gap: 14px;
+  padding: 12px 8px;
+  border-radius: 12px;
   color: var(--yn-color-text);
+  transition: background-color var(--yn-motion-fast) ease-in-out;
+}
+
+.historyItem + .historyItem {
+  border-top: 1px solid var(--yn-color-border);
 }
 
 a.historyItem:hover {
-  background: var(--yn-color-surface-muted);
+  background: color-mix(in srgb, var(--yn-color-text) 5%, transparent);
 }
 
 .historyIcon {
-  z-index: 1;
   display: grid;
   width: 36px;
   height: 36px;
   place-items: center;
-  border: 1px solid var(--yn-color-border-strong);
-  border-radius: 50%;
-  background: var(--yn-color-surface);
-  color: var(--yn-color-brand);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--yn-color-text) 7%, transparent);
+  color: var(--yn-color-text-secondary);
 }
 
 .historyCopy {
   display: grid;
   min-width: 0;
-  gap: 3px;
+  gap: 2px;
 }
 
 .historyCopy time,
 .historyCopy small {
   overflow: hidden;
   color: var(--yn-color-muted);
-  font-size: var(--yn-font-xs);
+  font-size: var(--yn-font-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.historyCopy time {
+  font-family: var(--yn-font-mono);
+  font-size: var(--yn-font-xs);
+}
+
 .historyCopy strong {
+  font-size: 15px;
+  font-weight: 650;
   overflow-wrap: anywhere;
-  font-size: var(--yn-font-md);
 }
 
 .historyMore {
@@ -664,66 +576,76 @@ a.historyItem:hover {
   margin-top: var(--yn-space-4);
 }
 
+/* 右侧卡片栏 */
 .factsRail {
   position: sticky;
   top: calc(var(--yn-context-height) + var(--yn-space-5));
   display: grid;
-  gap: var(--yn-space-4);
+  gap: 16px;
 }
 
 .factsRail section {
-  padding: 4px 0 var(--yn-space-4) var(--yn-space-4);
-  border-bottom: 1px solid var(--yn-color-border);
-  border-left: 1px solid var(--yn-color-border-strong);
-}
-
-.factsRail section:last-child {
-  border-bottom: 0;
+  padding: 20px 22px;
 }
 
 .factsRail h2 {
-  margin: 3px 0 0;
-  font-size: var(--yn-font-md);
-  line-height: 1.35;
+  margin: 0;
+  font-family: var(--yn-font-serif);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.3;
 }
 
 .factList,
 .privateFacts {
   display: grid;
-  gap: var(--yn-space-3);
-  margin: var(--yn-space-4) 0 0;
+  gap: 12px;
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--yn-color-border);
 }
 
 .factList > div {
-  display: grid;
-  gap: 5px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .factList dt,
 .privateFacts dt {
   color: var(--yn-color-muted);
-  font-size: var(--yn-font-xs);
+  font-size: var(--yn-font-sm);
 }
 
 .factList dd,
 .privateFacts dd {
   display: flex;
   align-items: center;
-  gap: var(--yn-space-2);
+  gap: 6px;
   margin: 0;
   overflow-wrap: anywhere;
-  color: var(--yn-color-text-secondary);
-  font-size: var(--yn-font-xs);
+  color: var(--yn-color-text);
+  font-size: var(--yn-font-md);
+  text-align: right;
+}
+
+.factList a {
+  text-decoration: underline;
+  text-decoration-color: var(--yn-color-border-strong);
+  text-underline-offset: 3px;
 }
 
 .factList a:hover {
-  color: var(--yn-color-brand);
+  text-decoration-color: currentColor;
 }
 
 .taughtCourses {
   display: grid;
-  gap: 4px;
-  margin-top: var(--yn-space-3);
+  gap: 2px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--yn-color-border);
 }
 
 .taughtCourses a {
@@ -731,15 +653,16 @@ a.historyItem:hover {
   min-width: 0;
   grid-template-columns: 20px minmax(0, 1fr);
   align-items: center;
-  gap: var(--yn-space-2);
-  padding: 6px 0;
-  border-radius: var(--yn-radius-sm);
+  gap: 10px;
+  padding: 8px;
+  border-radius: 10px;
   color: var(--yn-color-text-secondary);
-  font-size: var(--yn-font-xs);
+  font-size: var(--yn-font-md);
+  transition: background-color var(--yn-motion-fast) ease-in-out;
 }
 
 .taughtCourses a:hover {
-  background: var(--yn-color-canvas-raised);
+  background: color-mix(in srgb, var(--yn-color-text) 6%, transparent);
   color: var(--yn-color-text);
 }
 
@@ -761,22 +684,18 @@ a.historyItem:hover {
 }
 
 .privateFacts dd {
-  font-family: var(--yn-font-mono);
-  font-size: var(--yn-font-md);
+  justify-content: flex-start;
+  font-family: var(--yn-font-serif);
+  font-size: 26px;
+  line-height: 1;
+  text-align: left;
 }
 
 .factsRail section > small {
   display: block;
-  margin-top: var(--yn-space-4);
+  margin-top: 14px;
   color: var(--yn-color-muted);
   font-size: var(--yn-font-xs);
-}
-
-@keyframes identity-route-enter {
-  from {
-    opacity: 0;
-    transform: scaleX(0) rotate(-21deg);
-  }
 }
 
 @keyframes radar-enter {
@@ -787,21 +706,8 @@ a.historyItem:hover {
 }
 
 @media (max-width: 1100px) {
-  .metricStrip {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .metricStrip > div:nth-child(3) {
-    border-right: 0;
-  }
-
-  .metricStrip > div:nth-child(-n + 3) {
-    border-bottom: 1px solid var(--yn-color-border);
-  }
-
   .contentGrid {
-    grid-template-columns: minmax(0, 1fr) 220px;
-    gap: var(--yn-space-6);
+    grid-template-columns: minmax(0, 1fr) 240px;
   }
 
   .skillLayout {
@@ -809,15 +715,18 @@ a.historyItem:hover {
   }
 }
 
-@media (max-width: 860px) {
+/* 插图只在宽屏显示，窄屏保留拍立得头像 */
+@media (max-width: 1000px) {
   .identityHero {
     grid-template-columns: auto minmax(0, 1fr);
   }
 
-  .editProfile {
-    grid-column: 2;
-    justify-self: start;
+  .identityArt {
+    display: none;
   }
+}
+
+@media (max-width: 860px) {
 
   .contentGrid {
     grid-template-columns: minmax(0, 1fr);
@@ -845,74 +754,14 @@ a.historyItem:hover {
     width: 100%;
     height: 5px;
     grid-column: 1 / -1;
-    accent-color: var(--yn-color-brand);
+    accent-color: var(--yn-color-text);
   }
 }
 
 @media (max-width: 620px) {
-  .page,
-  .statePage {
-    padding-inline: 16px;
-  }
-
   .identityHero {
     grid-template-columns: 1fr;
     justify-items: start;
-  }
-
-  .profileAvatar {
-    width: 82px;
-    height: 82px;
-  }
-
-  .identityCopy h1 {
-    font-size: 34px;
-  }
-
-  .editProfile {
-    grid-column: 1;
-  }
-
-  .identityPlane,
-  .identityRoute {
-    opacity: 0.24;
-  }
-
-  .metricStrip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .metricStrip > div:nth-child(3) {
-    border-right: 1px solid var(--yn-color-border);
-  }
-
-  .metricStrip > div:nth-child(even) {
-    border-right: 0;
-  }
-
-  .metricStrip > div:nth-child(-n + 4) {
-    border-bottom: 1px solid var(--yn-color-border);
-  }
-
-  .profileToolbar {
-    min-height: 0;
-    align-items: stretch;
-    flex-direction: column;
-    padding-bottom: var(--yn-space-3);
-  }
-
-  .profileTabs {
-    min-height: 48px;
-    justify-content: space-between;
-    gap: 10px;
-  }
-
-  .profileTabActive::after {
-    bottom: -14px;
-  }
-
-  .windowControl {
-    align-self: flex-start;
   }
 
   .panelHeading {
@@ -971,8 +820,15 @@ a.historyItem:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .identityRoute,
   .radarValue {
     animation: none;
+  }
+
+  .identityTags > a,
+  .editProfile,
+  .dimensionRow,
+  .historyItem,
+  .taughtCourses a {
+    transition: none;
   }
 }

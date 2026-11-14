@@ -1,58 +1,47 @@
+/* 账户设置：沿用首页设计语言——衬线标题、胶囊菜单与按钮、纸面卡片。 */
 .page {
   width: min(var(--yn-page-max-width), 100%);
   margin: 0 auto;
-  padding: var(--yn-space-8) var(--yn-page-gutter) 80px;
+  padding: clamp(20px, 3vw, 36px) var(--yn-page-gutter) 80px;
+}
+
+.header h1 {
+  margin: 0;
+  font-family: var(--yn-font-serif);
+  font-size: clamp(40px, 5vw, 72px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
 }
 
 .layout {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: clamp(28px, 5vw, 72px);
-  margin-top: var(--yn-space-7);
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 40px);
+  margin-top: clamp(24px, 3vw, 40px);
   align-items: start;
 }
 
+/* 左侧菜单：共享的标准胶囊切换竖排（900px 以下转为横排） */
 .sideNav {
   position: sticky;
   top: calc(var(--yn-context-height) + 24px);
   display: grid;
-  gap: 4px;
-}
-
-.sideLink,
-.sideLinkActive,
-.backHome {
-  display: flex;
-  min-height: 42px;
-  align-items: center;
-  gap: 10px;
-  padding: 0 12px;
-  border-left: 2px solid transparent;
-  color: var(--yn-color-text-secondary);
-  font-size: var(--yn-font-sm);
-}
-
-.sideLink:hover,
-.sideLinkActive {
-  background: var(--yn-color-surface-muted);
-  color: var(--yn-color-text);
-}
-
-.sideLinkActive {
-  border-left-color: var(--yn-color-brand);
-}
-
-.backHome {
-  margin-top: var(--yn-space-4);
-  border-top: 1px solid var(--yn-color-border);
-  color: var(--yn-color-muted);
+  min-width: 0;
+  gap: var(--yn-space-2);
 }
 
 .panel {
   min-width: 0;
-  border: 1px solid var(--yn-color-border);
-  border-radius: var(--yn-radius-lg);
-  background: var(--yn-color-surface);
+  border: 1px solid color-mix(in srgb, var(--yn-color-border) 70%, transparent);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--yn-color-surface) 60%, var(--yn-color-canvas));
+}
+
+/* 面板内按钮统一为胶囊形 */
+.panel button:not(.revokeButton),
+.fileButton {
+  border-radius: var(--yn-radius-pill);
 }
 
 .settingsContent {
@@ -74,17 +63,15 @@
   gap: var(--yn-space-5);
 }
 
-.sectionIntro span,
-.sectionIntroRow span {
-  color: var(--yn-color-muted);
-  font-family: var(--yn-font-mono);
-  font-size: var(--yn-font-xs);
-}
-
+/* 模块标题：与首页一致的衬线字体 */
 .sectionIntro h2,
 .sectionIntroRow h2 {
-  margin: 5px 0 0;
-  font-size: var(--yn-font-xl);
+  margin: 0;
+  font-family: var(--yn-font-serif);
+  font-size: clamp(26px, 2.4vw, 34px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
 }
 
 .sectionIntro p,
@@ -119,8 +106,8 @@
   place-items: center;
   overflow: hidden;
   border: 1px solid var(--yn-color-border);
-  border-radius: 50%;
-  background: var(--yn-color-canvas-raised);
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--yn-color-text) 7%, transparent);
   color: var(--yn-color-muted);
 }
 
@@ -143,12 +130,16 @@
   min-height: 40px;
   align-items: center;
   gap: 8px;
-  padding: 0 14px;
-  border: 1px solid var(--yn-color-border);
-  border-radius: var(--yn-radius-md);
+  padding: 0 16px;
+  border: 1px solid var(--yn-color-border-strong);
   cursor: pointer;
   font-size: var(--yn-font-sm);
   font-weight: 650;
+  transition: background-color var(--yn-motion-fast) ease-in-out;
+}
+
+.fileButton:hover {
+  background: var(--yn-color-border);
 }
 
 .fileButton input {
@@ -194,13 +185,16 @@
 .emailControl input {
   width: 100%;
   min-height: 42px;
-  padding: 9px 11px;
+  padding: 10px 14px;
   border: 1px solid var(--yn-color-border);
-  border-radius: var(--yn-radius-md);
+  border-radius: 12px;
   outline: 0;
-  background: var(--yn-color-surface-muted);
+  background: var(--yn-color-surface);
   color: var(--yn-color-text);
   box-shadow: none;
+  transition:
+    border-color var(--yn-motion-fast) ease-in-out,
+    box-shadow var(--yn-motion-fast) ease-in-out;
 }
 
 .form textarea {
@@ -211,7 +205,8 @@
 .form textarea:focus,
 .dialogForm input:focus,
 .emailControl input:focus {
-  border-color: var(--yn-color-border-strong);
+  border-color: var(--yn-color-text);
+  box-shadow: var(--yn-shadow-focus);
 }
 
 .formActions {
@@ -230,7 +225,8 @@
   max-width: 100%;
   overflow-x: auto;
   border: 1px solid var(--yn-color-border);
-  border-radius: var(--yn-radius-md);
+  border-radius: 14px;
+  background: var(--yn-color-surface);
 }
 
 .table {
@@ -278,9 +274,9 @@
 }
 
 .scopeList span {
-  padding: 3px 6px;
+  padding: 2px 8px;
   border: 1px solid var(--yn-color-border);
-  border-radius: var(--yn-radius-sm);
+  border-radius: var(--yn-radius-pill);
   color: var(--yn-color-text-secondary);
   font-family: var(--yn-font-mono);
   font-size: 10px;
@@ -355,7 +351,7 @@
   border: 1px solid var(--yn-color-border);
   border-radius: var(--yn-radius-md);
   background: var(--yn-color-canvas-raised);
-  color: var(--yn-color-brand-strong);
+  color: var(--yn-color-text);
   font-family: var(--yn-font-mono);
   overflow-wrap: anywhere;
 }
@@ -367,24 +363,6 @@
 
   .sideNav {
     position: static;
-    display: flex;
-    overflow-x: auto;
-    border-bottom: 1px solid var(--yn-color-border);
-  }
-
-  .sideLink,
-  .sideLinkActive {
-    flex: 0 0 auto;
-    border-bottom: 2px solid transparent;
-    border-left: 0;
-  }
-
-  .sideLinkActive {
-    border-bottom-color: var(--yn-color-brand);
-  }
-
-  .backHome {
-    display: none;
   }
 }
 
@@ -419,5 +397,15 @@
   .emailControl {
     width: 100%;
     grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fileButton,
+  .form input,
+  .form textarea,
+  .dialogForm input,
+  .emailControl input {
+    transition: none;
   }
 }

@@ -13,18 +13,6 @@
   gap: var(--yn-space-4);
 }
 
-.sectionHeader > div {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.sectionHeader span {
-  color: var(--yn-color-muted);
-  font-family: var(--yn-font-mono);
-  font-size: 10px;
-}
-
 .sectionHeader h2 {
   margin: 0;
   font-size: var(--yn-font-lg);
@@ -73,8 +61,20 @@
 
 .flagForm {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: var(--yn-space-2);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--yn-space-3);
+  padding: 10px 10px 10px 20px;
+  border: 1px solid var(--yn-color-border-strong);
+  border-radius: var(--yn-radius-md);
+  background: var(--yn-art-ink);
+  color: var(--yn-art-paper);
+}
+
+.prompt {
+  color: var(--yn-art-term-green);
+  font-family: var(--yn-font-mono);
+  font-size: 20px;
 }
 
 .flagForm label {
@@ -83,25 +83,44 @@
 
 .flagForm input {
   width: 100%;
-  min-height: 44px;
-  padding: 0 var(--yn-space-4);
-  border: 1px solid var(--yn-color-border-strong);
-  border-radius: var(--yn-radius-md);
+  min-height: 52px;
+  padding: 0;
+  border: 0;
   outline: 0;
-  background: var(--yn-color-surface);
-  color: var(--yn-color-text);
+  background: transparent;
+  caret-color: var(--yn-art-ochre);
+  color: var(--yn-art-paper);
   font-family: var(--yn-font-mono);
-  font-size: var(--yn-font-sm);
+  font-size: clamp(16px, 1.6vw, 21px);
 }
 
-.flagForm input:focus {
-  border-color: var(--yn-color-brand);
-  box-shadow: var(--yn-shadow-focus);
+.flagForm input::placeholder {
+  color: rgba(239, 232, 216, 0.42);
+}
+
+.flagForm input:focus-visible {
+  box-shadow: inset 0 -2px 0 var(--yn-art-ochre);
 }
 
 .flagForm input:disabled {
-  background: var(--yn-color-surface-muted);
-  color: var(--yn-color-muted);
+  color: rgba(239, 232, 216, 0.5);
+}
+
+.flagForm button {
+  min-height: 48px;
+  padding: 0 26px;
+  border: 0;
+  border-radius: var(--yn-radius-pill);
+  background: var(--yn-art-paper);
+  color: var(--yn-art-ink);
+}
+
+.flagForm button:hover:not(:disabled) {
+  background: #ffffff;
+}
+
+.flagForm button:focus-visible {
+  outline-color: var(--yn-art-ochre);
 }
 
 .spin {
@@ -127,7 +146,11 @@
 
 @media (max-width: 520px) {
   .flagForm {
-    grid-template-columns: 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .flagForm button {
+    grid-column: 1 / -1;
   }
 }
 

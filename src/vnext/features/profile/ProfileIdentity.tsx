@@ -1,7 +1,8 @@
 import { CalendarDays, Edit3, GraduationCap, ShieldCheck, Users } from 'lucide-react'
 import { Link } from 'react-router'
 import { roleLabel } from '../account/useCurrentAccount'
-import type { PublicUserProfile, UserPrivateOverview } from './api/userProfileApi'
+import type { PublicUserProfile, UserPrivateOverview, UserProfileMetrics } from './api/userProfileApi'
+import { ProfileJournalArt } from './ProfileJournalArt'
 import styles from './UserProfilePage.module.css'
 
 function initials(value: string) {
@@ -13,14 +14,12 @@ function formatJoinDate(value: number) {
 }
 
 export function ProfileIdentity({ profile, isOwnProfile }: { profile: PublicUserProfile; isOwnProfile: boolean }) {
-  const variant = profile.id.split('').reduce((sum, value) => sum + value.charCodeAt(0), 0) % 3
-
   return (
-    <header className={styles.identityHero} data-variant={variant}>
-      <span className={styles.identityPlane} aria-hidden="true" />
-      <span className={styles.identityRoute} aria-hidden="true" />
+    <header className={styles.identityHero}>
       <span className={styles.profileAvatar}>
-        {profile.avatar ? <img alt="" src={profile.avatar} /> : initials(profile.userName)}
+        <span className={styles.avatarFace}>
+          {profile.avatar ? <img alt="" src={profile.avatar} /> : initials(profile.userName)}
+        </span>
       </span>
       <div className={styles.identityCopy}>
         <div className={styles.identityTags}>
@@ -38,30 +37,34 @@ export function ProfileIdentity({ profile, isOwnProfile }: { profile: PublicUser
           <CalendarDays size={15} />
           {formatJoinDate(profile.registeredAt)}加入平台
         </span>
+        {isOwnProfile ? (
+          <Link className={styles.editProfile} to="/settings/profile">
+            <Edit3 size={16} />
+            编辑资料
+          </Link>
+        ) : null}
       </div>
-      {isOwnProfile ? (
-        <Link className={styles.editProfile} to="/settings/profile">
-          <Edit3 size={16} />
-          编辑资料
-        </Link>
-      ) : null}
+      <div className={styles.identityArt}>
+        <ProfileJournalArt />
+      </div>
     </header>
   )
 }
 
 export function ProfileFacts({
   profile,
+  metrics,
   privateOverview,
   isOwnProfile,
 }: {
   profile: PublicUserProfile
+  metrics: UserProfileMetrics
   privateOverview?: UserPrivateOverview
   isOwnProfile: boolean
 }) {
   return (
     <aside className={styles.factsRail}>
       <section>
-        <span className={styles.panelEyebrow}>IDENTITY FACTS</span>
         <h2>身份信息</h2>
         <dl className={styles.factList}>
           <div>
@@ -86,7 +89,6 @@ export function ProfileFacts({
 
       {profile.taughtCourses.length ? (
         <section>
-          <span className={styles.panelEyebrow}>TEACHING</span>
           <h2>授课课程</h2>
           <div className={styles.taughtCourses}>
             {profile.taughtCourses.map((course) => (
@@ -99,27 +101,43 @@ export function ProfileFacts({
         </section>
       ) : null}
 
-      {isOwnProfile && privateOverview ? (
-        <section>
-          <span className={styles.panelEyebrow}>PRIVATE OVERVIEW</span>
-          <h2>我的学习摘要</h2>
-          <dl className={styles.privateFacts}>
-            <div>
-              <dt>学习中</dt>
-              <dd>{privateOverview.learningCourses}</dd>
-            </div>
-            <div>
-              <dt>已完成</dt>
-              <dd>{privateOverview.completedCourses}</dd>
-            </div>
-            <div>
-              <dt>理论交卷</dt>
-              <dd>{privateOverview.submittedTheoryAssignments}</dd>
-            </div>
-          </dl>
-          <small>本区仅本人可见</small>
-        </section>
-      ) : null}
+      {/* 学习摘要：公开的参赛、课程与活跃天数；本人另有仅本人可见的学习进度 */}
+      <section>
+        <h2>{isOwnProfile ? '我的学习摘要' : '学习摘要'}</h2>
+        <dl className={styles.privateFacts}>
+          <div>
+            <dt>参赛场次</dt>
+            <dd>{metrics.gameCount}</dd>
+          </div>
+          <div>
+            <dt>课程</dt>
+            <dd>{metrics.courseCount}</dd>
+          </div>
+          <div>
+            <dt>活跃天数</dt>
+            <dd>{metrics.activeDays}</dd>
+          </div>
+        </dl>
+        {isOwnProfile && privateOverview ? (
+          <>
+            <dl className={styles.privateFacts}>
+              <div>
+                <dt>学习中</dt>
+                <dd>{privateOverview.learningCourses}</dd>
+              </div>
+              <div>
+                <dt>已完成</dt>
+                <dd>{privateOverview.completedCourses}</dd>
+              </div>
+              <div>
+                <dt>理论交卷</dt>
+                <dd>{privateOverview.submittedTheoryAssignments}</dd>
+              </div>
+            </dl>
+            <small>本区仅本人可见</small>
+          </>
+        ) : null}
+      </section>
     </aside>
   )
 }

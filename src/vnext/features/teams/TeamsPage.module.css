@@ -1,8 +1,11 @@
-.page,
-.statePage {
+.page {
   width: min(var(--yn-page-max-width), 100%);
   margin: 0 auto;
   padding: var(--yn-space-8) var(--yn-page-gutter) 80px;
+}
+
+.accountState {
+  margin-top: var(--yn-space-7);
 }
 
 .headingActions,
@@ -633,8 +636,7 @@
 }
 
 @media (max-width: 760px) {
-  .page,
-  .statePage {
+  .page {
     padding-top: var(--yn-space-6);
   }
 

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router'
 import { Check, ChevronDown, Search, Star, Tag } from 'lucide-react'
+import { ModulePageArt } from '../../shared/art/ModulePageArt'
 import { useExercisePage } from './api/practiceApi'
 import { CatalogPagination } from '../../shared/CatalogPagination'
 import { useCatalogPagination } from '../../shared/useCatalogPagination'
@@ -137,6 +138,7 @@ export function PracticeBrowsePage() {
     <div className={styles.page}>
       <PageHeading
         eyebrow="EXERCISE CATALOG"
+        illustration={<ModulePageArt kind="practice" />}
         title={isBrowseRoute ? '题库浏览' : '自主练习'}
       />
 

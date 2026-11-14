@@ -1,6 +1,6 @@
 import { KeyRound, LockKeyhole, UserRound } from 'lucide-react'
-import { Link, NavLink, Navigate, useParams } from 'react-router'
-import { PageHeading } from '../../shared/Primitives'
+import { NavLink, Navigate, useParams } from 'react-router'
+import { SegmentedControl, segmentedItemClassName } from '../../shared/SegmentedControl'
 import { useVNextPageTitle } from '../../shared/useVNextPageTitle'
 import { ProfileSettings } from './ProfileSettings'
 import { SecuritySettings } from './SecuritySettings'
@@ -24,26 +24,23 @@ export function SettingsPage() {
 
   return (
     <div className={styles.page}>
-      <PageHeading eyebrow="ACCOUNT CONTROL" title="账户设置" />
+      <header className={styles.header}>
+        <h1>账户设置</h1>
+      </header>
       <div className={styles.layout}>
-        <nav aria-label="设置分类" className={styles.sideNav}>
-          {sections.map((item) => {
-            const Icon = item.icon
-            return (
-              <NavLink
-                className={({ isActive }) => (isActive ? styles.sideLinkActive : styles.sideLink)}
-                key={item.id}
-                to={`/settings/${item.id}`}
-              >
-                <Icon size={17} />
-                {item.label}
-              </NavLink>
-            )
-          })}
-          <Link className={styles.backHome} to="/">
-            返回平台首页
-          </Link>
-        </nav>
+        <div className={styles.sideNav}>
+          <SegmentedControl activeKey={validSection} aria-label="设置分类" as="nav" orientation="vertical">
+            {sections.map((item) => {
+              const Icon = item.icon
+              return (
+                <NavLink className={segmentedItemClassName} key={item.id} to={`/settings/${item.id}`}>
+                  <Icon size={17} />
+                  {item.label}
+                </NavLink>
+              )
+            })}
+          </SegmentedControl>
+        </div>
         <main className={styles.panel}>
           {validSection === 'profile' ? <ProfileSettings /> : null}
           {validSection === 'security' ? <SecuritySettings /> : null}

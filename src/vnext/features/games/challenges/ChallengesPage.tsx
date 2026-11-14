@@ -1,4 +1,4 @@
-import { Bell, Check, Download, FileArchive, Flag, Lightbulb, ListTree, ShieldCheck, Trophy, Users } from 'lucide-react'
+import { Download, FileArchive, Lightbulb, ListTree } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { useConfig } from '@Hooks/useConfig'
@@ -10,6 +10,7 @@ import { FlagSubmission } from '../../challenge-runtime/FlagSubmission'
 import { InstanceControl } from '../../challenge-runtime/InstanceControl'
 import { useGameChallenge, useGameChallengeCatalog } from '../gamePlayerApi'
 import { formatWorkspaceNotice, useGameWorkspace } from '../workspace/GameWorkspaceShell'
+import { ChallengeArt } from './ChallengeArt'
 import { ChallengeCatalog, ChallengeGroup } from './ChallengeCatalog'
 import styles from './ChallengesPage.module.css'
 import { categoryMeta } from './challengeCategories'
@@ -80,6 +81,7 @@ function disabledReason({
 }
 
 function ChallengeContextRail({
+  challenge,
   teamName,
   rank,
   score,
@@ -87,6 +89,7 @@ function ChallengeContextRail({
   notices,
   submissions,
 }: {
+  challenge?: ChallengeInfo
   teamName?: string | null
   rank?: number
   score?: number
@@ -94,84 +97,91 @@ function ChallengeContextRail({
   notices: ReturnType<typeof useGameWorkspace>['notices']
   submissions: ReturnType<typeof useFlagSubmission>['submissions']
 }) {
+  const bloods = challenge?.bloods ?? []
   return (
     <div className={styles.contextStack}>
-      <section className={styles.contextPanel}>
-        <header>
-          <span>TEAM CONTEXT</span>
-          <h2>参赛队伍</h2>
-        </header>
-        <div className={styles.teamIdentity}>
-          <span>
-            <Users size={18} />
-          </span>
-          <div>
-            <strong>{teamName || '当前队伍'}</strong>
-          </div>
+      {challenge ? (
+        <div className={styles.scoreBlock}>
+          <strong>
+            {challenge.score}
+            <small>分</small>
+          </strong>
         </div>
-        <div className={styles.teamMetrics}>
+      ) : null}
+
+      {challenge ? (
+        <section aria-labelledby="bloods-title" className={styles.contextPanel}>
+          <h2 id="bloods-title">
+            解出队伍<span className={styles.panelCount}>{challenge.solved}</span>
+          </h2>
+          {bloods.length ? (
+            <ol className={styles.bloodList}>
+              {bloods.map((blood, index) => (
+                <li key={`${blood.id}:${index}`}>
+                  <span className={index === 0 ? styles.bloodFirst : styles.bloodRank}>{index + 1}</span>
+                  <strong>{blood.name}</strong>
+                  {blood.submitTimeUtc ? <time>{formatTime(blood.submitTimeUtc)}</time> : null}
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className={styles.contextEmpty}>还没有队伍解出这道题。</p>
+          )}
+          {challenge.disableBloodBonus ? <p className={styles.contextNote}>本题不计一血加分。</p> : null}
+        </section>
+      ) : null}
+
+      <section aria-labelledby="team-title" className={styles.contextPanel}>
+        <h2 id="team-title">本队 · {teamName || '当前队伍'}</h2>
+        <dl className={styles.teamMetrics}>
           <div>
-            <Trophy size={16} />
-            <span>排名</span>
-            <strong>{rank ? `#${rank}` : '--'}</strong>
+            <dt>排名</dt>
+            <dd className={styles.rankValue}>{rank ? `#${rank}` : '--'}</dd>
           </div>
           <div>
-            <ShieldCheck size={16} />
-            <span>分数</span>
-            <strong>{score ?? '--'}</strong>
+            <dt>得分</dt>
+            <dd>{score ?? '--'}</dd>
           </div>
           <div>
-            <Check size={16} />
-            <span>已解</span>
-            <strong>{solvedCount ?? 0}</strong>
+            <dt>已解</dt>
+            <dd>{solvedCount ?? 0}</dd>
           </div>
-        </div>
+        </dl>
       </section>
 
-      <section className={styles.contextPanel}>
-        <header>
-          <span>GAME NOTICE</span>
-          <h2>比赛通知</h2>
-        </header>
-        <div className={styles.noticeList}>
-          {notices.slice(0, 6).map((notice) => (
-            <article key={`${notice.id}:${notice.time}:${notice.type}`}>
-              <Bell size={15} />
-              <div>
-                <p>{formatWorkspaceNotice(notice)}</p>
+      {notices.length ? (
+        <section aria-labelledby="notice-title" className={styles.contextPanel}>
+          <h2 id="notice-title">比赛通知</h2>
+          <div className={styles.noticeList}>
+            {notices.slice(0, 6).map((notice) => (
+              <article key={`${notice.id}:${notice.time}:${notice.type}`}>
                 <time>{formatTime(notice.time)}</time>
-              </div>
-            </article>
-          ))}
-          {!notices.length ? <p className={styles.contextEmpty}>当前没有比赛通知。</p> : null}
-        </div>
-      </section>
+                <p>{formatWorkspaceNotice(notice)}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
-      <section className={styles.contextPanel}>
-        <header>
-          <span>THIS SESSION</span>
-          <h2>本次提交</h2>
-        </header>
-        <div className={styles.submissionList}>
-          {submissions.slice(0, 6).map((submission) => (
-            <article key={submission.key}>
-              <span
-                className={
-                  submission.result === AnswerResult.Accepted ? styles.submissionAccepted : styles.submissionOther
-                }
-              >
-                <Flag size={14} />
-              </span>
-              <div>
-                <strong>{submission.challengeTitle}</strong>
-                <small>{submission.answerPreview}</small>
-              </div>
-              <em>{resultLabel(submission.result)}</em>
-            </article>
-          ))}
-          {!submissions.length ? <p className={styles.contextEmpty}>本次会话还没有提交记录。</p> : null}
-        </div>
-      </section>
+      {/* 本次提交：只在这次会话里提交过才出现 */}
+      {submissions.length ? (
+        <section aria-labelledby="session-title" className={styles.contextPanel}>
+          <h2 id="session-title">本次提交</h2>
+          <div className={styles.submissionList}>
+            {submissions.slice(0, 6).map((submission) => (
+              <article key={submission.key}>
+                <em className={submission.result === AnswerResult.Accepted ? styles.submissionAccepted : styles.submissionOther}>
+                  {resultLabel(submission.result)}
+                </em>
+                <div>
+                  <strong>{submission.challengeTitle}</strong>
+                  <small>{submission.answerPreview}</small>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </div>
   )
 }
@@ -342,7 +352,6 @@ export function ChallengesPage() {
 
   const displayedChallenge = challenge?.id === selectedId ? challenge : undefined
   const meta = categoryMeta(displayedChallenge?.category ?? selectedSummary?.category ?? 'Misc')
-  const CategoryIcon = meta.icon
   const attachmentUrl = displayedChallenge?.context?.url
 
   return (
@@ -351,7 +360,7 @@ export function ChallengesPage() {
         <ActionButton icon={<ListTree size={17} />} onClick={() => setCatalogOpen(true)} type="button">
           题目列表
         </ActionButton>
-        <span>{selectedSummary ? `${meta.label} · ${selectedSummary.score} pts` : '选择题目'}</span>
+        <span>{selectedSummary ? `${meta.label} · ${selectedSummary.score} 分` : '选择题目'}</span>
       </div>
 
       {catalogOpen ? (
@@ -385,20 +394,17 @@ export function ChallengesPage() {
           ) : (
             <article className={styles.challengeArticle}>
               <header className={styles.challengeHeader}>
-                <div className={styles.challengeMeta}>
-                  <span>
-                    <CategoryIcon size={16} />
-                    {meta.label}
-                  </span>
-                  <span>#{displayedChallenge.id}</span>
-                  {solved ? <StatusPill tone="success">已完成</StatusPill> : <StatusPill>未完成</StatusPill>}
-                </div>
-                <div className={styles.titleRow}>
+                <div className={styles.challengeHeading}>
+                  {/* 只留类别与完成状态；分值和解出队伍在右栏 */}
+                  <div className={styles.challengeMeta}>
+                    <span className={styles.categoryCode}>{displayedChallenge.category ?? selectedSummary?.category}</span>
+                    <span>{meta.label}</span>
+                    {solved ? <StatusPill tone="success">已完成</StatusPill> : null}
+                  </div>
                   <h1>{displayedChallenge.title || selectedSummary?.title || `题目 ${displayedChallenge.id}`}</h1>
-                  <strong>
-                    {displayedChallenge.score ?? selectedSummary?.score ?? 0}
-                    <small>PTS</small>
-                  </strong>
+                </div>
+                <div className={styles.challengeArt}>
+                  <ChallengeArt category={displayedChallenge.category ?? selectedSummary?.category} />
                 </div>
               </header>
 
@@ -422,7 +428,6 @@ export function ChallengesPage() {
                 {attachmentUrl ? (
                   <section aria-labelledby="attachment-title" className={styles.attachmentSection}>
                     <header>
-                      <span>ATTACHMENT</span>
                       <h2 id="attachment-title">题目附件</h2>
                     </header>
                     <a href={attachmentUrl} rel="noreferrer noopener" target="_blank">
@@ -460,6 +465,7 @@ export function ChallengesPage() {
 
         <aside className={styles.contextRail}>
           <ChallengeContextRail
+            challenge={selectedSummary}
             notices={notices}
             rank={teamInfo.rank?.rank}
             score={teamInfo.rank?.score}

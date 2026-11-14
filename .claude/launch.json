@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "vnext-demo",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["scripts/dev-demo.mjs"],
+      "port": 5189
+    }
+  ]
+}

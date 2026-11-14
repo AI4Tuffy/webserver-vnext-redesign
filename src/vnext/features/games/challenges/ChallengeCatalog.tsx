@@ -1,4 +1,4 @@
-import { Check, ChevronDown, ChevronRight, Search, X } from 'lucide-react'
+import { ChevronDown, ChevronRight, Search, X } from 'lucide-react'
 import { ChangeEvent, useMemo, useState } from 'react'
 import { ChallengeInfo, SubmissionType } from '@Api'
 import styles from './ChallengeCatalog.module.css'
@@ -30,8 +30,7 @@ export function ChallengeCatalog({
   onSelect: (challenge: ChallengeInfo) => void
   onMobileClose: () => void
 }) {
-  const [expanded, setExpanded] = useState<Set<string>>(() => new Set())
-
+  const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set())
   const normalizedQuery = query.trim().toLocaleLowerCase('zh-CN')
   const visibleGroups = useMemo(
     () =>
@@ -50,10 +49,10 @@ export function ChallengeCatalog({
     [groups, hideSolved, normalizedQuery, solvedTypes]
   )
 
-  const effectiveExpanded = normalizedQuery ? new Set(visibleGroups.map((group) => group.category)) : expanded
+  const isOpen = (category: string) => Boolean(normalizedQuery) || !collapsed.has(category)
 
   const toggleCategory = (category: string) => {
-    setExpanded((current) => {
+    setCollapsed((current) => {
       const next = new Set(current)
       if (next.has(category)) next.delete(category)
       else next.add(category)
@@ -65,11 +64,9 @@ export function ChallengeCatalog({
 
   return (
     <div className={styles.catalog}>
+      {/* 只在窄屏抽屉里出现：标题与关闭按钮 */}
       <header className={styles.catalogHeader}>
-        <div>
-          <span>CHALLENGE INDEX</span>
-          <strong>题目列表</strong>
-        </div>
+        <strong>题目列表</strong>
         <button aria-label="关闭题目列表" className={styles.mobileClose} onClick={onMobileClose} type="button">
           <X size={18} />
         </button>
@@ -93,8 +90,7 @@ export function ChallengeCatalog({
       <div className={styles.groupList}>
         {visibleGroups.map((group) => {
           const meta = categoryMeta(group.category)
-          const Icon = meta.icon
-          const open = effectiveExpanded.has(group.category)
+          const open = isOpen(group.category)
           return (
             <section className={styles.challengeGroup} key={group.category}>
               <button
@@ -103,10 +99,9 @@ export function ChallengeCatalog({
                 onClick={() => toggleCategory(group.category)}
                 type="button"
               >
-                {open ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
-                <Icon size={16} />
+                {open ? <ChevronDown aria-hidden="true" size={14} /> : <ChevronRight aria-hidden="true" size={14} />}
+                <span className={styles.categoryCode}>{group.category}</span>
                 <strong>{meta.label}</strong>
-                <span>{group.challenges.length}</span>
               </button>
               {open ? (
                 <div className={styles.challengeGroupBody}>
@@ -115,14 +110,16 @@ export function ChallengeCatalog({
                     const solved = solvedType !== undefined && solvedType !== SubmissionType.Unaccepted
                     return (
                       <button
+                        aria-current={challenge.id === selectedId ? 'true' : undefined}
                         className={challenge.id === selectedId ? styles.challengeRowActive : styles.challengeRow}
                         key={challenge.id}
                         onClick={() => onSelect(challenge)}
                         type="button"
                       >
+                        <span aria-hidden="true" className={solved ? styles.markSolved : styles.mark} />
                         <span className={styles.challengeName}>{challenge.title}</span>
                         <span className={styles.challengeScore}>{challenge.score}</span>
-                        {solved ? <Check aria-label="已解" className={styles.solvedIcon} size={15} /> : null}
+                        {solved ? <span className={styles.srOnly}>，已解</span> : null}
                       </button>
                     )
                   })}

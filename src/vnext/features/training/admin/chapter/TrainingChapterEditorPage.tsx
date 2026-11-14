@@ -164,8 +164,6 @@ export function TrainingChapterEditorPage() {
 
   return (
     <TrainingEditorShell
-      backLabel="返回课程章节"
-      backTo={`/training/courses/${courseNumber}?tab=chapters`}
       eyebrow="CHAPTER WORKSPACE"
       meta={
         <StatusPill tone={draft.isPublished ? 'success' : 'warning'}>

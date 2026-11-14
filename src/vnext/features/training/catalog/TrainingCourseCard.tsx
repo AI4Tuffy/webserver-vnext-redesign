@@ -1,7 +1,7 @@
 import { BookOpen, GraduationCap, UserRound } from 'lucide-react'
 import { Link } from 'react-router'
 import { TrainingCourseModel } from '@Api'
-import { GeometricPoster, StatusPill } from '../../../shared/Primitives'
+import { PosterImage, StatusPill } from '../../../shared/Primitives'
 import { courseProgress, courseStatusLabel, courseStatusTone, courseTeacherNames } from '../training'
 import styles from './TrainingCourseCard.module.css'
 
@@ -17,7 +17,12 @@ export function TrainingCourseCard({ course, compact = false }: { course: Traini
   return (
     <Link className={`${styles.card} ${compact ? styles.cardCompact : ''}`} to={`/training/courses/${id}`}>
       <div className={styles.poster}>
-        <GeometricPoster alt={`${title}课程海报`} src={course.coverUrl} tone={course.canEdit ? 'orange' : 'blue'} />
+        <PosterImage
+          alt={`${title}课程海报`}
+          seed={id}
+          src={course.coverUrl}
+          tone={course.canEdit ? 'orange' : 'blue'}
+        />
         <span className={styles.status}>
           <StatusPill tone={courseStatusTone(course)}>{courseStatusLabel(course)}</StatusPill>
         </span>

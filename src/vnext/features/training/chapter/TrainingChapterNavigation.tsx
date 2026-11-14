@@ -1,4 +1,4 @@
-import { ArrowLeft, Check, Clock3 } from 'lucide-react'
+import { Check, Clock3 } from 'lucide-react'
 import { Link } from 'react-router'
 import { TrainingCourseChapterModel, TrainingCourseProgressStatus } from '@Api'
 import styles from './TrainingChapterPage.module.css'
@@ -15,8 +15,7 @@ export function ChapterTree({ courseId, courseTitle, currentChapterId, chapters 
   return (
     <aside className={styles.chapterTree}>
       <Link className={styles.courseBack} to={`/training/courses/${courseId}`}>
-        <ArrowLeft size={16} />
-        <span>{courseTitle || '返回课程'}</span>
+        <span>{courseTitle || '课程详情'}</span>
       </Link>
       <div className={styles.treeHeading}>
         <span>CHAPTERS</span>

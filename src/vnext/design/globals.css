@@ -51,7 +51,7 @@ a {
 
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--yn-color-brand);
+  outline: 2px solid var(--yn-color-text);
   box-shadow: var(--yn-shadow-focus);
 }
 

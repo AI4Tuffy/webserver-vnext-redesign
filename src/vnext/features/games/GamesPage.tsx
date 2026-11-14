@@ -1,9 +1,12 @@
-import { ChevronLeft, ChevronRight, Clock3, Search, Users } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, Clock3, Search, Users } from 'lucide-react'
 import { motion } from 'motion/react'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { DataState, GeometricPoster, PageHeading, StatusPill } from '../../shared/Primitives'
+import { ModulePageArt } from '../../shared/art/ModulePageArt'
+import { DataState, StatusPill } from '../../shared/Primitives'
+import { SegmentedControl, segmentedItemClassName } from '../../shared/SegmentedControl'
 import { useVNextPageTitle } from '../../shared/useVNextPageTitle'
+import { GamePoster } from './GamePosterArt'
 import styles from './GamesPage.module.css'
 import {
   formatGameRange,
@@ -17,10 +20,18 @@ import {
 const PAGE_SIZE = 10
 const validStatuses = new Set<GameListStatus>(['ongoing', 'upcoming', 'ended'])
 
+const statusFilters: Array<{ value: GameListStatus | null; label: string }> = [
+  { value: null, label: '全部' },
+  { value: 'ongoing', label: '进行中' },
+  { value: 'upcoming', label: '即将开始' },
+  { value: 'ended', label: '已结束' },
+]
+
 function parsePage(value: string | null) {
   const page = Number(value)
   return Number.isInteger(page) && page > 0 ? page : 1
 }
+
 
 export function GamesPage() {
   const catalog = useGameCatalog()
@@ -102,69 +113,53 @@ export function GamesPage() {
 
   return (
     <div className={styles.page}>
-      <PageHeading
-        eyebrow="EXERCISE INDEX"
-        title="赛事中心"
-        actions={<span className={styles.resultCount}>{filteredGames.length} 场赛事</span>}
-      />
-
-      <section className={styles.toolbar} aria-label="赛事筛选">
-        <label className={styles.searchBox}>
-          <Search aria-hidden="true" size={17} />
-          <input
-            aria-label="搜索赛事"
-            onChange={onQueryChange}
-            placeholder="搜索赛事名称或简介"
-            type="search"
-            value={query}
-          />
-        </label>
-        <div className={styles.statusFilters}>
-          <button
-            className={!status ? styles.filterActive : styles.filter}
-            onClick={() => setStatus(null)}
-            type="button"
-          >
-            全部 <span>{counts.all}</span>
-          </button>
-          <button
-            className={status === 'ongoing' ? styles.filterActive : styles.filter}
-            onClick={() => setStatus('ongoing')}
-            type="button"
-          >
-            进行中 <span>{counts.ongoing}</span>
-          </button>
-          <button
-            className={status === 'upcoming' ? styles.filterActive : styles.filter}
-            onClick={() => setStatus('upcoming')}
-            type="button"
-          >
-            即将开始 <span>{counts.upcoming}</span>
-          </button>
-          <button
-            className={status === 'ended' ? styles.filterActive : styles.filter}
-            onClick={() => setStatus('ended')}
-            type="button"
-          >
-            已结束 <span>{counts.ended}</span>
-          </button>
+      {/* 刊头：左列自上而下是标题与筛选，右列插图与左列等高 */}
+      <header className={styles.header}>
+        <div className={styles.headerCopy}>
+          <h1>赛事中心</h1>
+          <section className={styles.toolbar} aria-label="赛事筛选">
+            <label className={styles.searchBox}>
+              <Search aria-hidden="true" size={17} />
+              <input
+                aria-label="搜索赛事"
+                onChange={onQueryChange}
+                placeholder="搜索赛事名称或简介"
+                type="search"
+                value={query}
+              />
+            </label>
+            <SegmentedControl activeKey={status ?? 'all'} aria-label="赛事状态" className={styles.statusControl} role="group">
+              {statusFilters.map((filter) => (
+                <button
+                  aria-pressed={status === filter.value}
+                  className={segmentedItemClassName}
+                  key={filter.label}
+                  onClick={() => setStatus(filter.value)}
+                  type="button"
+                >
+                  {filter.label}
+                  <span className={styles.filterCount}>{counts[filter.value ?? 'all']}</span>
+                </button>
+              ))}
+            </SegmentedControl>
+          </section>
         </div>
-      </section>
+        <div className={styles.headerArt}>
+          <ModulePageArt kind="games" />
+        </div>
+      </header>
 
       {catalog.isLoading ? (
         <DataState loading title="赛事加载中" />
       ) : catalog.error ? (
         <DataState description="请稍后刷新重试。" title="赛事加载失败" />
       ) : visibleGames.length > 0 ? (
-        <motion.section className={styles.gameList} layout>
-          {visibleGames.map((game, index) => (
+        <motion.section aria-label="赛事列表" className={styles.gameList} layout>
+          {visibleGames.map((game) => (
             <motion.article key={game.id} layout="position">
-              <Link className={styles.gameRow} to={`/games/${game.id}`}>
-                <span className={styles.rowIndex}>
-                  {String((safePage - 1) * PAGE_SIZE + index + 1).padStart(2, '0')}
-                </span>
+              <Link className={styles.gameCard} to={`/games/${game.id}`}>
                 <span className={styles.poster}>
-                  <GeometricPoster alt={`${game.title || '赛事'}海报`} src={game.poster} />
+                  <GamePoster seed={game.id} src={game.poster} status={game.status} title={game.title} />
                 </span>
                 <span className={styles.gameMain}>
                   <span className={styles.gameTitleLine}>
@@ -172,18 +167,20 @@ export function GamesPage() {
                     <StatusPill tone={gameStatusTone(game.status)}>{gameStatusLabel(game.status)}</StatusPill>
                   </span>
                   <p>{game.summary || '赛事介绍尚未填写。'}</p>
-                </span>
-                <span className={styles.gameMeta}>
-                  <span>
-                    <Users size={15} />
-                    {participationLabel(game.limit)}
+                  <span className={styles.gameMeta}>
+                    <span>
+                      <Users aria-hidden="true" size={15} />
+                      {participationLabel(game.limit)}
+                    </span>
+                    <span>
+                      <Clock3 aria-hidden="true" size={15} />
+                      {formatGameRange(game)}
+                    </span>
                   </span>
-                  <span>
-                    <Clock3 size={15} />
-                    {formatGameRange(game)}
-                  </span>
                 </span>
-                <ChevronRight aria-hidden="true" className={styles.rowArrow} size={18} />
+                <span aria-hidden="true" className={styles.cardArrow}>
+                  <ArrowRight size={18} />
+                </span>
               </Link>
             </motion.article>
           ))}

@@ -1,4 +1,4 @@
-import { ArrowLeft, BookOpenCheck, CheckCircle2, RotateCcw, TriangleAlert } from 'lucide-react'
+import { BookOpenCheck, CheckCircle2, RotateCcw, TriangleAlert } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import {
@@ -84,10 +84,7 @@ export function TrainingTheoryPage() {
     <div className={styles.page}>
       <header className={styles.contextHeader}>
         <nav aria-label="课程位置" className={styles.breadcrumbs}>
-          <Link to={`/training/courses/${courseNumber}`}>
-            <ArrowLeft size={15} />
-            {course.title || '课程详情'}
-          </Link>
+          <Link to={`/training/courses/${courseNumber}`}>{course.title || '课程详情'}</Link>
           <span>/</span>
           <Link to={`/training/courses/${courseNumber}/chapters/${chapterNumber}`}>{chapter.title || '课程章节'}</Link>
         </nav>

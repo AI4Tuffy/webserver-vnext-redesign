@@ -1,5 +1,4 @@
 import {
-  ArrowLeft,
   ArrowRight,
   BookOpen,
   Check,
@@ -21,7 +20,7 @@ import {
 } from '@Api'
 import { ActionButton, InlineFeedback, VNextDialog } from '../../../shared/Interaction'
 import { MarkdownContent } from '../../../shared/MarkdownContent'
-import { DataState, GeometricPoster, StatusPill } from '../../../shared/Primitives'
+import { DataState, PosterImage, StatusPill } from '../../../shared/Primitives'
 import { errorMessage } from '../../../shared/errors'
 import { useVNextPageTitle } from '../../../shared/useVNextPageTitle'
 import { trainingLearnerApi, useTrainingCourseDetail } from '../api/trainingLearnerApi'
@@ -190,14 +189,9 @@ export function TrainingCoursePage() {
 
   return (
     <div className={styles.page}>
-      <Link className={styles.backLink} to="/training">
-        <ArrowLeft size={16} />
-        返回培训
-      </Link>
-
       <section className={styles.hero}>
         <div className={styles.poster}>
-          <GeometricPoster alt={`${course.title || '课程'}课程海报`} src={course.coverUrl} tone="blue" />
+          <PosterImage alt={`${course.title || '课程'}课程海报`} seed={id} src={course.coverUrl} tone="blue" />
         </div>
         <div className={styles.heroBody}>
           <div className={styles.heroStatus}>

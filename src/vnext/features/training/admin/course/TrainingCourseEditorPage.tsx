@@ -5,7 +5,7 @@ import { TrainingCourseEditModel, TrainingCourseEnrollmentPolicy, TrainingCourse
 import { FileField, SelectField, TextAreaField, TextField } from '../../../../shared/FormControls'
 import { ActionButton, InlineFeedback, VNextDialog } from '../../../../shared/Interaction'
 import { MarkdownContent } from '../../../../shared/MarkdownContent'
-import { DataState, GeometricPoster, StatusPill } from '../../../../shared/Primitives'
+import { DataState, PosterImage, StatusPill } from '../../../../shared/Primitives'
 import { errorMessage } from '../../../../shared/errors'
 import { useVNextPageTitle } from '../../../../shared/useVNextPageTitle'
 import { useCurrentAccount } from '../../../account/useCurrentAccount'
@@ -155,8 +155,6 @@ export function TrainingCourseEditorPage() {
     return <DataState description="课程不存在，或当前账户没有编辑该课程的权限。" title="无法编辑课程" />
   }
 
-  const backTo = editing ? `/training/courses/${id}` : '/training'
-
   return (
     <TrainingEditorShell
       actions={
@@ -186,8 +184,6 @@ export function TrainingCourseEditorPage() {
           </>
         ) : null
       }
-      backLabel={editing ? '返回课程详情' : '返回培训'}
-      backTo={backTo}
       description="保存课程后，可在课程详情中添加教学内容。"
       eyebrow="COURSE WORKSPACE"
       meta={course ? <StatusPill tone={courseStatusTone(course)}>{courseStatusLabel(course)}</StatusPill> : null}
@@ -262,7 +258,7 @@ export function TrainingCourseEditorPage() {
         <EditorSection description="课程海报统一使用 16:9，建议上传 WebP、PNG 或 JPEG。" title="课程海报">
           <div className={styles.coverGrid}>
             <div className={styles.coverPreview}>
-              <GeometricPoster alt="课程海报预览" src={course?.coverUrl} tone="blue" />
+              <PosterImage alt="课程海报预览" seed={course?.id} src={course?.coverUrl} tone="blue" />
             </div>
             <div className={styles.stack}>
               <FileField

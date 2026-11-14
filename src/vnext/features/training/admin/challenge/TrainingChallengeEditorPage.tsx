@@ -163,8 +163,6 @@ export function TrainingChallengeEditorPage() {
 
   return (
     <TrainingEditorShell
-      backLabel="返回题目管理"
-      backTo={`/training/courses/${courseNumber}?tab=challenges`}
       eyebrow="COURSE CHALLENGE"
       meta={detail?.hasSubmittedAnswers ? <StatusPill tone="warning">已有学员提交记录</StatusPill> : null}
       title={editing ? '编辑课程题目' : '创建课程题目'}

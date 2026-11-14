@@ -1,40 +1,24 @@
-import { Search, Trophy, Users } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { ScoreboardItem } from '@Api'
-import { DataState, PageHeading, StatusPill } from '../../../shared/Primitives'
+import { DataState } from '../../../shared/Primitives'
 import { useGameChallengeCatalog, useGameScoreboard } from '../gamePlayerApi'
 import { useGameWorkspace } from '../workspace/GameWorkspaceShell'
+import { PodiumEntry, ScoreboardArt } from './ScoreboardArt'
 import styles from './ScoreboardPage.module.css'
+import {
+  createBloodRankLookup,
+  formatStamp,
+  MatrixChallenge,
+  ScoreBars,
+  scoreboardTotals,
+  SolveMatrix,
+  SolveTimeline,
+} from './ScoreboardViews'
 
-const divisionToneClasses = [styles.divisionGreen, styles.divisionBlue, styles.divisionOrange, styles.divisionNeutral]
-
-function formatTime(value?: number) {
-  if (!value) return '暂无提交'
-  return new Intl.DateTimeFormat('zh-CN', {
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  }).format(value)
-}
-
-function initials(value?: string | null) {
-  return value?.trim().slice(0, 2).toUpperCase() || 'YY'
-}
-
-function TeamAvatar({ item }: { item: ScoreboardItem }) {
-  const [failed, setFailed] = useState(false)
-
-  useEffect(() => setFailed(false), [item.avatar])
-
-  return (
-    <span className={styles.avatar}>
-      {item.avatar && !failed ? <img alt="" onError={() => setFailed(true)} src={item.avatar} /> : initials(item.name)}
-    </span>
-  )
-}
+const BAR_LIMIT = 12
+const TIMELINE_LIMIT = 10
 
 export function ScoreboardPage() {
   const { gameId, game, revision } = useGameWorkspace()
@@ -44,6 +28,7 @@ export function ScoreboardPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [query, setQuery] = useState(searchParams.get('q') ?? '')
   const divisionId = Number(searchParams.get('division')) || null
+  const myTeamId = teamInfo?.rank?.id
 
   useEffect(() => {
     if (revision > 0) void mutate()
@@ -64,17 +49,44 @@ export function ScoreboardPage() {
   }, [query, searchParams, setSearchParams])
 
   const divisionMap = useMemo(
-    () => new Map((scoreboard?.divisions ?? []).map((division, index) => [division.id, { ...division, index }])),
+    () => new Map((scoreboard?.divisions ?? []).map((division) => [division.id, division.name])),
     [scoreboard?.divisions]
   )
+  const divisionName = (item: ScoreboardItem) => (item.divisionId ? divisionMap.get(item.divisionId) : undefined)
 
+  const rankedItems = useMemo(
+    () => [...(scoreboard?.items ?? [])].sort((left, right) => left.rank - right.rank),
+    [scoreboard?.items]
+  )
   const visibleItems = useMemo(() => {
     const keyword = (searchParams.get('q') ?? '').trim().toLocaleLowerCase('zh-CN')
-    return (scoreboard?.items ?? [])
+    return rankedItems
       .filter((item) => !divisionId || item.divisionId === divisionId)
       .filter((item) => !keyword || `${item.name} ${item.bio ?? ''}`.toLocaleLowerCase('zh-CN').includes(keyword))
-      .sort((left, right) => left.rank - right.rank)
-  }, [divisionId, scoreboard?.items, searchParams])
+  }, [divisionId, rankedItems, searchParams])
+
+  const challenges = useMemo<MatrixChallenge[]>(
+    () =>
+      Object.entries(scoreboard?.challenges ?? {}).flatMap(([category, list]) =>
+        list.map((challenge) => ({ ...challenge, categoryCode: category.toUpperCase() }))
+      ),
+    [scoreboard?.challenges]
+  )
+  const categoryOf = useMemo(
+    () => new Map(challenges.map((challenge) => [challenge.id, challenge.categoryCode])),
+    [challenges]
+  )
+
+  const bloodRank = useMemo(() => createBloodRankLookup(challenges), [challenges])
+  const totals = useMemo(() => scoreboardTotals(rankedItems, bloodRank), [bloodRank, rankedItems])
+  const mine = rankedItems.find((item) => item.id === myTeamId)
+  const toEntry = (item: ScoreboardItem): PodiumEntry => ({ rank: item.rank, score: item.score, mine: item.id === myTeamId })
+  const podium = rankedItems.slice(0, 3).map(toEntry)
+  const receipt = [...podium, ...(mine && mine.rank > 3 ? [toEntry(mine)] : [])]
+  const above = mine && mine.rank > 1 ? rankedItems.find((item) => item.rank === mine.rank - 1) : undefined
+  const gapToNext = mine && above ? { rank: above.rank, points: Math.max(0, above.score - mine.score) } : undefined
+  const maxScore = Math.max(1, ...visibleItems.map((item) => item.score))
+  const timelineEnd = Math.min(Date.now(), game.end ?? Date.now())
 
   const setDivision = (value: number | null) => {
     const next = new URLSearchParams(searchParams)
@@ -87,134 +99,160 @@ export function ScoreboardPage() {
 
   return (
     <div className={styles.page}>
-      <PageHeading
-        actions={
-          scoreboard ? (
-            <span className={styles.updatedAt}>更新于 {formatTime(scoreboard.updateTimeUtc)}</span>
-          ) : undefined
-        }
-        eyebrow="LIVE SCOREBOARD"
-        title="积分榜"
-      />
+      <section aria-labelledby="scoreboard-title" className={styles.hero}>
+        <div className={styles.heroCopy}>
+          <span aria-hidden="true" className={styles.prompt}>
+            ~/games/{gameId} $ ./scoreboard --live
+          </span>
+          <h1 id="scoreboard-title">排行榜</h1>
+          {scoreboard ? (
+            <p className={styles.heroFacts}>
+              <span aria-hidden="true" className={styles.liveDot} />
+              {rankedItems.length} 支队伍 · {scoreboard.challengeCount} 道题 · {totals.flags} 次正确提交 · 更新于{' '}
+              {formatStamp(scoreboard.updateTimeUtc)}
+            </p>
+          ) : null}
+          {mine ? (
+            <p className={styles.mineLine}>
+              本队 {mine.name} · 第 <strong>{mine.rank}</strong> 名 · {mine.score} 分
+              {gapToNext ? ` · 距第 ${gapToNext.rank} 名 ${gapToNext.points} 分` : ''}
+            </p>
+          ) : null}
+        </div>
+        <div className={styles.heroArt}>
+          <ScoreboardArt
+            bloodCount={totals.bloods}
+            flagCount={totals.flags}
+            gapToNext={gapToNext}
+            leaderBloods={totals.leaderBloods}
+            podium={podium}
+            receipt={receipt}
+            teamCount={rankedItems.length}
+          />
+        </div>
+      </section>
 
-      {scoreboard ? (
-        <section aria-label="积分榜概览" className={styles.metrics}>
-          <div>
-            <Users size={17} />
-            <span>参赛战队</span>
-            <strong>{scoreboard.items.length}</strong>
+      <section aria-labelledby="totals-title" className={styles.section}>
+        <div className={styles.sectionBar}>
+          <h2 id="totals-title">总分</h2>
+          <div className={styles.toolbar}>
+            <label className={styles.searchBox}>
+              <Search aria-hidden="true" size={15} />
+              <input aria-label="搜索战队" onChange={onQueryChange} placeholder="搜索战队" type="search" value={query} />
+            </label>
+            <div aria-label="按赛区筛选" className={styles.filters} role="group">
+              <button
+                aria-pressed={!divisionId}
+                className={!divisionId ? styles.filterActive : styles.filter}
+                onClick={() => setDivision(null)}
+                type="button"
+              >
+                全部赛区
+              </button>
+              {(scoreboard?.divisions ?? []).map((division) => (
+                <button
+                  aria-pressed={divisionId === division.id}
+                  className={divisionId === division.id ? styles.filterActive : styles.filter}
+                  key={division.id}
+                  onClick={() => setDivision(division.id)}
+                  type="button"
+                >
+                  {division.name}
+                </button>
+              ))}
+            </div>
           </div>
-          <div>
-            <Trophy size={17} />
-            <span>当前题目</span>
-            <strong>{scoreboard.challengeCount}</strong>
-          </div>
-          <div>
-            <span>我的排名</span>
-            <strong>{teamInfo?.rank?.rank ? `#${teamInfo.rank.rank}` : '--'}</strong>
-          </div>
-          <div>
-            <span>我的分数</span>
-            <strong>{teamInfo?.rank?.score ?? '--'}</strong>
+        </div>
+
+        {!scoreboard && !error ? (
+          <DataState loading title="积分榜加载中" />
+        ) : error || !scoreboard ? (
+          <DataState description="积分榜尚未生成或当前账户无权查看。" title="积分榜加载失败" />
+        ) : visibleItems.length ? (
+          <>
+            <div className={styles.legend}>
+              <span>
+                <i data-kind="solid" />
+                CTF
+              </span>
+              <span>
+                <i data-kind="hatch" />
+                其他赛制
+              </span>
+              {visibleItems.length > BAR_LIMIT ? <span>显示前 {BAR_LIMIT} 名</span> : null}
+            </div>
+            <ScoreBars
+              divisionName={divisionName}
+              items={visibleItems.slice(0, BAR_LIMIT)}
+              maxScore={maxScore}
+              myTeamId={myTeamId}
+            />
+          </>
+        ) : (
+          <DataState description="调整战队关键词或赛区筛选后重试。" title="没有符合条件的战队" />
+        )}
+      </section>
+
+      {scoreboard && visibleItems.length > 0 && game.start && timelineEnd > game.start ? (
+        <section aria-labelledby="timeline-title" className={styles.band} data-yn-band="">
+          <div className={styles.bandInner}>
+            <div className={styles.bandIntro}>
+              <h2 id="timeline-title">
+                <span className={styles.bandKicker}>Solve timeline</span>
+                <span>解题时间轴</span>
+              </h2>
+              <p>从开赛到现在分成 24 格。实心是该题一血，斜线是其他解出，字母是题目方向。</p>
+              <div className={styles.legend}>
+                <span>
+                  <i data-kind="solid" />
+                  一血
+                </span>
+                <span>
+                  <i data-kind="hatch" />
+                  其他解出
+                </span>
+              </div>
+            </div>
+            <SolveTimeline
+              bloodRank={bloodRank}
+              categoryOf={categoryOf}
+              end={timelineEnd}
+              items={visibleItems.slice(0, TIMELINE_LIMIT)}
+              myTeamId={myTeamId}
+              start={game.start}
+            />
           </div>
         </section>
       ) : null}
 
-      <section aria-label="积分榜筛选" className={styles.toolbar}>
-        <label className={styles.searchBox}>
-          <Search aria-hidden="true" size={17} />
-          <input
-            aria-label="搜索战队"
-            onChange={onQueryChange}
-            placeholder="搜索战队名称或简介"
-            type="search"
-            value={query}
+      {scoreboard && visibleItems.length > 0 && challenges.length > 0 ? (
+        <section aria-labelledby="matrix-title" className={styles.section}>
+          <div className={styles.sectionBar}>
+            <h2 id="matrix-title">解题明细</h2>
+            <div className={styles.legend}>
+              <span>
+                <i data-kind="solid" />
+                一血
+              </span>
+              <span>
+                <i data-kind="hatch" />
+                二血、三血及之后
+              </span>
+              <span>
+                <i data-kind="none" />
+                未解出
+              </span>
+            </div>
+          </div>
+          <SolveMatrix
+            bloodRank={bloodRank}
+            challenges={challenges}
+            divisionName={divisionName}
+            items={visibleItems}
+            myTeamId={myTeamId}
           />
-        </label>
-        <div className={styles.divisionFilters}>
-          <button
-            className={!divisionId ? styles.filterActive : styles.filter}
-            onClick={() => setDivision(null)}
-            type="button"
-          >
-            全部赛区
-          </button>
-          {(scoreboard?.divisions ?? []).map((division) => (
-            <button
-              className={divisionId === division.id ? styles.filterActive : styles.filter}
-              key={division.id}
-              onClick={() => setDivision(division.id)}
-              type="button"
-            >
-              {division.name}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {!scoreboard && !error ? (
-        <DataState loading title="积分榜加载中" />
-      ) : error ? (
-        <DataState description="积分榜尚未生成或当前账户无权查看。" title="积分榜加载失败" />
-      ) : visibleItems.length ? (
-        <div className={styles.tableViewport}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>排名</th>
-                <th>战队</th>
-                <th className={styles.divisionColumn}>赛区</th>
-                <th>总分</th>
-                <th className={styles.ctfColumn}>CTF 分数</th>
-                <th>解题数</th>
-                <th className={styles.timeColumn}>最后得分</th>
-              </tr>
-            </thead>
-            <tbody>
-              {visibleItems.map((item) => {
-                const division = item.divisionId ? divisionMap.get(item.divisionId) : undefined
-                const isCurrent = item.id === teamInfo?.rank?.id
-                return (
-                  <tr data-current={isCurrent || undefined} key={item.id}>
-                    <td>
-                      <span className={item.rank <= 3 ? styles.rankTop : styles.rank}>#{item.rank}</span>
-                    </td>
-                    <td>
-                      <div className={styles.teamCell}>
-                        <TeamAvatar item={item} />
-                        <span>
-                          <strong>{item.name}</strong>
-                          <small>{item.bio || (isCurrent ? '当前参赛战队' : '暂无简介')}</small>
-                        </span>
-                        {isCurrent ? <StatusPill tone="success">我的战队</StatusPill> : null}
-                      </div>
-                    </td>
-                    <td className={styles.divisionColumn}>
-                      {division ? (
-                        <span
-                          className={`${styles.divisionPill} ${divisionToneClasses[division.index % divisionToneClasses.length]}`}
-                        >
-                          {division.name}
-                        </span>
-                      ) : (
-                        <span className={styles.muted}>默认赛区</span>
-                      )}
-                    </td>
-                    <td>
-                      <strong className={styles.score}>{item.score}</strong>
-                    </td>
-                    <td className={styles.ctfColumn}>{item.ctfScore}</td>
-                    <td>{item.solvedCount}</td>
-                    <td className={styles.timeColumn}>{formatTime(item.lastSubmissionTime)}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <DataState description="调整战队关键词或赛区筛选后重试。" title="没有符合条件的战队" />
-      )}
+        </section>
+      ) : null}
     </div>
   )
 }

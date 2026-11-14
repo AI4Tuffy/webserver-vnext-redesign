@@ -11,11 +11,12 @@ const accountRequestOptions = {
 }
 
 export function useCurrentAccount() {
-  const { data: user, error, mutate } = api.account.useAccountProfile(accountRequestOptions)
+  const { data: user, error, isLoading, mutate } = api.account.useAccountProfile(accountRequestOptions)
 
   return {
     user,
     error,
+    isLoading,
     isAuthenticated: Boolean(user),
     isAdmin: user?.role === Role.Admin || user?.role === Role.SuperAdmin,
     isTeacher: user?.role === Role.Teacher || user?.role === Role.Admin || user?.role === Role.SuperAdmin,

@@ -3,7 +3,6 @@ import { ComponentType } from 'react'
 import { Link } from 'react-router'
 import { ActionButton } from '../../shared/Interaction'
 import type { UserProfileHistoryItem } from './api/userProfileApi'
-import type { ProfileTab } from './profileDomain'
 import styles from './UserProfilePage.module.css'
 
 const historyIcons: Record<string, ComponentType<{ size?: number }>> = {
@@ -13,13 +12,6 @@ const historyIcons: Record<string, ComponentType<{ size?: number }>> = {
   penetration: Network,
   training: BookOpenCheck,
   teaching: GraduationCap,
-}
-
-const historyTitles: Record<ProfileTab, string> = {
-  overview: '近期经历',
-  challenges: '公开解题记录',
-  games: '赛事与攻防经历',
-  training: '培训与授课经历',
 }
 
 function formatOccurredAt(value: number) {
@@ -50,7 +42,6 @@ function HistoryContent({ item }: { item: UserProfileHistoryItem }) {
 }
 
 export function ProfileHistory({
-  tab,
   items,
   loading,
   loadingMore,
@@ -58,7 +49,6 @@ export function ProfileHistory({
   hasMore,
   onLoadMore,
 }: {
-  tab: ProfileTab
   items: UserProfileHistoryItem[]
   loading: boolean
   loadingMore: boolean
@@ -70,8 +60,7 @@ export function ProfileHistory({
     <section className={styles.profilePanel}>
       <header className={styles.panelHeading}>
         <div>
-          <span className={styles.panelEyebrow}>HISTORY</span>
-          <h2>{historyTitles[tab]}</h2>
+          <h2>近期经历</h2>
         </div>
       </header>
       {loading ? (

@@ -47,11 +47,8 @@ export function FlagSubmission({
   return (
     <section aria-labelledby={titleId} className={styles.flagSection}>
       <header className={styles.sectionHeader}>
-        <div>
-          <span>SUBMISSION</span>
-          <h2 id={titleId}>提交 Flag</h2>
-        </div>
-        <small>{remaining === null ? `已提交 ${attempts} 次` : `剩余 ${remaining} 次`}</small>
+        <h2 id={titleId}>提交 Flag</h2>
+        {remaining === null ? null : <small>剩余 {remaining} 次</small>}
       </header>
 
       {hasMultipleFlags ? (
@@ -80,6 +77,9 @@ export function FlagSubmission({
       {disabledReason ? <InlineFeedback>{disabledReason}</InlineFeedback> : null}
 
       <form className={styles.flagForm} onSubmit={submitForm}>
+        <span aria-hidden="true" className={styles.prompt}>
+          $
+        </span>
         <label>
           <span className={styles.srOnly}>Flag 内容</span>
           <input

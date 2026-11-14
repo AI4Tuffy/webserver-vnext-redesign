@@ -123,7 +123,6 @@ export function TokenSettings() {
       <div className={styles.settingsContent}>
         <section className={styles.sectionIntroRow}>
           <div>
-            <span>API ACCESS</span>
             <h2>API Token</h2>
             <p>API Token 仅对教师及更高权限开放。如需程序化访问，请联系平台管理员。</p>
           </div>
@@ -136,7 +135,6 @@ export function TokenSettings() {
     <div className={styles.settingsContent}>
       <section className={styles.sectionIntroRow}>
         <div>
-          <span>API ACCESS</span>
           <h2>API Token</h2>
           <p>Token 明文仅在创建时显示一次。</p>
         </div>

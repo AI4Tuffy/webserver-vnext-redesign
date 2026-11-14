@@ -1,4 +1,5 @@
 import { ChevronLeft, Crown, Plus, Search, UserPlus } from 'lucide-react'
+import { ModulePageArt } from '../../shared/art/ModulePageArt'
 import { ActionButton, InlineFeedback } from '../../shared/Interaction'
 import { DataState, PageHeading, StatusPill } from '../../shared/Primitives'
 import { useVNextPageTitle } from '../../shared/useVNextPageTitle'
@@ -16,28 +17,10 @@ export function TeamsPage() {
   const controller = useTeamWorkspaceController()
   useVNextPageTitle('战队协作')
 
-  if (!controller.account.isAuthenticated && !controller.account.error) {
-    return (
-      <div className={styles.statePage}>
-        <DataState loading title="账户检查中" />
-      </div>
-    )
-  }
-
-  if (!controller.account.isAuthenticated) {
-    return (
-      <div className={styles.statePage}>
-        <DataState description="登录后可以创建、加入和管理战队。" title="需要登录" />
-      </div>
-    )
-  }
-
-  const team = controller.selectedTeam
-
-  return (
-    <div className={styles.page}>
-      <PageHeading
-        actions={
+  const heading = (
+    <PageHeading
+      actions={
+        controller.account.isAuthenticated ? (
           <div className={styles.headingActions}>
             <ActionButton
               icon={<Plus size={16} />}
@@ -51,10 +34,34 @@ export function TeamsPage() {
               邀请码加入
             </ActionButton>
           </div>
-        }
-        eyebrow="TEAM OPERATIONS"
-        title="战队协作"
-      />
+        ) : undefined
+      }
+      eyebrow="TEAM OPERATIONS"
+      illustration={<ModulePageArt kind="teams" />}
+      title="战队协作"
+    />
+  )
+
+  if (!controller.account.isAuthenticated) {
+    return (
+      <div className={styles.page}>
+        {heading}
+        <div className={styles.accountState}>
+          {controller.account.error ? (
+            <DataState description="登录后可以创建、加入和管理战队。" title="需要登录" />
+          ) : (
+            <DataState loading title="账户检查中" />
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  const team = controller.selectedTeam
+
+  return (
+    <div className={styles.page}>
+      {heading}
 
       {controller.feedback ? (
         <div className={styles.pageFeedback}>

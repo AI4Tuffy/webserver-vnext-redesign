@@ -91,28 +91,6 @@ export interface UserPrivateOverview {
   submittedTheoryAssignments: number
 }
 
-export interface AccountSummaryContinueItem {
-  id: string
-  kind: string
-  title: string
-  subtitle: string
-  route: string
-  endsAt: number | null
-}
-
-export interface AccountSummary {
-  id: string
-  userName: string
-  role: Role
-  bio: string
-  avatar: string | null
-  solved: number
-  activeDays: number
-  runningInstances: number
-  pendingReviews: number
-  continueItems: AccountSummaryContinueItem[]
-}
-
 export class UserProfileApiError extends Error {
   constructor(
     message: string,
@@ -164,8 +142,5 @@ export const userProfileApi = {
   },
   privateOverview(signal?: AbortSignal) {
     return getJson<UserPrivateOverview>('/api/users/me/private-overview', signal)
-  },
-  accountSummary(signal?: AbortSignal) {
-    return getJson<AccountSummary>('/api/Account/Summary', signal)
   },
 }

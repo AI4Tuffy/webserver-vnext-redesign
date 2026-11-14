@@ -1,5 +1,5 @@
-import { ArrowLeft, Pin } from 'lucide-react'
-import { Link, useParams } from 'react-router'
+import { Pin } from 'lucide-react'
+import { useParams } from 'react-router'
 import { MarkdownContent, markdownOutline } from '../../shared/MarkdownContent'
 import { DataState, StatusPill } from '../../shared/Primitives'
 import { useVNextPageTitle } from '../../shared/useVNextPageTitle'
@@ -39,10 +39,6 @@ export function PostDetailPage() {
 
   return (
     <div className={styles.page}>
-      <Link className={styles.backLink} to="/posts">
-        <ArrowLeft size={16} />
-        返回公告列表
-      </Link>
       <header className={styles.header}>
         <div className={styles.headerMeta}>
           {post.isPinned ? (

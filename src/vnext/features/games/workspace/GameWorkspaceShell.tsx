@@ -1,9 +1,10 @@
 import * as signalR from '@microsoft/signalr'
-import { Clock3, Radio, Wifi, WifiOff } from 'lucide-react'
+import { Clock3 } from 'lucide-react'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router'
 import { DetailedGameInfoModel, GameNotice, NoticeType } from '@Api'
-import { DataState, StatusPill } from '../../../shared/Primitives'
+import { DataState } from '../../../shared/Primitives'
+import { SegmentedControl, segmentedItemClassName } from '../../../shared/SegmentedControl'
 import { useVNextPageTitle } from '../../../shared/useVNextPageTitle'
 import { gameModulesFor } from '../gameModules'
 import { useGameNotices, usePlayerGame } from '../gamePlayerApi'
@@ -179,32 +180,38 @@ export function GameWorkspaceShell() {
   return (
     <GameWorkspaceContext.Provider value={contextValue}>
       <div className={styles.workspace}>
+        {/* 刊头只留比赛名；当前模块由下方切换条表明，不再重复 */}
+        <section aria-label="比赛信息" className={styles.gameHead}>
+          <Link className={styles.gameTitle} to={`/games/${id}`}>
+            {game.title || `比赛 ${id}`}
+          </Link>
+        </section>
         <header className={styles.workspaceBar}>
-          <div className={styles.gameIdentity}>
-            <Link to={`/games/${id}`}>{game.title || `比赛 ${id}`}</Link>
-            <span>{activeModule?.label || '比赛工作区'}</span>
-          </div>
-
-          <nav aria-label="比赛模块" className={styles.moduleNav}>
+          <SegmentedControl
+            activeKey={activeModule?.id}
+            aria-label="比赛模块"
+            as="nav"
+            className={styles.moduleNav}
+          >
             {modules.map((module) => {
               const Icon = module.icon
               return module.implemented ? (
-                <NavLink
-                  className={({ isActive }) => (isActive ? styles.moduleLinkActive : styles.moduleLink)}
-                  key={module.id}
-                  to={`/games/${id}/${module.id}`}
-                >
-                  <Icon size={16} />
+                <NavLink className={segmentedItemClassName} key={module.id} to={`/games/${id}/${module.id}`}>
+                  <Icon aria-hidden="true" size={16} />
                   {module.shortLabel}
                 </NavLink>
               ) : (
-                <span className={styles.modulePending} key={module.id} title="本轮尚未重构">
-                  <Icon size={16} />
+                <span
+                  className={`${segmentedItemClassName} ${styles.modulePending}`}
+                  key={module.id}
+                  title="本轮尚未重构"
+                >
+                  <Icon aria-hidden="true" size={16} />
                   {module.shortLabel}
                 </span>
               )
             })}
-          </nav>
+          </SegmentedControl>
 
           <div className={styles.liveStatus}>
             {countdownTarget && countdownTarget > now ? (
@@ -214,21 +221,17 @@ export function GameWorkspaceShell() {
                 <strong>{durationLabel(countdownTarget, now)}</strong>
               </span>
             ) : null}
-            <span className={styles.connection} title={connectionLabel(connectionState)}>
-              {connectionState === 'connected' ? (
-                <Wifi size={16} />
-              ) : connectionState === 'offline' ? (
-                <WifiOff size={16} />
-              ) : (
-                <Radio size={16} />
-              )}
-              <StatusPill
-                tone={
-                  connectionState === 'connected' ? 'success' : connectionState === 'offline' ? 'warning' : 'neutral'
-                }
-              >
-                {connectionState === 'connected' ? '实时' : connectionState === 'offline' ? '离线' : '连接中'}
-              </StatusPill>
+            {/* 实时连接：正常时只是一个圆点，断开或重连时才写出文字 */}
+            <span
+              aria-label={connectionLabel(connectionState)}
+              className={styles.connection}
+              data-state={connectionState}
+              role="status"
+              title={connectionLabel(connectionState)}
+            >
+              <span aria-hidden="true" className={styles.connectionDot} />
+              {connectionState === 'offline' ? <span aria-hidden="true">离线</span> : null}
+              {connectionState === 'reconnecting' ? <span aria-hidden="true">重连中</span> : null}
             </span>
           </div>
         </header>

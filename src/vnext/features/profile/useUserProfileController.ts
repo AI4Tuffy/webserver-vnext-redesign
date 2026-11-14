@@ -1,17 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useParams, useSearchParams } from 'react-router'
+import { useEffect, useMemo, useState } from 'react'
+import { useParams } from 'react-router'
 import useSWR from 'swr'
 import useSWRInfinite from 'swr/infinite'
 import { useCurrentAccount } from '../account/useCurrentAccount'
 import { userProfileApi, type UserProfileHistoryPage } from './api/userProfileApi'
-import {
-  historyTypeForTab,
-  profileDateRange,
-  resolveProfileTab,
-  resolveProfileWindow,
-  type ProfileTab,
-  type ProfileWindow,
-} from './profileDomain'
+import { PROFILE_WINDOW, profileDateRange } from './profileDomain'
 
 const requestOptions = {
   revalidateOnFocus: false,
@@ -43,32 +36,15 @@ function useDeferredSection() {
   return { targetRef: setTarget, enabled }
 }
 
-export function useAccountSummary(enabled: boolean) {
-  return useSWR(enabled ? 'vnext:account-summary' : null, () => userProfileApi.accountSummary(), requestOptions)
-}
-
 export function useUserProfileController() {
   const { userId: routeUserId } = useParams<{ userId: string }>()
-  const [searchParams, setSearchParams] = useSearchParams()
   const account = useCurrentAccount()
   const activitySection = useDeferredSection()
   const historySection = useDeferredSection()
   const isMeRoute = routeUserId?.toLowerCase() === 'me'
   const resolvedUserId = isMeRoute ? account.user?.userId : routeUserId
-  const tab = resolveProfileTab(searchParams.get('tab'))
-  const window = resolveProfileWindow(searchParams.get('window'))
-  const range = useMemo(() => profileDateRange(window), [window])
-  const historyType = historyTypeForTab(tab)
-
-  useEffect(() => {
-    const rawTab = searchParams.get('tab')
-    const rawWindow = searchParams.get('window')
-    if ((rawTab === null || rawTab === tab) && (rawWindow === null || rawWindow === window)) return
-    const next = new URLSearchParams(searchParams)
-    next.set('tab', tab)
-    next.set('window', window)
-    setSearchParams(next, { replace: true })
-  }, [searchParams, setSearchParams, tab, window])
+  const range = useMemo(() => profileDateRange(), [])
+  const historyType = 'all'
 
   const profileRequest = useSWR(
     resolvedUserId ? ['vnext:user-profile', resolvedUserId] : null,
@@ -76,8 +52,8 @@ export function useUserProfileController() {
     requestOptions
   )
   const overviewRequest = useSWR(
-    resolvedUserId ? ['vnext:user-profile-overview', resolvedUserId, window] : null,
-    () => userProfileApi.overview(resolvedUserId as string, window),
+    resolvedUserId ? ['vnext:user-profile-overview', resolvedUserId, PROFILE_WINDOW] : null,
+    () => userProfileApi.overview(resolvedUserId as string, PROFILE_WINDOW),
     { ...requestOptions, keepPreviousData: true }
   )
   const activityRequest = useSWR(
@@ -115,24 +91,7 @@ export function useUserProfileController() {
 
   useEffect(() => {
     void historyRequest.setSize(1)
-  }, [historyType, resolvedUserId, historyRequest.setSize])
-
-  const setTab = useCallback(
-    (nextTab: ProfileTab) => {
-      const next = new URLSearchParams(searchParams)
-      next.set('tab', nextTab)
-      setSearchParams(next)
-    },
-    [searchParams, setSearchParams]
-  )
-  const setWindow = useCallback(
-    (nextWindow: ProfileWindow) => {
-      const next = new URLSearchParams(searchParams)
-      next.set('window', nextWindow)
-      setSearchParams(next, { replace: true })
-    },
-    [searchParams, setSearchParams]
-  )
+  }, [resolvedUserId, historyRequest.setSize])
 
   const historyItems = useMemo(
     () => historyRequest.data?.flatMap((page) => page.items) ?? [],
@@ -145,11 +104,7 @@ export function useUserProfileController() {
     isMeRoute,
     isOwnProfile: Boolean(resolvedUserId && account.user?.userId === resolvedUserId),
     resolvedUserId,
-    tab,
-    window,
     range,
-    setTab,
-    setWindow,
     profile: profileRequest.data,
     profileError: profileRequest.error,
     profileLoading: Boolean(resolvedUserId && !profileRequest.data && !profileRequest.error),

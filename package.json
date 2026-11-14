@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:demo": "node scripts/dev-demo.mjs",
     "lint": "oxlint --fix",
     "lint:check": "oxlint --deny-warnings src/vnext",
     "check": "tsc --noEmit --strict --project tsconfig.app.json",

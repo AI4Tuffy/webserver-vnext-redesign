@@ -1,38 +1,17 @@
 import type { UserActivityPoint, UserProfileTrendPoint, UserSkillDimension } from './api/userProfileApi'
 import { dimensionDefinition } from './skillDimensionRegistry'
 
-export const profileTabs = ['overview', 'challenges', 'games', 'training'] as const
-export type ProfileTab = (typeof profileTabs)[number]
-export type ProfileWindow = '90d' | '365d'
-
-export const profileTabLabels: Record<ProfileTab, string> = {
-  overview: '概览',
-  challenges: '做题',
-  games: '赛事',
-  training: '培训',
-}
-
-export function resolveProfileTab(value: string | null): ProfileTab {
-  return profileTabs.includes(value as ProfileTab) ? (value as ProfileTab) : 'overview'
-}
-
-export function resolveProfileWindow(value: string | null): ProfileWindow {
-  return value === '90d' ? '90d' : '365d'
-}
-
-export function historyTypeForTab(tab: ProfileTab) {
-  if (tab === 'overview') return 'all'
-  return tab
-}
+/** 个人档案固定展示最近一年（52 周）的统计，与后端 overview 的 window 参数一致。 */
+export const PROFILE_WINDOW = '365d'
 
 function dateOnly(date: Date) {
   return date.toISOString().slice(0, 10)
 }
 
-export function profileDateRange(window: ProfileWindow, now = new Date()) {
+export function profileDateRange(now = new Date()) {
   const to = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
   const from = new Date(to)
-  from.setUTCDate(from.getUTCDate() - (window === '90d' ? 89 : 364))
+  from.setUTCDate(from.getUTCDate() - 364)
   return { from: dateOnly(from), to: dateOnly(to) }
 }
 
