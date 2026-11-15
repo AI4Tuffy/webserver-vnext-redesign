@@ -1,6 +1,6 @@
 /*
  * 标准胶囊切换（取自顶栏主导航）：描边长条里放等宽选项，选中块在选项间滑动；
- * 悬停时底色加深为描边色并外扩 1px 同色描边。最多支持 12 个选项。
+ * 悬停时底色加深为描边色并外扩 1px 同色描边。最多支持 15 个选项。
  */
 .frame {
   --segment-selection-fill: color-mix(in srgb, var(--yn-color-text) 11%, var(--yn-color-surface-muted));
@@ -106,6 +106,18 @@
   --segment-index: 11;
 }
 
+.rail:has(> :nth-child(13):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 12;
+}
+
+.rail:has(> :nth-child(14):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 13;
+}
+
+.rail:has(> :nth-child(15):is([aria-current='page'], [aria-pressed='true'], [aria-selected='true'])) {
+  --segment-index: 14;
+}
+
 .item {
   display: inline-flex;
   box-sizing: border-box;
@@ -147,6 +159,28 @@
 
 .item svg {
   flex: 0 0 auto;
+}
+
+.frame[data-orientation='vertical'][data-keep-vertical] {
+  width: auto;
+  overflow: visible;
+  border-radius: 25px;
+}
+
+.frame[data-orientation='vertical'][data-keep-vertical] .rail {
+  grid-auto-columns: auto;
+  grid-auto-flow: row;
+  grid-auto-rows: 1fr;
+}
+
+.frame[data-orientation='vertical'][data-keep-vertical] .rail::before {
+  transform: translateY(calc(var(--segment-index) * 100%));
+}
+
+.frame[data-orientation='vertical'][data-keep-vertical] .item {
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 0 16px;
 }
 
 /* 竖排：等高行，选中块纵向滑动；900px 以下回到横排。 */
