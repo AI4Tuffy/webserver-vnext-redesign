@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { posterIcon, SpotPalette, SpotTile } from '../../shared/art/spot'
+import styles from './GamePosterArt.module.css'
 import type { GameListStatus } from './gameCatalog'
 
 const STATUS_PALETTE: Record<GameListStatus, SpotPalette> = {
@@ -27,7 +28,15 @@ export function GamePoster({
 }) {
   const [failed, setFailed] = useState(false)
   if (src && !failed) {
-    return <img alt={`${title || '赛事'}海报`} loading="lazy" onError={() => setFailed(true)} src={src} />
+    return (
+      <img
+        alt={`${title || '赛事'}海报`}
+        className={styles.image}
+        loading="lazy"
+        onError={() => setFailed(true)}
+        src={src}
+      />
+    )
   }
   return <GamePosterArt seed={seed} status={status} />
 }

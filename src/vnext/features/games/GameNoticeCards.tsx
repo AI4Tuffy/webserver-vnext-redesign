@@ -1,8 +1,7 @@
-import { X } from 'lucide-react'
-import { AnimatePresence, motion, MotionConfig } from 'motion/react'
-import { KeyboardEvent, useEffect, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { useState } from 'react'
 import { GameNotice, NoticeType } from '@Api'
+import { HairlineItem, HairlineList } from '../../shared/DataView'
+import { VNextDialog } from '../../shared/Interaction'
 import { SpotIconName, SpotPalette, SpotTile } from '../../shared/art/spot'
 import styles from './GameNoticeCards.module.css'
 
@@ -49,136 +48,53 @@ function noticeKey(notice: GameNotice) {
   return `${notice.id}:${notice.time}`
 }
 
-/**
- * 比赛公告卡片：左侧色底手绘图标，右侧至多两行正文与「类型 · 时间」。
- * 点击后卡片放大到屏幕中央显示完整公告，背景变暗；点叉、点卡片外或按 Esc 收回，焦点回到原卡片。
- */
-export function GameNoticeCards({ notices, idPrefix }: { notices: GameNotice[]; idPrefix: string }) {
+export function GameNoticeCards({ notices }: { notices: GameNotice[] }) {
   const [openKey, setOpenKey] = useState<string | null>(null)
-  const cardRefs = useRef(new Map<string, HTMLButtonElement>())
-  const closeRef = useRef<HTMLButtonElement>(null)
-  const returnKey = useRef<string | null>(null)
-  const open = notices.find((notice) => noticeKey(notice) === openKey)
-
-  useEffect(() => {
-    if (open) closeRef.current?.focus()
-  }, [open])
-
-  const close = () => {
-    returnKey.current = openKey
-    setOpenKey(null)
-  }
-
-  // 收回动画结束后再把焦点还给原卡片，避免焦点落在正在消失的元素上
-  const restoreFocus = () => {
-    if (returnKey.current) cardRefs.current.get(returnKey.current)?.focus()
-    returnKey.current = null
-  }
-
-  const onDialogKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Escape') {
-      event.stopPropagation()
-      close()
-    }
-    // 对话框里只有关闭按钮可以获得焦点，Tab 留在它身上
-    if (event.key === 'Tab') {
-      event.preventDefault()
-      closeRef.current?.focus()
-    }
-  }
+  const activeIndex = notices.findIndex((notice) => noticeKey(notice) === openKey)
+  const active = notices[activeIndex]
+  const level = active && noticeLevel(active.type)
 
   return (
-    <MotionConfig reducedMotion="user" transition={{ type: 'spring', stiffness: 420, damping: 38 }}>
-      <ul className={styles.cards}>
+    <>
+      <HairlineList aria-label="比赛公告">
         {notices.map((notice, index) => {
           const key = noticeKey(notice)
           const kind = noticeLevel(notice.type)
           return (
-            <li key={key}>
-              {openKey === key ? (
-                <div aria-hidden="true" className={styles.placeholder} />
-              ) : (
-                <motion.button
-                  aria-haspopup="dialog"
-                  className={styles.card}
-                  layoutId={`${idPrefix}-${key}`}
-                  onClick={() => setOpenKey(key)}
-                  ref={(node) => {
-                    if (node) cardRefs.current.set(key, node)
-                    else cardRefs.current.delete(key)
-                  }}
-                  type="button"
-                >
-                  <motion.span aria-hidden="true" className={styles.tile} layoutId={`${idPrefix}-${key}-tile`}>
-                    <SpotTile height={100} icon={kind.icon} palette={kind.palette} seed={index + 5} width={88} />
-                  </motion.span>
-                  <span className={styles.cardBody}>
-                    <span className={styles.cardText}>{noticeText(notice.type, notice.values)}</span>
-                    <span className={styles.cardMeta}>
-                      {kind.label} · <time dateTime={new Date(notice.time).toISOString()}>{noticeTime(notice.time)}</time>
-                    </span>
+            <HairlineItem key={key} onClick={() => setOpenKey(key)}>
+              <span className={styles.row}>
+                <span className={styles.tile}>
+                  <SpotTile height={88} icon={kind.icon} palette={kind.palette} seed={index + 5} width={88} />
+                </span>
+                <span className={styles.copy}>
+                  <span className={styles.text}>{noticeText(notice.type, notice.values)}</span>
+                  <span className={styles.meta}>
+                    {kind.label} ·{' '}
+                    <time className={styles.time} dateTime={new Date(notice.time).toISOString()}>
+                      {noticeTime(notice.time)}
+                    </time>
                   </span>
-                </motion.button>
-              )}
-            </li>
+                </span>
+              </span>
+            </HairlineItem>
           )
         })}
-      </ul>
-
-      {createPortal(
-        <AnimatePresence onExitComplete={restoreFocus}>
-          {open ? (
-            <div className={styles.layer} key="notice-layer">
-              <motion.div
-                animate={{ opacity: 1 }}
-                aria-hidden="true"
-                className={styles.scrim}
-                exit={{ opacity: 0 }}
-                initial={{ opacity: 0 }}
-                onClick={close}
-                transition={{ duration: 0.2 }}
-              />
-              <motion.div
-                aria-labelledby={`${idPrefix}-dialog-title`}
-                aria-modal="true"
-                className={styles.dialog}
-                layoutId={`${idPrefix}-${noticeKey(open)}`}
-                onKeyDown={onDialogKeyDown}
-                role="dialog"
-              >
-                <button aria-label="关闭公告" className={styles.close} onClick={close} ref={closeRef} type="button">
-                  <X size={18} />
-                </button>
-                <motion.span aria-hidden="true" className={styles.dialogTile} layoutId={`${idPrefix}-${noticeKey(open)}-tile`}>
-                  <SpotTile
-                    height={200}
-                    icon={noticeLevel(open.type).icon}
-                    palette={noticeLevel(open.type).palette}
-                    seed={notices.indexOf(open) + 5}
-                    width={560}
-                  />
-                </motion.span>
-                <motion.div
-                  animate={{ opacity: 1, y: 0 }}
-                  className={styles.dialogBody}
-                  exit={{ opacity: 0 }}
-                  initial={{ opacity: 0, y: 8 }}
-                  transition={{ delay: 0.08, duration: 0.2 }}
-                >
-                  <p className={styles.dialogMeta}>
-                    {noticeLevel(open.type).label} ·{' '}
-                    <time dateTime={new Date(open.time).toISOString()}>{noticeTime(open.time, true)}</time>
-                  </p>
-                  <h3 className={styles.dialogText} id={`${idPrefix}-dialog-title`}>
-                    {noticeText(open.type, open.values)}
-                  </h3>
-                </motion.div>
-              </motion.div>
+      </HairlineList>
+      <VNextDialog
+        description={active && `${level.label} · ${noticeTime(active.time, true)}`}
+        onClose={() => setOpenKey(null)}
+        open={Boolean(active)}
+        title="比赛公告"
+      >
+        {active && (
+          <>
+            <div className={styles.dialogTile}>
+              <SpotTile height={200} icon={level.icon} palette={level.palette} seed={activeIndex + 5} width={560} />
             </div>
-          ) : null}
-        </AnimatePresence>,
-        document.body
-      )}
-    </MotionConfig>
+            <p className={styles.fullText}>{noticeText(active.type, active.values)}</p>
+          </>
+        )}
+      </VNextDialog>
+    </>
   )
 }

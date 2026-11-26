@@ -1,6 +1,8 @@
 import { UserRound, Users } from 'lucide-react'
 import { ReactNode, useId } from 'react'
 import { DetailedGameInfoModel } from '@Api'
+import { StatusBadge } from '../../shared/Primitives'
+import { SpecItem, SpecStrip } from '../../shared/SpecStrip'
 import styles from './GameFacts.module.css'
 import { participationLabel } from './gameCatalog'
 
@@ -37,7 +39,7 @@ function Duration({ ms }: { ms: number }) {
       {durationParts(ms).map(([value, unit]) => (
         <span className={styles.durationPart} key={unit}>
           {value}
-          <small>{unit}</small>
+          <small className={styles.unit}>{unit}</small>
         </span>
       ))}
     </>
@@ -71,8 +73,8 @@ export function GameTimeline({ start, end, now }: { start?: number; end?: number
   return (
     <section aria-label="比赛进程" className={styles.timeline} data-state={state}>
       <div className={styles.timelineHead}>
-        <span>比赛进程</span>
-        <strong>{summary}</strong>
+        <span className={styles.label}>比赛进程</span>
+        <strong className={styles.summary}>{summary}</strong>
       </div>
       <svg aria-hidden="true" className={styles.timelineBar}>
         <defs>
@@ -92,10 +94,16 @@ export function GameTimeline({ start, end, now }: { start?: number; end?: number
       </svg>
       <div className={styles.timelineEnds}>
         <span>
-          <time dateTime={new Date(start).toISOString()}>{shortDate(start)}</time> 开始
+          <time className={styles.date} dateTime={new Date(start).toISOString()}>
+            {shortDate(start)}
+          </time>{' '}
+          开始
         </span>
         <span>
-          <time dateTime={new Date(end).toISOString()}>{shortDate(end)}</time> 结束
+          <time className={styles.date} dateTime={new Date(end).toISOString()}>
+            {shortDate(end)}
+          </time>{' '}
+          结束
         </span>
       </div>
     </section>
@@ -134,9 +142,7 @@ export function GameFacts({ game }: { game: DetailedGameInfoModel }) {
       '赛区',
       <span className={styles.chips} key="divisions">
         {divisionNames.map((name) => (
-          <span className={styles.chip} key={name}>
-            {name}
-          </span>
+          <StatusBadge key={name}>{name}</StatusBadge>
         ))}
       </span>,
     ])
@@ -145,13 +151,10 @@ export function GameFacts({ game }: { game: DetailedGameInfoModel }) {
   if (game.practiceMode) facts.push(['赛后练习', '结束后开放'])
 
   return (
-    <dl className={styles.facts}>
+    <SpecStrip className={styles.facts}>
       {facts.map(([label, value]) => (
-        <div key={label}>
-          <dt>{label}</dt>
-          <dd>{value}</dd>
-        </div>
+        <SpecItem key={label} label={label} value={<span className={styles.factValue}>{value}</span>} />
       ))}
-    </dl>
+    </SpecStrip>
   )
 }

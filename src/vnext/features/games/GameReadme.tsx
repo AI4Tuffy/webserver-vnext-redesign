@@ -75,15 +75,15 @@ export function GameReadme({ source }: { source: string }) {
             <Paperclip aria-hidden="true" size={15} />
             附件
           </span>
-          <ul>
+          <ul className={styles.attachmentList}>
             {attachments.map((attachment) => (
-              <li key={attachment.url}>
-                <a download href={attachment.url} rel="noreferrer noopener" target="_blank">
+              <li className={styles.attachment} key={attachment.url}>
+                <a className={styles.download} download href={attachment.url} rel="noreferrer noopener" target="_blank">
                   <span aria-hidden="true" className={styles.fileBadge}>
                     {attachment.extension || 'file'}
                   </span>
                   <span className={styles.fileName}>{attachment.name}</span>
-                  <Download aria-hidden="true" size={15} />
+                  <Download aria-hidden="true" className={styles.downloadIcon} size={15} />
                 </a>
               </li>
             ))}

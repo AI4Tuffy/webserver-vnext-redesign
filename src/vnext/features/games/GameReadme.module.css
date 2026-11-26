@@ -35,7 +35,7 @@
   font-weight: 600;
 }
 
-.attachments ul {
+.attachmentList {
   display: flex;
   min-width: 0;
   flex: 1 1 auto;
@@ -46,12 +46,12 @@
   list-style: none;
 }
 
-.attachments li {
+.attachment {
   min-width: 0;
   max-width: 100%;
 }
 
-.attachments a {
+.download {
   display: inline-flex;
   max-width: 100%;
   min-height: 36px;
@@ -65,11 +65,11 @@
   transition: border-color var(--yn-motion-fast) ease-in-out;
 }
 
-.attachments a:hover {
+.download:hover {
   border-color: var(--yn-color-border-strong);
 }
 
-.attachments a > svg {
+.downloadIcon {
   flex: 0 0 auto;
   color: var(--yn-color-muted);
 }
@@ -101,7 +101,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .attachments a {
+  .download {
     transition: none;
   }
 }

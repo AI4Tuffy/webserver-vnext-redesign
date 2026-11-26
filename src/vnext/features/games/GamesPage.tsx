@@ -1,10 +1,13 @@
-import { ArrowRight, ChevronLeft, ChevronRight, Clock3, Search, Users } from 'lucide-react'
-import { motion } from 'motion/react'
-import { ChangeEvent, useEffect, useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router'
-import { ModulePageArt } from '../../shared/art/ModulePageArt'
-import { DataState, StatusPill } from '../../shared/Primitives'
+import { Clock3, Users } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router'
+import { PaginationBar } from '../../shared/CatalogPagination'
+import { HairlineItem, HairlineList } from '../../shared/DataView'
+import { PageShell } from '../../shared/Layout'
+import { DataState, PageHeader, StatusBadge } from '../../shared/Primitives'
 import { SegmentedControl, segmentedItemClassName } from '../../shared/SegmentedControl'
+import { FilterBar, SearchInput } from '../../shared/Toolbar'
+import { EditorialPlate } from '../../shared/art/EditorialPlate'
 import { useVNextPageTitle } from '../../shared/useVNextPageTitle'
 import { GamePoster } from './GamePosterArt'
 import styles from './GamesPage.module.css'
@@ -31,7 +34,6 @@ function parsePage(value: string | null) {
   const page = Number(value)
   return Number.isInteger(page) && page > 0 ? page : 1
 }
-
 
 export function GamesPage() {
   const catalog = useGameCatalog()
@@ -86,12 +88,12 @@ export function GamesPage() {
   const visibleGames = filteredGames.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
   useEffect(() => {
-    if (page <= pageCount) return
+    if (catalog.isLoading || catalog.error || page <= pageCount) return
     const next = new URLSearchParams(searchParams)
     if (pageCount <= 1) next.delete('page')
     else next.set('page', String(pageCount))
     setSearchParams(next, { replace: true })
-  }, [page, pageCount, searchParams, setSearchParams])
+  }, [catalog.isLoading, catalog.error, page, pageCount, searchParams, setSearchParams])
 
   const setStatus = (nextStatus: GameListStatus | null) => {
     const next = new URLSearchParams(searchParams)
@@ -106,107 +108,82 @@ export function GamesPage() {
     if (nextPage <= 1) next.delete('page')
     else next.set('page', String(nextPage))
     setSearchParams(next)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    window.scrollTo({
+      top: 0,
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+    })
   }
 
-  const onQueryChange = (event: ChangeEvent<HTMLInputElement>) => setQuery(event.currentTarget.value)
-
   return (
-    <div className={styles.page}>
-      {/* 刊头：左列自上而下是标题与筛选，右列插图与左列等高 */}
-      <header className={styles.header}>
-        <div className={styles.headerCopy}>
-          <h1>赛事中心</h1>
-          <section className={styles.toolbar} aria-label="赛事筛选">
-            <label className={styles.searchBox}>
-              <Search aria-hidden="true" size={17} />
-              <input
-                aria-label="搜索赛事"
-                onChange={onQueryChange}
-                placeholder="搜索赛事名称或简介"
-                type="search"
-                value={query}
-              />
-            </label>
-            <SegmentedControl activeKey={status ?? 'all'} aria-label="赛事状态" className={styles.statusControl} role="group">
-              {statusFilters.map((filter) => (
-                <button
-                  aria-pressed={status === filter.value}
-                  className={segmentedItemClassName}
-                  key={filter.label}
-                  onClick={() => setStatus(filter.value)}
-                  type="button"
-                >
-                  {filter.label}
-                  <span className={styles.filterCount}>{counts[filter.value ?? 'all']}</span>
-                </button>
-              ))}
-            </SegmentedControl>
-          </section>
-        </div>
-        <div className={styles.headerArt}>
-          <ModulePageArt kind="games" />
-        </div>
-      </header>
+    <PageShell>
+      <PageHeader title="赛事中心" illustration={<EditorialPlate aspect="20/13" slot="module-games" />} />
+
+      <FilterBar>
+        <SearchInput
+          className={styles.search}
+          label="搜索赛事"
+          onValueChange={setQuery}
+          placeholder="搜索赛事名称或简介"
+          value={query}
+        />
+        <SegmentedControl activeKey={status ?? 'all'} aria-label="赛事状态" className={styles.filters} role="group">
+          {statusFilters.map((filter) => (
+            <button
+              aria-pressed={status === filter.value}
+              className={segmentedItemClassName}
+              key={filter.label}
+              onClick={() => setStatus(filter.value)}
+              type="button"
+            >
+              {filter.label}
+              <span className={styles.filterCount}>{counts[filter.value ?? 'all']}</span>
+            </button>
+          ))}
+        </SegmentedControl>
+      </FilterBar>
 
       {catalog.isLoading ? (
         <DataState loading title="赛事加载中" />
       ) : catalog.error ? (
         <DataState description="请稍后刷新重试。" title="赛事加载失败" />
       ) : visibleGames.length > 0 ? (
-        <motion.section aria-label="赛事列表" className={styles.gameList} layout>
+        <HairlineList aria-label="赛事列表">
           {visibleGames.map((game) => (
-            <motion.article key={game.id} layout="position">
-              <Link className={styles.gameCard} to={`/games/${game.id}`}>
+            <HairlineItem
+              key={game.id}
+              leading={
                 <span className={styles.poster}>
                   <GamePoster seed={game.id} src={game.poster} status={game.status} title={game.title} />
                 </span>
-                <span className={styles.gameMain}>
-                  <span className={styles.gameTitleLine}>
-                    <h2>{game.title || `赛事 ${game.id}`}</h2>
-                    <StatusPill tone={gameStatusTone(game.status)}>{gameStatusLabel(game.status)}</StatusPill>
+              }
+              meta={
+                <>
+                  <span className={styles.meta}>
+                    <Users aria-hidden="true" size={15} />
+                    {participationLabel(game.limit)}
                   </span>
-                  <p>{game.summary || '赛事介绍尚未填写。'}</p>
-                  <span className={styles.gameMeta}>
-                    <span>
-                      <Users aria-hidden="true" size={15} />
-                      {participationLabel(game.limit)}
-                    </span>
-                    <span>
-                      <Clock3 aria-hidden="true" size={15} />
-                      {formatGameRange(game)}
-                    </span>
+                  <span className={styles.meta}>
+                    <Clock3 aria-hidden="true" size={15} />
+                    {formatGameRange(game)}
                   </span>
-                </span>
-                <span aria-hidden="true" className={styles.cardArrow}>
-                  <ArrowRight size={18} />
-                </span>
-              </Link>
-            </motion.article>
+                </>
+              }
+              summary={game.summary || '赛事介绍尚未填写。'}
+              title={
+                <div className={styles.titleLine}>
+                  <h2 className={styles.title}>{game.title || `赛事 ${game.id}`}</h2>
+                  <StatusBadge tone={gameStatusTone(game.status)}>{gameStatusLabel(game.status)}</StatusBadge>
+                </div>
+              }
+              to={`/games/${game.id}`}
+            />
           ))}
-        </motion.section>
+        </HairlineList>
       ) : (
         <DataState description="调整关键词或状态筛选后重试。" title="没有符合条件的赛事" />
       )}
 
-      {filteredGames.length > PAGE_SIZE ? (
-        <nav aria-label="赛事分页" className={styles.pagination}>
-          <button aria-label="上一页" disabled={safePage <= 1} onClick={() => setPage(safePage - 1)} type="button">
-            <ChevronLeft size={17} />
-          </button>
-          <span>
-            第 {safePage} / {pageCount} 页
-          </span>
-          <button
-            aria-label="下一页"
-            disabled={safePage >= pageCount}
-            onClick={() => setPage(safePage + 1)}
-            type="button"
-          >
-            <ChevronRight size={17} />
-          </button>
-        </nav>
-      ) : null}
-    </div>
+      <PaginationBar onPageChange={setPage} page={safePage} pageCount={pageCount} />
+    </PageShell>
   )
 }

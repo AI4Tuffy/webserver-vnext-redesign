@@ -1,98 +1,5 @@
-/*
- * 赛事中心：沿用首页的手账设计语言——衬线大标题、手绘插图、胶囊搜索与标准胶囊切换、
- * 纸面卡片列表。没有海报的赛事用手账贴纸代替。
- */
-.page {
-  width: min(100%, var(--yn-page-max-width));
-  min-height: calc(100vh - var(--yn-context-height));
-  margin: 0 auto;
-  padding: clamp(24px, 4vw, 48px) var(--yn-page-gutter) 80px;
-}
-
-/*
- * 刊头：左列自上而下是衬线标题与筛选工具，右列是年代拼贴插图，两列等高；
- * 底部一条细线把刊头和下方列表隔开。
- */
-.header {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(280px, 30vw, 420px);
-  align-items: stretch;
-  gap: clamp(24px, 4vw, 64px);
-  padding-bottom: clamp(20px, 2.6vw, 32px);
-  border-bottom: 1px solid var(--yn-color-border);
-}
-
-.headerCopy {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: clamp(20px, 2.6vw, 32px);
-}
-
-.headerCopy h1 {
-  margin: 0;
-  font-family: var(--yn-font-serif);
-  font-size: clamp(44px, 5.4vw, 84px);
-  font-weight: 400;
-  line-height: 1.02;
-  letter-spacing: -0.015em;
-}
-
-.headerArt {
-  overflow: hidden;
-  align-self: start;
-  aspect-ratio: 20 / 13;
-  border-radius: var(--yn-radius-lg);
-}
-
-/* 工具条：上一行是占满左列的胶囊搜索框，下一行是标准胶囊切换 */
-.toolbar {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--yn-space-3);
-}
-
-.searchBox {
-  display: flex;
-  width: 100%;
-  min-height: 52px;
-  align-items: center;
-  gap: 10px;
-  padding: 0 20px;
-  border: 1px solid var(--yn-color-border-strong);
-  border-radius: var(--yn-radius-pill);
-  color: var(--yn-color-muted);
-  transition:
-    background-color var(--yn-motion-fast) ease-in-out,
-    box-shadow var(--yn-motion-fast) ease-in-out;
-}
-
-.searchBox:hover {
-  background: color-mix(in srgb, var(--yn-color-border) 45%, transparent);
-}
-
-.searchBox:focus-within {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--yn-color-text) 14%, transparent);
-}
-
-.searchBox input {
-  width: 100%;
-  min-width: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--yn-color-text);
-  font-size: var(--yn-font-md);
-}
-
-.searchBox input:focus-visible {
-  box-shadow: none;
-}
-
-.searchBox input::placeholder {
-  color: var(--yn-color-muted);
+.search {
+  max-width: 420px;
 }
 
 .filterCount {
@@ -101,241 +8,36 @@
   font-size: var(--yn-font-xs);
 }
 
-/* 赛事卡片：海报、衬线标题与状态、简介、参赛方式与时间、圆形箭头 */
-.gameList {
-  display: grid;
-  gap: 14px;
-  margin-top: clamp(20px, 2.6vw, 32px);
-}
-
-.gameCard {
-  display: grid;
-  grid-template-columns: clamp(150px, 15vw, 200px) minmax(0, 1fr) 44px;
-  align-items: center;
-  gap: clamp(16px, 2.2vw, 32px);
-  padding: 14px clamp(14px, 1.8vw, 24px) 14px 14px;
-  border: 1px solid color-mix(in srgb, var(--yn-color-border) 70%, transparent);
-  border-radius: 20px;
-  background: color-mix(in srgb, var(--yn-color-surface) 60%, var(--yn-color-canvas));
-  color: var(--yn-color-text);
-  transition:
-    border-color var(--yn-motion-fast) ease-in-out,
-    background-color var(--yn-motion-fast) ease-in-out;
-}
-
-.gameCard:hover {
-  border-color: var(--yn-color-border-strong);
-  background: color-mix(in srgb, var(--yn-color-surface) 85%, var(--yn-color-canvas));
-}
-
 .poster {
   display: block;
+  width: clamp(100px, 12vw, 160px);
   overflow: hidden;
   aspect-ratio: 16 / 10;
-  border-radius: 12px;
-  background: var(--yn-art-kraft);
+  border-radius: var(--yn-radius-md);
+  background: var(--yn-art-frame-bg);
 }
 
-.poster img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.gameMain {
+.titleLine,
+.meta {
   display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.gameTitleLine {
-  display: flex;
-  min-width: 0;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 6px 12px;
+  gap: var(--yn-space-2);
 }
 
-.gameTitleLine h2 {
-  min-width: 0;
+.titleLine {
+  flex-wrap: wrap;
+}
+
+.title {
   margin: 0;
-  font-family: var(--yn-font-serif);
-  font-size: clamp(22px, 2vw, 28px);
-  font-weight: 400;
-  line-height: 1.2;
+  font: inherit;
   overflow-wrap: anywhere;
 }
 
-.gameMain p {
-  display: -webkit-box;
-  margin: 0;
-  overflow: hidden;
-  color: var(--yn-color-text-secondary);
-  font-size: var(--yn-font-md);
-  line-height: 1.6;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
-.gameMeta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 20px;
-  margin-top: 2px;
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-sm);
-}
-
-.gameMeta > span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-}
-
-.cardArrow {
-  display: grid;
-  width: 44px;
-  height: 44px;
-  place-items: center;
-  border: 1px solid var(--yn-color-border-strong);
-  border-radius: 50%;
-  color: var(--yn-color-text-secondary);
-  transition:
-    background-color var(--yn-motion-fast) ease-in-out,
-    box-shadow var(--yn-motion-fast) ease-in-out,
-    color var(--yn-motion-fast) ease-in-out;
-}
-
-.cardArrow svg {
-  transition: transform var(--yn-motion-fast) ease-in-out;
-}
-
-.gameCard:hover .cardArrow {
-  background: var(--yn-color-border);
-  box-shadow: 0 0 0 1px var(--yn-color-border);
-  color: var(--yn-color-text);
-}
-
-.gameCard:hover .cardArrow svg {
-  transform: translateX(2px);
-}
-
-/* 分页：圆形按钮，悬停与顶栏一致 */
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--yn-space-3);
-  margin-top: var(--yn-space-6);
-}
-
-.pagination button {
-  display: grid;
-  width: 44px;
-  height: 44px;
-  place-items: center;
-  border: 1px solid var(--yn-color-border-strong);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--yn-color-text-secondary);
-  cursor: pointer;
-  transition:
-    background-color var(--yn-motion-fast) ease-in-out,
-    box-shadow var(--yn-motion-fast) ease-in-out,
-    color var(--yn-motion-fast) ease-in-out;
-}
-
-.pagination button:hover:not(:disabled) {
-  background: var(--yn-color-border);
-  box-shadow: 0 0 0 1px var(--yn-color-border);
-  color: var(--yn-color-text);
-}
-
-.pagination button:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
-}
-
-.pagination span {
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-sm);
-}
-
-/*
- * 桌面端：首页标题在占满一屏的主视觉里上下居中，屏幕越高越靠下。
- * 赛事中心的刊头随视口高度下移，与首页标题落在相近的位置，但不压缩到列表。
- */
-@media (min-width: 1001px) {
-  .page {
-    padding-top: clamp(48px, calc(34vh - 200px), 320px);
-  }
-}
-
-@media (max-width: 900px) {
-  .header {
-    grid-template-columns: minmax(0, 1fr) clamp(220px, 34vw, 300px);
-  }
-}
-
-@media (max-width: 720px) {
-  .header {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .headerArt {
-    display: none;
-  }
-
-
-  /* 提高特异性，覆盖共享切换的默认尺寸，让四个状态在窄屏放得下 */
-  .toolbar .statusControl {
-    --segment-padding: 10px;
+@media (max-width: 520px) {
+  .filters[data-orientation='horizontal'] {
     --segment-font: var(--yn-font-sm);
-  }
-
-  .gameCard {
-    grid-template-columns: 104px minmax(0, 1fr);
-    align-items: start;
-    gap: 14px;
-    padding: 12px;
-  }
-
-  .cardArrow {
-    display: none;
-  }
-
-  .gameTitleLine h2 {
-    font-size: 20px;
-  }
-
-  .gameMain p {
-    font-size: var(--yn-font-sm);
-  }
-}
-
-@media (max-width: 460px) {
-  .gameCard {
-    grid-template-columns: 84px minmax(0, 1fr);
-  }
-
-  .gameMeta {
-    flex-direction: column;
-  }
-
-  .pagination {
-    justify-content: center;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .searchBox,
-  .gameCard,
-  .cardArrow,
-  .cardArrow svg,
-  .pagination button {
-    transition: none;
+    --segment-padding: 6px;
+    width: 100%;
   }
 }
