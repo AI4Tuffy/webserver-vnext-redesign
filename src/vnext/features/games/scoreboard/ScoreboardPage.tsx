@@ -10,6 +10,7 @@ import {
   SearchInput,
   SectionHeader,
   SegmentedControl,
+  SelectField,
   segmentedItemClassName,
 } from '../../../shared'
 import { useGameChallengeCatalog, useGameScoreboard } from '../gamePlayerApi'
@@ -28,6 +29,8 @@ import {
 
 const BAR_LIMIT = 12
 const TIMELINE_LIMIT = 10
+// The shared segmented indicator has 15 positions, including the unfiltered option.
+const MAX_SEGMENTED_DIVISIONS = 14
 
 export function ScoreboardPage() {
   const { gameId, game, revision } = useGameWorkspace()
@@ -38,6 +41,7 @@ export function ScoreboardPage() {
   const [query, setQuery] = useState(searchParams.get('q') ?? '')
   const divisionId = Number(searchParams.get('division')) || null
   const myTeamId = teamInfo?.rank?.id
+  const divisions = scoreboard?.divisions ?? []
 
   useEffect(() => {
     if (revision > 0) void mutate()
@@ -147,27 +151,42 @@ export function ScoreboardPage() {
         <SectionHeader title="总分" />
         <FilterBar>
           <SearchInput label="搜索战队" onValueChange={setQuery} value={query} />
-          <SegmentedControl activeKey={divisionId} aria-label="按赛区筛选" role="group" size="sm">
-            <button
-              aria-pressed={!divisionId}
-              className={segmentedItemClassName}
-              onClick={() => setDivision(null)}
-              type="button"
+          {divisions.length > MAX_SEGMENTED_DIVISIONS ? (
+            <SelectField
+              label="按赛区筛选"
+              onValueChange={(value) => setDivision(Number(value) || null)}
+              value={divisionId ?? ''}
             >
-              全部赛区
-            </button>
-            {(scoreboard?.divisions ?? []).map((division) => (
+              <option value="">全部赛区</option>
+              {divisions.map((division) => (
+                <option key={division.id} value={division.id}>
+                  {division.name}
+                </option>
+              ))}
+            </SelectField>
+          ) : (
+            <SegmentedControl activeKey={divisionId} aria-label="按赛区筛选" role="group" size="sm">
               <button
-                aria-pressed={divisionId === division.id}
+                aria-pressed={!divisionId}
                 className={segmentedItemClassName}
-                key={division.id}
-                onClick={() => setDivision(division.id)}
+                onClick={() => setDivision(null)}
                 type="button"
               >
-                {division.name}
+                全部赛区
               </button>
-            ))}
-          </SegmentedControl>
+              {divisions.map((division) => (
+                <button
+                  aria-pressed={divisionId === division.id}
+                  className={segmentedItemClassName}
+                  key={division.id}
+                  onClick={() => setDivision(division.id)}
+                  type="button"
+                >
+                  {division.name}
+                </button>
+              ))}
+            </SegmentedControl>
+          )}
         </FilterBar>
         {!scoreboard && !error ? (
           <DataState loading title="积分榜加载中" />
