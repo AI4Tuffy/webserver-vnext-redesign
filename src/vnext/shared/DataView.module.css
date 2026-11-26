@@ -26,6 +26,11 @@
   text-align: left;
 }
 
+.hairlineAction:has(> .hairlineBody):not(:has(> .hairlineLeading)),
+.hairlineStatic:has(> .hairlineBody):not(:has(> .hairlineLeading)) {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
 .hairlineAction {
   cursor: pointer;
 }
@@ -164,7 +169,7 @@
   background: var(--yn-color-surface-muted);
 }
 
-.tableRow[data-clickable='true']:focus-visible {
+.tableRow:focus-visible {
   outline: 2px solid var(--yn-color-focus);
   outline-offset: -2px;
 }

@@ -29,9 +29,9 @@
   place-items: center;
   align-content: center;
   padding: var(--yn-space-7);
-  border: 1px solid var(--yn-color-border);
+  border: var(--yn-state-border, 1px solid var(--yn-color-border));
   border-radius: var(--yn-radius-lg);
-  background: var(--yn-color-surface);
+  background: var(--yn-state-background, var(--yn-color-surface));
   text-align: center;
 }
 

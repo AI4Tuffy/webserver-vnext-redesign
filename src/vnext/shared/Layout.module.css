@@ -72,6 +72,8 @@
 }
 
 .surfaceCard {
+  --yn-state-border: 0;
+  --yn-state-background: transparent;
   min-width: 0;
   border: 1px solid var(--yn-color-border);
   border-radius: var(--yn-radius-lg);

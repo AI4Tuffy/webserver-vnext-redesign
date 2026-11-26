@@ -52,3 +52,12 @@
     justify-content: space-between;
   }
 }
+
+.pagination[data-quiet] {
+  justify-content: flex-end;
+  margin-top: var(--yn-space-2);
+}
+.pagination[data-quiet] .actions {
+  width: auto;
+  gap: var(--yn-space-1);
+}

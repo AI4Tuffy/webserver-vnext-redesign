@@ -18,6 +18,7 @@ export {
 } from './FormControls'
 export {
   ActionButton,
+  ActionLink,
   DetailDrawer,
   InlineFeedback,
   VNextConfirmDialog,

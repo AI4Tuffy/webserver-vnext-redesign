@@ -75,36 +75,44 @@ export function PaginationBar({
   page,
   pageCount,
   total,
+  label = '分页',
+  quiet = false,
+  disabled = false,
   onPageChange,
 }: {
   page: number
   pageCount: number
   total?: number
+  label?: string
+  quiet?: boolean
+  disabled?: boolean
   onPageChange: (page: number) => void
 }) {
   if (pageCount <= 1) {
     return total === undefined ? null : <div className={styles.singlePageCount}>{total} 条记录</div>
   }
   return (
-    <nav aria-label="分页" className={styles.pagination}>
+    <nav aria-label={label} className={styles.pagination} data-quiet={quiet || undefined}>
       <span className={styles.summary}>{total === undefined ? '' : `共 ${total} 条`}</span>
       <div className={styles.actions}>
         <IconButton
-          disabled={page <= 1}
+          disabled={disabled || page <= 1}
           label="上一页"
           onClick={() => onPageChange(page - 1)}
           size="sm"
+          tone={quiet ? 'ghost' : 'outlined'}
         >
           <ChevronLeft size={17} />
         </IconButton>
-        <strong className={styles.pageIndicator}>
+        <strong aria-live="polite" className={styles.pageIndicator}>
           {page} / {pageCount}
         </strong>
         <IconButton
-          disabled={page >= pageCount}
+          disabled={disabled || page >= pageCount}
           label="下一页"
           onClick={() => onPageChange(page + 1)}
           size="sm"
+          tone={quiet ? 'ghost' : 'outlined'}
         >
           <ChevronRight size={17} />
         </IconButton>

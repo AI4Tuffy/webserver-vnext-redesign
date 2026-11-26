@@ -1,5 +1,6 @@
 import { LoaderCircle, X } from 'lucide-react'
 import { ReactNode, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
+import { Link, type LinkProps } from 'react-router'
 import { createPortal } from 'react-dom'
 import styles from './Interaction.module.css'
 import overlayStyles from './Overlay.module.css'
@@ -26,6 +27,27 @@ function acquireBodyScrollLock() {
   }
 }
 
+interface ActionAppearance {
+  tone?: ActionTone
+  shape?: 'rounded' | 'pill'
+  size?: 'sm' | 'md'
+  icon?: ReactNode
+}
+
+function actionClasses(tone: ActionTone, className?: string) {
+  return [styles.actionButton, styles[`actionButton_${tone}`], className].filter(Boolean).join(' ')
+}
+
+export function ActionLink({
+  tone = 'secondary', shape = 'rounded', size = 'md', icon, className, children, ...props
+}: LinkProps & ActionAppearance) {
+  return (
+    <Link {...props} className={actionClasses(tone, className)} data-shape={shape} data-size={size}>
+      {icon}{children}
+    </Link>
+  )
+}
+
 export function ActionButton({
   children,
   tone = 'secondary',
@@ -38,11 +60,7 @@ export function ActionButton({
   disabled,
   onClick,
   ...props
-}: Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> & {
-  tone?: ActionTone
-  shape?: 'rounded' | 'pill'
-  size?: 'sm' | 'md'
-  icon?: ReactNode
+}: Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> & ActionAppearance & {
   loading?: boolean
   loadingLabel?: string
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => unknown
@@ -78,7 +96,7 @@ export function ActionButton({
       <button
         {...props}
         aria-busy={busy || undefined}
-        className={`${styles.actionButton} ${styles[`actionButton_${tone}`]} ${className ?? ''}`}
+        className={actionClasses(tone, className)}
         data-shape={shape}
         data-size={size}
         disabled={disabled || busy}
@@ -127,6 +145,20 @@ export function InlineFeedback({
       {children}
     </div>
   )
+}
+
+function wrapDialogTab(event: React.KeyboardEvent<HTMLDialogElement>) {
+  if (event.key !== 'Tab' || event.defaultPrevented) return
+  const controls = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(
+    'button, a[href], input, select, textarea, [tabindex], [contenteditable="true"], summary'
+  )).filter((el) => el.tabIndex >= 0 && !el.matches(':disabled') && !el.closest('[inert]') && el.checkVisibility())
+  const first = controls[0]
+  const last = controls.at(-1)
+  if (first && last && document.activeElement === (event.shiftKey ? first : last)) {
+    event.preventDefault()
+    const target = event.shiftKey ? last : first
+    target.focus()
+  }
 }
 
 export function VNextDialog({
@@ -178,6 +210,7 @@ export function VNextDialog({
       onClick={(event) => {
         if (!closeDisabled && event.currentTarget === event.target) onClose()
       }}
+      onKeyDown={wrapDialogTab}
       ref={ref}
     >
       <div className={overlayStyles.dialogPanel}>

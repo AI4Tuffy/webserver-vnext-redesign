@@ -24,16 +24,15 @@ export function HairlineList({
   children,
   dimSiblings = true,
   className,
-  'aria-label': ariaLabel,
+  ...props
 }: {
   children: ReactNode
   dimSiblings?: boolean
   className?: string
-  'aria-label'?: string
-}) {
+} & React.HTMLAttributes<HTMLUListElement>) {
   return (
     <ul
-      aria-label={ariaLabel}
+      {...props}
       className={className ? `${styles.hairlineList} ${className}` : styles.hairlineList}
       data-dim-siblings={dimSiblings ? 'true' : undefined}
     >
@@ -106,6 +105,7 @@ export function DataTable<T>({
   rows,
   rowKey,
   onRowClick,
+  onRowHover,
   emptyTitle = '暂无数据',
   emptyDescription = '当前条件下没有可展示的记录。',
   density = 'compact',
@@ -116,6 +116,7 @@ export function DataTable<T>({
   rows: T[]
   rowKey: (row: T) => string | number
   onRowClick?: (row: T) => void
+  onRowHover?: (row: T | null) => void
   emptyTitle?: string
   emptyDescription?: string
   density?: 'compact' | 'comfortable'
@@ -165,8 +166,12 @@ export function DataTable<T>({
               data-clickable={Boolean(onRowClick) || undefined}
               key={rowKey(row)}
               onClick={(event) => activate(row, event)}
+              onPointerEnter={onRowHover && (() => onRowHover(row))}
+              onPointerLeave={onRowHover && (() => onRowHover(null))}
+              onFocus={onRowHover && (() => onRowHover(row))}
+              onBlur={onRowHover && (() => onRowHover(null))}
               onKeyDown={(event) => activateWithKeyboard(row, event)}
-              tabIndex={onRowClick ? 0 : undefined}
+              tabIndex={onRowClick || onRowHover ? 0 : undefined}
             >
               {columns.map((column) => (
                 <td
