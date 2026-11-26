@@ -1,13 +1,20 @@
 import { ArrowLeft, Bell, LogIn, LogOut, Megaphone, Moon, Settings, Sun, UserRound } from 'lucide-react'
-import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { getPlatformName } from '@Utils/Brand'
 import { useConfig } from '@Hooks/useConfig'
 import { roleLabel, useAccountLogout, useCurrentAccount } from '../../features/account/useCurrentAccount'
-import { latestNoticeTime, readNoticeSeenAt, unreadNoticeCount, writeNoticeSeenAt } from '../../features/posts/noticeSeen'
+import {
+  latestNoticeTime,
+  readNoticeSeenAt,
+  unreadNoticeCount,
+  writeNoticeSeenAt,
+} from '../../features/posts/noticeSeen'
 import { useLatestPosts } from '../../features/posts/postsApi'
-import { VNextConfirmDialog } from '../../shared/Interaction'
+import { ActionButton, ActionLink, VNextConfirmDialog } from '../../shared/Interaction'
 import { SegmentedControl, segmentedItemClassName } from '../../shared/SegmentedControl'
+import { IconButton } from '../../shared/Toolbar'
+import { ToolbarDisclosure, ToolbarDisclosureGroup } from '../../shared/ToolbarDisclosure'
 import { useVNextTheme } from '../VNextThemeProvider'
 import styles from './PlatformShell.module.css'
 import { isHomeSection, managementModule, parentRouteFor, publicModules } from './moduleRegistry'
@@ -20,92 +27,74 @@ function initials(name?: string | null) {
 
 function AccountMenu({ user }: { user: ReturnType<typeof useCurrentAccount>['user'] }) {
   const logout = useAccountLogout()
-  const menuId = useId()
-  const rootRef = useRef<HTMLDivElement>(null)
-  const triggerRef = useRef<HTMLButtonElement>(null)
-  const [open, setOpen] = useState(false)
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false)
   const displayName = user?.userName || '当前用户'
 
-  useEffect(() => {
-    if (!open) return
-
-    const onPointerDown = (event: PointerEvent) => {
-      if (event.target instanceof Node && !rootRef.current?.contains(event.target)) setOpen(false)
-    }
-    document.addEventListener('pointerdown', onPointerDown)
-    return () => document.removeEventListener('pointerdown', onPointerDown)
-  }, [open])
-
-  const dismissMenu = () => {
-    triggerRef.current?.focus()
-    setOpen(false)
-  }
-
   return (
     <>
-      <div
-        className={styles.accountMenuRoot}
-        onBlur={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false)
-        }}
-        onKeyDown={(event) => {
-          if (!open || event.key !== 'Escape') return
-          event.stopPropagation()
-          dismissMenu()
-        }}
-        ref={rootRef}
-      >
-        <button
-          aria-controls={menuId}
-          aria-expanded={open}
-          aria-label="个人菜单"
-          className={styles.accountTrigger}
-          onClick={() => setOpen((expanded) => !expanded)}
-          ref={triggerRef}
-          type="button"
-        >
+      <ToolbarDisclosure
+        label="个人菜单"
+        heading={user ? displayName : undefined}
+        detail={user ? roleLabel(user.role) : undefined}
+        icon={
           <span aria-hidden="true" className={styles.avatar}>
-            {user?.avatar ? <img alt="" src={user.avatar} /> : user ? initials(displayName) : <UserRound size={16} />}
+            {user?.avatar ? (
+              <img alt="" className={styles.avatarImage} src={user.avatar} />
+            ) : user ? (
+              initials(displayName)
+            ) : (
+              <UserRound size={16} />
+            )}
           </span>
-        </button>
-        <div className={styles.accountMenu} hidden={!open} id={menuId}>
-          {user ? (
+        }
+      >
+        {(close) =>
+          user ? (
             <>
-              <div className={styles.accountIdentity}>
-                <strong>{displayName}</strong>
-                <span>{roleLabel(user.role)}</span>
-              </div>
-              <Link className={styles.accountAction} onClick={() => setOpen(false)} to="/users/me">
-                <UserRound aria-hidden="true" size={17} />
+              <ActionLink
+                className={styles.menuAction}
+                icon={<UserRound size={17} />}
+                onClick={close}
+                to="/users/me"
+                tone="ghost"
+              >
                 个人档案
-              </Link>
-              <Link className={styles.accountAction} onClick={() => setOpen(false)} to="/settings/security">
-                <Settings aria-hidden="true" size={17} />
+              </ActionLink>
+              <ActionLink
+                className={styles.menuAction}
+                icon={<Settings size={17} />}
+                onClick={close}
+                to="/settings/security"
+                tone="ghost"
+              >
                 账户设置
-              </Link>
-              <div className={styles.accountMenuFooter}>
-                <button
-                  className={`${styles.accountAction} ${styles.accountLogout}`}
-                  onClick={() => {
-                    dismissMenu()
-                    setLogoutConfirmOpen(true)
-                  }}
-                  type="button"
-                >
-                  <LogOut aria-hidden="true" size={17} />
-                  退出登录
-                </button>
-              </div>
+              </ActionLink>
+              <ActionButton
+                className={styles.menuAction}
+                icon={<LogOut size={17} />}
+                onClick={() => {
+                  close()
+                  setLogoutConfirmOpen(true)
+                }}
+                tone="danger"
+                type="button"
+              >
+                退出登录
+              </ActionButton>
             </>
           ) : (
-            <Link className={styles.accountAction} onClick={() => setOpen(false)} to="/account/login">
-              <LogIn aria-hidden="true" size={17} />
+            <ActionLink
+              className={styles.menuAction}
+              icon={<LogIn size={17} />}
+              onClick={close}
+              to="/account/login"
+              tone="ghost"
+            >
               登录平台
-            </Link>
-          )}
-        </div>
-      </div>
+            </ActionLink>
+          )
+        }
+      </ToolbarDisclosure>
       <VNextConfirmDialog
         confirmLabel="退出登录"
         message="当前会话和本地缓存将被清除，需要重新登录才能继续访问受限功能。"
@@ -124,10 +113,6 @@ const noticeDateFormatter = new Intl.DateTimeFormat('zh-CN', { month: '2-digit',
 /** 顶栏通知：最新公告的未读提示与列表；打开列表或进入公告页即视为已读。 */
 function NoticeMenu() {
   const location = useLocation()
-  const menuId = useId()
-  const rootRef = useRef<HTMLDivElement>(null)
-  const triggerRef = useRef<HTMLButtonElement>(null)
-  const [open, setOpen] = useState(false)
   const [seenAt, setSeenAt] = useState(readNoticeSeenAt)
   const [highlightAfter, setHighlightAfter] = useState(seenAt)
   const { data: posts, error } = useLatestPosts()
@@ -146,82 +131,51 @@ function NoticeMenu() {
     if (location.pathname === '/posts' || location.pathname.startsWith('/posts/')) markSeen()
   }, [location.pathname, markSeen])
 
-  useEffect(() => {
-    if (!open) return
-
-    const onPointerDown = (event: PointerEvent) => {
-      if (event.target instanceof Node && !rootRef.current?.contains(event.target)) setOpen(false)
-    }
-    document.addEventListener('pointerdown', onPointerDown)
-    return () => document.removeEventListener('pointerdown', onPointerDown)
-  }, [open])
-
-  const toggle = () => {
-    if (!open) {
-      setHighlightAfter(seenAt)
-      markSeen()
-    }
-    setOpen(!open)
-  }
-
   return (
-    <div
-      className={styles.accountMenuRoot}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false)
+    <ToolbarDisclosure
+      detail={fresh ? `${fresh} 条新公告` : '最新公告'}
+      heading="通知"
+      icon={<Bell aria-hidden="true" size={17} />}
+      indicator={unread > 0}
+      label={unread ? `通知，${unread} 条未读公告` : '通知'}
+      onOpen={() => {
+        setHighlightAfter(seenAt)
+        markSeen()
       }}
-      onKeyDown={(event) => {
-        if (!open || event.key !== 'Escape') return
-        event.stopPropagation()
-        triggerRef.current?.focus()
-        setOpen(false)
-      }}
-      ref={rootRef}
+      wide
     >
-      <button
-        aria-controls={menuId}
-        aria-expanded={open}
-        aria-label={unread ? `通知，${unread} 条未读公告` : '通知'}
-        className={styles.toolButton}
-        onClick={toggle}
-        ref={triggerRef}
-        type="button"
-      >
-        <Bell aria-hidden="true" size={17} />
-        {unread ? <span aria-hidden="true" className={styles.noticeDot} /> : null}
-      </button>
-      <div className={`${styles.accountMenu} ${styles.noticeMenu}`} hidden={!open} id={menuId}>
-        <div className={styles.noticeHeader}>
-          <strong>通知</strong>
-          <span>{fresh ? `${fresh} 条新公告` : '最新公告'}</span>
-        </div>
-        {items.length ? (
-          <ul className={styles.noticeList}>
-            {items.map((post) => (
-              <li key={post.id}>
-                <Link
-                  className={styles.noticeItem}
-                  data-fresh={post.time > highlightAfter ? 'true' : undefined}
-                  onClick={() => setOpen(false)}
-                  to={`/posts/${post.id}`}
-                >
-                  <span className={styles.noticeTitle}>{post.title}</span>
-                  <time dateTime={new Date(post.time).toISOString()}>{noticeDateFormatter.format(post.time)}</time>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className={styles.noticeEmpty}>{error ? '公告暂时无法加载' : posts ? '暂无公告' : '正在加载公告'}</p>
-        )}
-        <div className={styles.accountMenuFooter}>
-          <Link className={styles.accountAction} onClick={() => setOpen(false)} to="/posts">
-            <Megaphone aria-hidden="true" size={17} />
+      {(close) => (
+        <>
+          {items.length ? (
+            <ul className={styles.noticeList}>
+              {items.map((post) => (
+                <li key={post.id}>
+                  <ActionLink className={styles.menuAction} onClick={close} to={`/posts/${post.id}`} tone="ghost">
+                    <span className={styles.noticeTitle} data-fresh={post.time > highlightAfter || undefined}>
+                      {post.title}
+                    </span>
+                    <time className={styles.date} dateTime={new Date(post.time).toISOString()}>
+                      {noticeDateFormatter.format(post.time)}
+                    </time>
+                  </ActionLink>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.noticeEmpty}>{error ? '公告暂时无法加载' : posts ? '暂无公告' : '正在加载公告'}</p>
+          )}
+          <ActionLink
+            className={styles.menuAction}
+            icon={<Megaphone size={17} />}
+            onClick={close}
+            to="/posts"
+            tone="ghost"
+          >
             查看全部公告
-          </Link>
-        </div>
-      </div>
-    </div>
+          </ActionLink>
+        </>
+      )}
+    </ToolbarDisclosure>
   )
 }
 
@@ -247,62 +201,56 @@ export function PlatformShell() {
       </a>
       <header className={styles.topBar}>
         <Link aria-label={`${platformName} 首页`} className={styles.wordmark} to="/">
-          <strong>{platformName}</strong>
-          <span aria-hidden="true">/ctf</span>
+          <strong className={styles.brandName}>{platformName}</strong>
+          <span aria-hidden="true" className={styles.brandSuffix}>
+            /ctf
+          </span>
         </Link>
 
-        <div className={styles.headerControls}>
-          <SegmentedControl
-            activeKey={location.pathname}
-            aria-label="主要模块"
-            as="nav"
-            className={styles.primaryNav}
-          >
-            {publicModules.map((module) =>
-              module.id === 'home' ? (
-                <Link
-                  aria-current={homeActive ? 'page' : undefined}
-                  className={segmentedItemClassName}
-                  key={module.id}
-                  to="/"
-                >
-                  {module.shortLabel}
-                </Link>
-              ) : (
-                <NavLink className={segmentedItemClassName} key={module.id} to={module.route}>
-                  {module.shortLabel}
-                </NavLink>
-              )
-            )}
-            {isAdmin ? (
-              <NavLink className={segmentedItemClassName} to={managementModule.route}>
-                {managementModule.shortLabel}
+        <SegmentedControl activeKey={location.pathname} aria-label="主要模块" as="nav" className={styles.primaryNav}>
+          {publicModules.map((module) =>
+            module.id === 'home' ? (
+              <Link
+                aria-current={homeActive ? 'page' : undefined}
+                className={segmentedItemClassName}
+                key={module.id}
+                to="/"
+              >
+                {module.shortLabel}
+              </Link>
+            ) : (
+              <NavLink className={segmentedItemClassName} key={module.id} to={module.route}>
+                {module.shortLabel}
               </NavLink>
-            ) : null}
-          </SegmentedControl>
-          <div className={styles.accountTools}>
-            <button
-              aria-label={theme === 'light' ? '切换夜间主题' : '切换日间主题'}
-              className={styles.toolButton}
-              onClick={toggleTheme}
-              type="button"
-            >
-              {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-            </button>
-            <NoticeMenu />
-            <AccountMenu user={user} />
-          </div>
-        </div>
+            )
+          )}
+          {isAdmin ? (
+            <NavLink className={segmentedItemClassName} to={managementModule.route}>
+              {managementModule.shortLabel}
+            </NavLink>
+          ) : null}
+        </SegmentedControl>
+        <ToolbarDisclosureGroup className={styles.accountTools}>
+          <IconButton
+            label={theme === 'light' ? '切换夜间主题' : '切换日间主题'}
+            tone="ghost"
+            onClick={toggleTheme}
+            type="button"
+          >
+            {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+          </IconButton>
+          <NoticeMenu />
+          <AccountMenu user={user} />
+        </ToolbarDisclosureGroup>
       </header>
 
-      <main className={styles.main} id="yn-main">
+      <main className={styles.main} id="yn-main" tabIndex={-1}>
         <div className={styles.routeFrame} key={routeFrameKey}>
           {parentRoute ? (
             <nav aria-label="返回上级页面" className={styles.backBar}>
-              <Link className={styles.backLink} to={parentRoute.to}>
-                <ArrowLeft aria-hidden="true" size={16} />
+              <ActionLink icon={<ArrowLeft aria-hidden="true" size={16} />} shape="pill" size="sm" to={parentRoute.to}>
                 {parentRoute.label}
-              </Link>
+              </ActionLink>
             </nav>
           ) : null}
           <Outlet />

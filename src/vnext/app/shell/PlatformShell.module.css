@@ -1,21 +1,17 @@
 .shell {
-  display: flex;
   min-height: 100vh;
-  flex-direction: column;
   isolation: isolate;
   background: var(--yn-color-canvas);
 }
 
 .skipLink {
   position: fixed;
-  top: 8px;
-  left: 8px;
   z-index: 60;
+  inset: 8px auto auto 8px;
   padding: 10px 16px;
   border-radius: var(--yn-radius-pill);
   background: var(--yn-color-control-strong);
   color: var(--yn-color-control-strong-text);
-  font-size: var(--yn-font-md);
   transform: translateY(-160%);
 }
 
@@ -25,427 +21,150 @@
 
 .topBar {
   position: fixed;
-  inset: 0 0 auto;
   z-index: 40;
+  inset: 0 0 auto;
   display: grid;
   height: var(--yn-context-height);
-  /* 三段式：字标靠左、导航居中、主题与头像靠右；两侧等宽保证导航位于视口正中。 */
+  grid-template-areas: 'brand modules tools';
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   column-gap: var(--yn-space-3);
-  padding: 0 var(--yn-page-gutter);
+  padding-inline: var(--yn-page-gutter);
   border-bottom: 1px solid var(--yn-color-border);
-  border-radius: 0 0 var(--yn-radius-md) var(--yn-radius-md);
-  background: color-mix(in srgb, var(--yn-color-surface-muted) 80%, var(--yn-color-header));
+  background: var(--yn-color-header);
   backdrop-filter: blur(14px);
-}
-
-.shell:has(dialog[open]) .topBar {
-  z-index: 0;
-}
-
-/* 主导航使用共享的标准胶囊切换（shared/SegmentedControl），这里只决定它在顶栏中的位置。 */
-.primaryNav {
-  flex: 1 1 auto;
-  justify-self: center;
 }
 
 .wordmark {
   display: inline-flex;
   min-width: 0;
-  min-height: 44px;
   max-width: 100%;
+  min-height: 44px;
+  grid-area: brand;
   align-items: center;
   justify-self: start;
-  gap: 10px;
-  color: var(--yn-color-text);
-}
-
-.wordmark strong {
-  overflow: hidden;
-  font-size: var(--yn-font-xl);
-  font-weight: 700;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.wordmark span {
-  color: var(--yn-color-muted);
-  font-family: var(--yn-font-mono);
-  font-size: var(--yn-font-xs);
-}
-
-/* 桌面端不生成盒子，导航与账户工具直接成为顶栏网格的第二、三列。 */
-.headerControls {
-  display: contents;
-}
-
-/* 右侧工具与导航同款描边长条：通知、主题、个人菜单共用 44px 圆形热区。 */
-.accountTools {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-self: end;
-  gap: 2px;
-  padding: 3px;
-  border: 1px solid var(--yn-color-border-strong);
-  border-radius: var(--yn-radius-pill);
-}
-
-.toolButton {
-  position: relative;
-  display: grid;
-  width: 44px;
-  height: 44px;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 0;
-  border-radius: var(--yn-radius-pill);
-  background: transparent;
-  color: var(--yn-color-text-secondary);
-  cursor: pointer;
-  transition:
-    background-color var(--yn-motion-fast) ease-in-out,
-    box-shadow var(--yn-motion-fast) ease-in-out,
-    color var(--yn-motion-fast) ease-in-out;
-}
-
-.toolButton:hover:not([aria-expanded='true']),
-.accountTrigger:hover:not([aria-expanded='true']) {
-  background: var(--yn-color-border);
-  box-shadow: 0 0 0 1px var(--yn-color-border);
-  color: var(--yn-color-text);
-}
-
-/* 菜单展开期间，触发按钮改为深色实底。 */
-.toolButton[aria-expanded='true'],
-.accountTrigger[aria-expanded='true'] {
-  background: var(--yn-color-control-strong);
-  color: var(--yn-color-control-strong-text);
-}
-
-.accountTrigger[aria-expanded='true'] .avatar {
-  box-shadow: 0 0 0 2px var(--yn-color-control-strong-text);
-}
-
-.toolButton:focus-visible {
-  outline-offset: 1px;
-}
-
-.noticeDot {
-  position: absolute;
-  top: 11px;
-  right: 12px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--yn-color-signal);
-  box-shadow: 0 0 0 2px var(--yn-color-surface-muted);
-}
-
-.accountMenuRoot {
-  position: relative;
-}
-
-.accountTrigger {
-  display: inline-grid;
-  width: 44px;
-  height: 44px;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  border-radius: var(--yn-radius-pill);
-  background: transparent;
-  color: var(--yn-color-text-secondary);
-  cursor: pointer;
-  transition:
-    background-color var(--yn-motion-fast) ease-in-out,
-    box-shadow var(--yn-motion-fast) ease-in-out,
-    color var(--yn-motion-fast) ease-in-out;
-}
-
-.accountTrigger:focus-visible {
-  outline-offset: 1px;
-}
-
-.avatar {
-  display: grid;
-  width: 32px;
-  height: 32px;
-  flex: 0 0 auto;
-  place-items: center;
-  overflow: hidden;
-  border-radius: 50%;
-  background: var(--yn-color-control-strong);
-  color: var(--yn-color-control-strong-text);
-  font-size: var(--yn-font-xs);
-  font-weight: 800;
-}
-
-.avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.main {
-  flex: 1;
-  overflow-x: clip;
-  padding-top: var(--yn-context-height);
-}
-
-.routeFrame {
-  width: 100%;
-  min-height: calc(100vh - var(--yn-context-height));
-  animation: route-frame-enter var(--yn-motion-normal) var(--yn-ease-standard) both;
-}
-
-/* 二级页面左上角的返回入口：所有二级页面同一位置，与页面内容左缘对齐 */
-.backBar {
-  box-sizing: border-box;
-  width: min(var(--yn-page-max-width), 100%);
-  margin: 0 auto;
-  padding: clamp(16px, 2vw, 28px) var(--yn-page-gutter) 0;
-}
-
-.backLink {
-  display: inline-flex;
-  min-height: 36px;
-  align-items: center;
-  gap: 6px;
-  padding: 0 14px 0 10px;
-  border: 1px solid var(--yn-color-border-strong);
-  border-radius: var(--yn-radius-pill);
-  color: var(--yn-color-text-secondary);
-  font-size: var(--yn-font-sm);
-  white-space: nowrap;
-  transition:
-    background-color var(--yn-motion-fast) ease-in-out,
-    box-shadow var(--yn-motion-fast) ease-in-out,
-    color var(--yn-motion-fast) ease-in-out;
-}
-
-.backLink:hover {
-  background: var(--yn-color-border);
-  box-shadow: 0 0 0 1px var(--yn-color-border);
-  color: var(--yn-color-text);
-}
-
-.backLink:focus-visible {
-  outline-offset: 2px;
-}
-
-@keyframes route-frame-enter {
-  from {
-    opacity: 0.6;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-.accountMenu {
-  position: absolute;
-  inset-block-start: calc(100% + var(--yn-space-3));
-  inset-inline-end: 0;
-  width: min(232px, calc(100vw - 2 * var(--yn-page-gutter)));
-  max-height: calc(100dvh - var(--yn-context-height) - var(--yn-space-3));
-  overflow: auto;
-  padding: var(--yn-space-2);
-  border: 1px solid var(--yn-color-border-strong);
-  border-radius: 16px;
-  background: var(--yn-color-surface);
-  box-shadow: var(--yn-shadow-overlay);
-  /*
-   * 从触发按钮处缩放展开：90% 透明 → 100% 不透明，关闭时反向。
-   * hidden 切换 display，借助 @starting-style 与 display 的离散过渡实现进出场；
-   * 不支持的浏览器直接显示和隐藏。
-   */
-  display: block;
-  opacity: 1;
-  transform: none;
-  transform-origin: calc(100% - 22px) -8px;
-  transition:
-    opacity var(--yn-motion-fast) ease,
-    transform var(--yn-motion-fast) ease,
-    display var(--yn-motion-fast) allow-discrete;
-}
-
-.accountMenu[hidden] {
-  display: none;
-  opacity: 0;
-  transform: scale(0.9);
-}
-
-@starting-style {
-  .accountMenu:not([hidden]) {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-}
-
-.noticeMenu {
-  width: min(300px, calc(100vw - 2 * var(--yn-page-gutter)));
-}
-
-.noticeHeader {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
   gap: var(--yn-space-2);
-  padding: var(--yn-space-2) var(--yn-space-3) var(--yn-space-3);
-  border-bottom: 1px solid var(--yn-color-border);
 }
 
-.noticeHeader strong {
-  font-size: var(--yn-font-md);
-}
-
-.noticeHeader span,
-.noticeEmpty {
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-sm);
-}
-
-.noticeList {
-  margin: var(--yn-space-1) 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.noticeItem {
-  display: grid;
-  min-height: 44px;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--yn-space-3);
-  padding: 0 var(--yn-space-3);
-  border-radius: var(--yn-radius-md);
-  color: var(--yn-color-text);
-  font-size: var(--yn-font-sm);
-  transition: background-color 0.2s;
-}
-
-.noticeItem:hover {
-  background: var(--yn-color-surface-muted);
-}
-
+.brandName,
 .noticeTitle {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.noticeItem[data-fresh='true'] .noticeTitle::before {
+.brandName {
+  font-size: var(--yn-font-xl);
+}
+
+.brandSuffix,
+.date {
+  color: var(--yn-color-muted);
+  font-family: var(--yn-font-mono);
+  font-size: var(--yn-font-xs);
+}
+
+.primaryNav {
+  grid-area: modules;
+  justify-self: center;
+}
+
+.accountTools {
+  grid-area: tools;
+  justify-self: end;
+}
+
+.avatar {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--yn-color-control-strong);
+  color: var(--yn-color-control-strong-text);
+  font-size: var(--yn-font-xs);
+  font-weight: 700;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.menuAction[data-size='md'] {
+  width: 100%;
+  min-height: 44px;
+  justify-content: flex-start;
+  padding-inline: var(--yn-space-2);
+}
+
+.noticeList {
+  margin: 0 0 var(--yn-space-1);
+  padding: 0 0 var(--yn-space-1);
+  border-bottom: 1px solid var(--yn-color-border);
+  list-style: none;
+}
+
+.noticeTitle {
+  flex: 1;
+  text-align: start;
+}
+
+.noticeTitle[data-fresh]::before {
   display: inline-block;
   width: 6px;
   height: 6px;
-  margin-inline-end: 8px;
+  margin-inline-end: var(--yn-space-2);
   border-radius: 50%;
   background: var(--yn-color-signal);
   content: '';
   vertical-align: middle;
 }
 
-.noticeItem time {
-  color: var(--yn-color-muted);
-  font-family: var(--yn-font-mono);
-  font-size: var(--yn-font-xs);
-}
-
 .noticeEmpty {
-  margin: 0;
-  padding: var(--yn-space-4) var(--yn-space-3);
-}
-
-.accountIdentity {
-  display: grid;
-  gap: 2px;
-  margin-bottom: var(--yn-space-1);
-  padding: var(--yn-space-2) var(--yn-space-3) var(--yn-space-3);
-  border-bottom: 1px solid var(--yn-color-border);
-  overflow-wrap: anywhere;
-}
-
-.accountIdentity strong {
-  font-size: var(--yn-font-md);
-}
-
-.accountIdentity span {
+  margin: var(--yn-space-3) var(--yn-space-2);
   color: var(--yn-color-muted);
-  font-size: var(--yn-font-xs);
 }
 
-.accountAction {
-  display: flex;
-  width: 100%;
-  min-height: 44px;
-  align-items: center;
-  gap: var(--yn-space-3);
-  padding: 0 var(--yn-space-3);
-  border-radius: var(--yn-radius-md);
-  color: var(--yn-color-text);
-  font-size: var(--yn-font-sm);
-  transition: background-color 0.2s;
+.main {
+  min-width: 0;
+  padding-top: var(--yn-context-height);
 }
 
-.accountAction:hover {
-  background: var(--yn-color-surface-muted);
+.routeFrame {
+  min-height: calc(100vh - var(--yn-context-height));
 }
 
-.accountAction:focus-visible {
-  outline-offset: -2px;
+@media (prefers-reduced-motion: no-preference) {
+  .routeFrame {
+    animation: reveal var(--yn-motion-normal) var(--yn-ease-standard);
+  }
 }
 
-.accountMenuFooter {
-  margin-top: var(--yn-space-1);
-  padding-top: var(--yn-space-1);
-  border-top: 1px solid var(--yn-color-border);
+@keyframes reveal {
+  from {
+    opacity: 0.6;
+  }
 }
 
-.accountLogout {
-  border: 0;
-  background: transparent;
-  color: var(--yn-color-danger);
-  cursor: pointer;
-}
-
-.accountLogout:hover {
-  background: var(--yn-color-danger-soft);
+.backBar {
+  width: min(var(--yn-page-max-width), 100%);
+  margin: 0 auto;
+  padding: clamp(16px, 2vw, 28px) var(--yn-page-gutter) 0;
 }
 
 @media (max-width: 1000px) {
   .topBar {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: 52px minmax(0, 1fr);
+    grid-template-areas: 'brand tools' 'modules modules';
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: 54px minmax(0, 1fr);
+    reading-flow: grid-rows;
   }
 
-  .headerControls {
-    display: flex;
+  .primaryNav[data-orientation='horizontal'] {
+    --segment-padding: clamp(3px, 1.2vw, 12px);
     width: 100%;
-    min-width: 0;
-    align-items: center;
-    gap: var(--yn-space-2);
-  }
-
-  /* 提高特异性，确保覆盖共享样式里的默认内边距 */
-  .topBar .primaryNav {
-    --segment-padding: clamp(8px, 1.1vw, 18px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .backLink,
-  .toolButton,
-  .accountTrigger,
-  .accountMenu,
-  .accountAction,
-  .noticeItem {
-    transition: none;
-  }
-
-  .routeFrame {
-    animation: none;
   }
 }
