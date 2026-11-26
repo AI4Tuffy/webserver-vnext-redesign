@@ -1,8 +1,17 @@
-import { Search } from 'lucide-react'
-import { ChangeEvent, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { ScoreboardItem } from '@Api'
-import { DataState } from '../../../shared/Primitives'
+import {
+  DataState,
+  EditorialPlate,
+  FilterBar,
+  PageHeader,
+  PageShell,
+  SearchInput,
+  SectionHeader,
+  SegmentedControl,
+  segmentedItemClassName,
+} from '../../../shared'
 import { useGameChallengeCatalog, useGameScoreboard } from '../gamePlayerApi'
 import { useGameWorkspace } from '../workspace/GameWorkspaceShell'
 import { PodiumEntry, ScoreboardArt } from './ScoreboardArt'
@@ -80,7 +89,11 @@ export function ScoreboardPage() {
   const bloodRank = useMemo(() => createBloodRankLookup(challenges), [challenges])
   const totals = useMemo(() => scoreboardTotals(rankedItems, bloodRank), [bloodRank, rankedItems])
   const mine = rankedItems.find((item) => item.id === myTeamId)
-  const toEntry = (item: ScoreboardItem): PodiumEntry => ({ rank: item.rank, score: item.score, mine: item.id === myTeamId })
+  const toEntry = (item: ScoreboardItem): PodiumEntry => ({
+    rank: item.rank,
+    score: item.score,
+    mine: item.id === myTeamId,
+  })
   const podium = rankedItems.slice(0, 3).map(toEntry)
   const receipt = [...podium, ...(mine && mine.rank > 3 ? [toEntry(mine)] : [])]
   const above = mine && mine.rank > 1 ? rankedItems.find((item) => item.rank === mine.rank - 1) : undefined
@@ -95,75 +108,67 @@ export function ScoreboardPage() {
     setSearchParams(next)
   }
 
-  const onQueryChange = (event: ChangeEvent<HTMLInputElement>) => setQuery(event.currentTarget.value)
-
   return (
-    <div className={styles.page}>
-      <section aria-labelledby="scoreboard-title" className={styles.hero}>
-        <div className={styles.heroCopy}>
-          <span aria-hidden="true" className={styles.prompt}>
-            ~/games/{gameId} $ ./scoreboard --live
-          </span>
-          <h1 id="scoreboard-title">排行榜</h1>
-          {scoreboard ? (
-            <p className={styles.heroFacts}>
-              <span aria-hidden="true" className={styles.liveDot} />
-              {rankedItems.length} 支队伍 · {scoreboard.challengeCount} 道题 · {totals.flags} 次正确提交 · 更新于{' '}
-              {formatStamp(scoreboard.updateTimeUtc)}
-            </p>
-          ) : null}
-          {mine ? (
-            <p className={styles.mineLine}>
-              本队 {mine.name} · 第 <strong>{mine.rank}</strong> 名 · {mine.score} 分
-              {gapToNext ? ` · 距第 ${gapToNext.rank} 名 ${gapToNext.points} 分` : ''}
-            </p>
-          ) : null}
-        </div>
-        <div className={styles.heroArt}>
-          <ScoreboardArt
-            bloodCount={totals.bloods}
-            flagCount={totals.flags}
-            gapToNext={gapToNext}
-            leaderBloods={totals.leaderBloods}
-            podium={podium}
-            receipt={receipt}
-            teamCount={rankedItems.length}
-          />
-        </div>
-      </section>
+    <PageShell className={styles.page} gap="lg">
+      <PageHeader
+        title="排行榜"
+        description={
+          scoreboard && (
+            <>
+              <span className={styles.heroFacts}>
+                {rankedItems.length} 支队伍 · {scoreboard.challengeCount} 道题 · {totals.flags} 次正确提交 · 更新于{' '}
+                {formatStamp(scoreboard.updateTimeUtc)}
+              </span>
+              {mine && (
+                <span className={styles.mineLine}>
+                  本队 {mine.name} · 第 {mine.rank} 名 · {mine.score} 分
+                  {gapToNext ? ` · 距第 ${gapToNext.rank} 名 ${gapToNext.points} 分` : ''}
+                </span>
+              )}
+            </>
+          )
+        }
+        illustration={
+          <EditorialPlate aspect="auto" className={styles.podium} slot="scoreboard-podium">
+            <ScoreboardArt
+              bloodCount={totals.bloods}
+              flagCount={totals.flags}
+              gapToNext={gapToNext}
+              leaderBloods={totals.leaderBloods}
+              podium={podium}
+              receipt={receipt}
+              teamCount={rankedItems.length}
+            />
+          </EditorialPlate>
+        }
+      />
 
-      <section aria-labelledby="totals-title" className={styles.section}>
-        <div className={styles.sectionBar}>
-          <h2 id="totals-title">总分</h2>
-          <div className={styles.toolbar}>
-            <label className={styles.searchBox}>
-              <Search aria-hidden="true" size={15} />
-              <input aria-label="搜索战队" onChange={onQueryChange} placeholder="搜索战队" type="search" value={query} />
-            </label>
-            <div aria-label="按赛区筛选" className={styles.filters} role="group">
+      <section aria-label="总分" className={styles.section}>
+        <SectionHeader title="总分" />
+        <FilterBar>
+          <SearchInput label="搜索战队" onValueChange={setQuery} value={query} />
+          <SegmentedControl activeKey={divisionId} aria-label="按赛区筛选" role="group" size="sm">
+            <button
+              aria-pressed={!divisionId}
+              className={segmentedItemClassName}
+              onClick={() => setDivision(null)}
+              type="button"
+            >
+              全部赛区
+            </button>
+            {(scoreboard?.divisions ?? []).map((division) => (
               <button
-                aria-pressed={!divisionId}
-                className={!divisionId ? styles.filterActive : styles.filter}
-                onClick={() => setDivision(null)}
+                aria-pressed={divisionId === division.id}
+                className={segmentedItemClassName}
+                key={division.id}
+                onClick={() => setDivision(division.id)}
                 type="button"
               >
-                全部赛区
+                {division.name}
               </button>
-              {(scoreboard?.divisions ?? []).map((division) => (
-                <button
-                  aria-pressed={divisionId === division.id}
-                  className={divisionId === division.id ? styles.filterActive : styles.filter}
-                  key={division.id}
-                  onClick={() => setDivision(division.id)}
-                  type="button"
-                >
-                  {division.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
+            ))}
+          </SegmentedControl>
+        </FilterBar>
         {!scoreboard && !error ? (
           <DataState loading title="积分榜加载中" />
         ) : error || !scoreboard ? (
@@ -171,12 +176,12 @@ export function ScoreboardPage() {
         ) : visibleItems.length ? (
           <>
             <div className={styles.legend}>
-              <span>
-                <i data-kind="solid" />
+              <span className={styles.legendItem}>
+                <i className={styles.legendMark} data-kind="solid" />
                 CTF
               </span>
-              <span>
-                <i data-kind="hatch" />
+              <span className={styles.legendItem}>
+                <i className={styles.legendMark} data-kind="hatch" />
                 其他赛制
               </span>
               {visibleItems.length > BAR_LIMIT ? <span>显示前 {BAR_LIMIT} 名</span> : null}
@@ -194,55 +199,48 @@ export function ScoreboardPage() {
       </section>
 
       {scoreboard && visibleItems.length > 0 && game.start && timelineEnd > game.start ? (
-        <section aria-labelledby="timeline-title" className={styles.band} data-yn-band="">
-          <div className={styles.bandInner}>
-            <div className={styles.bandIntro}>
-              <h2 id="timeline-title">
-                <span className={styles.bandKicker}>Solve timeline</span>
-                <span>解题时间轴</span>
-              </h2>
-              <p>从开赛到现在分成 24 格。实心是该题一血，斜线是其他解出，字母是题目方向。</p>
-              <div className={styles.legend}>
-                <span>
-                  <i data-kind="solid" />
-                  一血
-                </span>
-                <span>
-                  <i data-kind="hatch" />
-                  其他解出
-                </span>
-              </div>
-            </div>
-            <SolveTimeline
-              bloodRank={bloodRank}
-              categoryOf={categoryOf}
-              end={timelineEnd}
-              items={visibleItems.slice(0, TIMELINE_LIMIT)}
-              myTeamId={myTeamId}
-              start={game.start}
-            />
+        <section aria-label="解题时间轴" className={styles.section}>
+          <SectionHeader
+            description="从开赛到现在分成 24 格。实心是该题一血，斜线是其他解出，字母是题目方向。"
+            title="解题时间轴"
+          />
+          <div className={styles.legend}>
+            <span className={styles.legendItem}>
+              <i className={styles.legendMark} data-kind="solid" />
+              一血
+            </span>
+            <span className={styles.legendItem}>
+              <i className={styles.legendMark} data-kind="hatch" />
+              其他解出
+            </span>
           </div>
+          <SolveTimeline
+            bloodRank={bloodRank}
+            categoryOf={categoryOf}
+            end={timelineEnd}
+            items={visibleItems.slice(0, TIMELINE_LIMIT)}
+            myTeamId={myTeamId}
+            start={game.start}
+          />
         </section>
       ) : null}
 
       {scoreboard && visibleItems.length > 0 && challenges.length > 0 ? (
-        <section aria-labelledby="matrix-title" className={styles.section}>
-          <div className={styles.sectionBar}>
-            <h2 id="matrix-title">解题明细</h2>
-            <div className={styles.legend}>
-              <span>
-                <i data-kind="solid" />
-                一血
-              </span>
-              <span>
-                <i data-kind="hatch" />
-                二血、三血及之后
-              </span>
-              <span>
-                <i data-kind="none" />
-                未解出
-              </span>
-            </div>
+        <section aria-label="解题明细" className={styles.section}>
+          <SectionHeader title="解题明细" />
+          <div className={styles.legend}>
+            <span className={styles.legendItem}>
+              <i className={styles.legendMark} data-kind="solid" />
+              一血
+            </span>
+            <span className={styles.legendItem}>
+              <i className={styles.legendMark} data-kind="hatch" />
+              二血、三血及之后
+            </span>
+            <span className={styles.legendItem}>
+              <i className={styles.legendMark} data-kind="none" />
+              未解出
+            </span>
           </div>
           <SolveMatrix
             bloodRank={bloodRank}
@@ -253,6 +251,6 @@ export function ScoreboardPage() {
           />
         </section>
       ) : null}
-    </div>
+    </PageShell>
   )
 }

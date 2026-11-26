@@ -1,0 +1,152 @@
+.bars,
+.barRow {
+  display: grid;
+  min-width: 0;
+  gap: var(--yn-space-2);
+}
+
+.bars {
+  gap: var(--yn-space-5);
+}
+
+.barHead,
+.barFacts,
+.barLine {
+  display: flex;
+  align-items: baseline;
+  gap: var(--yn-space-2) var(--yn-space-4);
+}
+
+.barHead,
+.barFacts {
+  flex-wrap: wrap;
+}
+
+.barFacts,
+.barRank,
+.meta,
+.axis {
+  color: var(--yn-color-muted);
+  font-family: var(--yn-font-mono);
+  font-size: var(--yn-font-xs);
+}
+
+.team,
+.challengeTitle {
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: block;
+}
+
+.team[data-mine],
+.laneName[data-mine] {
+  color: var(--yn-color-signal);
+}
+
+.barLine {
+  align-items: center;
+}
+
+.svgDefs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.barSvg {
+  min-width: 0;
+  height: clamp(16px, 2.4vw, 32px);
+  flex: 1;
+}
+
+.hatchLine {
+  fill: var(--yn-color-hatch);
+}
+
+.barSolid {
+  fill: var(--yn-color-ink);
+}
+
+.barHatchFrame {
+  stroke: var(--yn-color-hatch);
+  vector-effect: non-scaling-stroke;
+}
+
+.barTotal,
+.laneTotal {
+  min-width: 4ch;
+  font-family: var(--yn-font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.barTotal {
+  font-size: clamp(20px, 2vw, 28px);
+}
+
+.timelineViewport {
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.timeline {
+  display: grid;
+  min-width: 720px;
+  gap: var(--yn-space-2);
+  padding-block: var(--yn-space-2);
+}
+
+.lane,
+.axis {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr) 5ch;
+  align-items: center;
+  gap: var(--yn-space-3);
+}
+
+.laneName,
+.challengeTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.challengeTitle {
+  display: block;
+  max-width: 14ch;
+}
+
+.laneCells {
+  display: grid;
+  grid-template-columns: repeat(24, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.cell {
+  display: inline-grid;
+  min-width: 1.5em;
+  height: 2em;
+  place-items: center;
+  border: 1px solid var(--yn-color-border-strong);
+  font-family: var(--yn-font-mono);
+  font-size: var(--yn-font-xs);
+}
+
+.cell[data-kind='first'] {
+  border-color: var(--yn-color-ink);
+  background: var(--yn-color-ink);
+  color: var(--yn-color-on-ink);
+}
+
+.cell[data-kind='later'] {
+  border-color: var(--yn-color-hatch);
+  background-image: repeating-linear-gradient(135deg, var(--yn-color-hatch) 0 1px, transparent 1px 7px);
+}
+
+.axisTimes {
+  display: flex;
+  justify-content: space-between;
+}

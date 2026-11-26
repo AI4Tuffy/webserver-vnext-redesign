@@ -217,8 +217,8 @@ export function GameWorkspaceShell() {
             {countdownTarget && countdownTarget > now ? (
               <span className={styles.countdown}>
                 <Clock3 size={15} />
-                <small>{countdownPrefix}</small>
-                <strong>{durationLabel(countdownTarget, now)}</strong>
+                <small className={styles.countdownLabel}>{countdownPrefix}</small>
+                <strong className={styles.countdownValue}>{durationLabel(countdownTarget, now)}</strong>
               </span>
             ) : null}
             {/* 实时连接：正常时只是一个圆点，断开或重连时才写出文字 */}

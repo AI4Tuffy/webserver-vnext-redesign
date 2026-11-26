@@ -1,11 +1,24 @@
-import { Download, FileArchive, Lightbulb, ListTree } from 'lucide-react'
+import { Download, FileArchive, ListTree } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { useConfig } from '@Hooks/useConfig'
 import { AnswerResult, ChallengeDetailModel, ChallengeInfo, SubmissionType } from '@Api'
-import { ActionButton } from '../../../shared/Interaction'
-import { MarkdownContent } from '../../../shared/MarkdownContent'
-import { DataState, StatusPill } from '../../../shared/Primitives'
+import {
+  ActionButton,
+  DataState,
+  EditorialPlate,
+  EditorSection,
+  HairlineItem,
+  HairlineList,
+  MarkdownContent,
+  PageHeader,
+  PageShell,
+  SectionHeader,
+  SpecItem,
+  SpecStrip,
+  StatusPill,
+  VNextDrawer,
+} from '../../../shared'
 import { FlagSubmission } from '../../challenge-runtime/FlagSubmission'
 import { InstanceControl } from '../../challenge-runtime/InstanceControl'
 import { useGameChallenge, useGameChallengeCatalog } from '../gamePlayerApi'
@@ -100,88 +113,75 @@ function ChallengeContextRail({
   const bloods = challenge?.bloods ?? []
   return (
     <div className={styles.contextStack}>
-      {challenge ? (
-        <div className={styles.scoreBlock}>
-          <strong>
-            {challenge.score}
-            <small>分</small>
-          </strong>
-        </div>
-      ) : null}
+      {challenge && (
+        <>
+          <SpecStrip density="comfortable">
+            <SpecItem label="本题分值" value={`${challenge.score} 分`} />
+          </SpecStrip>
+          <section aria-label="解出队伍">
+            <SectionHeader title={`解出队伍 · ${challenge.solved}`} />
+            {bloods.length ? (
+              <HairlineList aria-label="率先解题的队伍" dimSiblings={false}>
+                {bloods.map((blood, index) => (
+                  <HairlineItem
+                    key={`${blood.id}:${index}`}
+                    leading={index + 1}
+                    title={blood.name}
+                    meta={blood.submitTimeUtc ? <time>{formatTime(blood.submitTimeUtc)}</time> : undefined}
+                  />
+                ))}
+              </HairlineList>
+            ) : (
+              <p className={styles.note}>还没有队伍解出这道题。</p>
+            )}
+            {challenge.disableBloodBonus && <p className={styles.note}>本题不计一血加分。</p>}
+          </section>
+        </>
+      )}
 
-      {challenge ? (
-        <section aria-labelledby="bloods-title" className={styles.contextPanel}>
-          <h2 id="bloods-title">
-            解出队伍<span className={styles.panelCount}>{challenge.solved}</span>
-          </h2>
-          {bloods.length ? (
-            <ol className={styles.bloodList}>
-              {bloods.map((blood, index) => (
-                <li key={`${blood.id}:${index}`}>
-                  <span className={index === 0 ? styles.bloodFirst : styles.bloodRank}>{index + 1}</span>
-                  <strong>{blood.name}</strong>
-                  {blood.submitTimeUtc ? <time>{formatTime(blood.submitTimeUtc)}</time> : null}
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <p className={styles.contextEmpty}>还没有队伍解出这道题。</p>
-          )}
-          {challenge.disableBloodBonus ? <p className={styles.contextNote}>本题不计一血加分。</p> : null}
-        </section>
-      ) : null}
-
-      <section aria-labelledby="team-title" className={styles.contextPanel}>
-        <h2 id="team-title">本队 · {teamName || '当前队伍'}</h2>
-        <dl className={styles.teamMetrics}>
-          <div>
-            <dt>排名</dt>
-            <dd className={styles.rankValue}>{rank ? `#${rank}` : '--'}</dd>
-          </div>
-          <div>
-            <dt>得分</dt>
-            <dd>{score ?? '--'}</dd>
-          </div>
-          <div>
-            <dt>已解</dt>
-            <dd>{solvedCount ?? 0}</dd>
-          </div>
-        </dl>
+      <section aria-label="本队">
+        <SectionHeader title={`本队 · ${teamName || '当前队伍'}`} />
+        <SpecStrip className={styles.teamMetrics}>
+          <SpecItem label="排名" tone="accent" value={rank ? `#${rank}` : '--'} />
+          <SpecItem label="得分" value={score ?? '--'} />
+          <SpecItem label="已解" value={solvedCount ?? '--'} />
+        </SpecStrip>
       </section>
 
-      {notices.length ? (
-        <section aria-labelledby="notice-title" className={styles.contextPanel}>
-          <h2 id="notice-title">比赛通知</h2>
-          <div className={styles.noticeList}>
+      {notices.length > 0 && (
+        <section aria-label="比赛通知">
+          <SectionHeader title="比赛通知" />
+          <HairlineList dimSiblings={false}>
             {notices.slice(0, 6).map((notice) => (
-              <article key={`${notice.id}:${notice.time}:${notice.type}`}>
-                <time>{formatTime(notice.time)}</time>
-                <p>{formatWorkspaceNotice(notice)}</p>
-              </article>
+              <HairlineItem
+                key={`${notice.id}:${notice.time}:${notice.type}`}
+                meta={<time>{formatTime(notice.time)}</time>}
+                summary={formatWorkspaceNotice(notice)}
+              />
             ))}
-          </div>
+          </HairlineList>
         </section>
-      ) : null}
+      )}
 
-      {/* 本次提交：只在这次会话里提交过才出现 */}
-      {submissions.length ? (
-        <section aria-labelledby="session-title" className={styles.contextPanel}>
-          <h2 id="session-title">本次提交</h2>
-          <div className={styles.submissionList}>
+      {submissions.length > 0 && (
+        <section aria-label="本次提交">
+          <SectionHeader title="本次提交" />
+          <HairlineList dimSiblings={false}>
             {submissions.slice(0, 6).map((submission) => (
-              <article key={submission.key}>
-                <em className={submission.result === AnswerResult.Accepted ? styles.submissionAccepted : styles.submissionOther}>
-                  {resultLabel(submission.result)}
-                </em>
-                <div>
-                  <strong>{submission.challengeTitle}</strong>
-                  <small>{submission.answerPreview}</small>
-                </div>
-              </article>
+              <HairlineItem
+                key={submission.key}
+                leading={
+                  <StatusPill tone={submission.result === AnswerResult.Accepted ? 'success' : 'neutral'}>
+                    {resultLabel(submission.result)}
+                  </StatusPill>
+                }
+                title={submission.challengeTitle}
+                meta={submission.answerPreview}
+              />
             ))}
-          </div>
+          </HairlineList>
         </section>
-      ) : null}
+      )}
     </div>
   )
 }
@@ -330,23 +330,23 @@ export function ChallengesPage() {
 
   if (!teamInfo && !teamError) {
     return (
-      <div className={styles.statePage}>
+      <PageShell>
         <DataState loading title="题目工作区加载中" />
-      </div>
+      </PageShell>
     )
   }
   if (teamError || !teamInfo) {
     return (
-      <div className={styles.statePage}>
+      <PageShell>
         <DataState description="当前账户尚未通过报名审核，或题目服务暂时不可用。" title="无法进入题目工作区" />
-      </div>
+      </PageShell>
     )
   }
   if (!allChallenges.length) {
     return (
-      <div className={styles.statePage}>
+      <PageShell>
         <DataState description="比赛尚未发布题目，请等待管理员开放。" title="暂无题目" />
-      </div>
+      </PageShell>
     )
   }
 
@@ -354,93 +354,85 @@ export function ChallengesPage() {
   const meta = categoryMeta(displayedChallenge?.category ?? selectedSummary?.category ?? 'Misc')
   const attachmentUrl = displayedChallenge?.context?.url
 
+  const catalog = (
+    <ChallengeCatalog
+      groups={groups}
+      hideSolved={hideSolved}
+      onHideSolvedChange={(value) => setParam('status', value ? 'unsolved' : null)}
+      onQueryChange={(value) => setParam('q', value || null)}
+      onSelect={selectChallenge}
+      query={query}
+      selectedId={selectedId}
+      solvedTypes={solvedTypes}
+    />
+  )
+
   return (
-    <div className={styles.page}>
+    <PageShell gap="none">
       <div className={styles.mobileToolbar}>
-        <ActionButton icon={<ListTree size={17} />} onClick={() => setCatalogOpen(true)} type="button">
+        <ActionButton
+          aria-haspopup="dialog"
+          icon={<ListTree size={17} />}
+          onClick={() => setCatalogOpen(true)}
+          type="button"
+        >
           题目列表
         </ActionButton>
         <span>{selectedSummary ? `${meta.label} · ${selectedSummary.score} 分` : '选择题目'}</span>
       </div>
-
-      {catalogOpen ? (
-        <button
-          aria-label="关闭题目列表"
-          className={styles.catalogScrim}
-          onClick={() => setCatalogOpen(false)}
-          type="button"
-        />
-      ) : null}
+      <VNextDrawer onClose={() => setCatalogOpen(false)} open={catalogOpen} side="left" size="narrow" title="题目列表">
+        {catalogOpen && catalog}
+      </VNextDrawer>
       <div className={styles.workspaceLayout}>
-        <aside className={catalogOpen ? styles.catalogRailOpen : styles.catalogRail}>
-          <ChallengeCatalog
-            groups={groups}
-            hideSolved={hideSolved}
-            onHideSolvedChange={(value) => setParam('status', value ? 'unsolved' : null)}
-            onMobileClose={() => setCatalogOpen(false)}
-            onQueryChange={(value) => setParam('q', value || null)}
-            onSelect={selectChallenge}
-            query={query}
-            selectedId={selectedId}
-            solvedTypes={solvedTypes}
-          />
+        <aside aria-label="题目目录" className={styles.catalogRail}>
+          {catalog}
         </aside>
-
-        <main className={styles.challengeMain}>
+        <div className={styles.challengeMain}>
           {!displayedChallenge && !challengeError ? (
             <DataState loading title="题目加载中" />
           ) : challengeError || !displayedChallenge ? (
             <DataState description="题目不存在、尚未开放或当前队伍没有访问权限。" title="题目加载失败" />
           ) : (
             <article className={styles.challengeArticle}>
-              <header className={styles.challengeHeader}>
-                <div className={styles.challengeHeading}>
-                  {/* 只留类别与完成状态；分值和解出队伍在右栏 */}
-                  <div className={styles.challengeMeta}>
-                    <span className={styles.categoryCode}>{displayedChallenge.category ?? selectedSummary?.category}</span>
-                    <span>{meta.label}</span>
-                    {solved ? <StatusPill tone="success">已完成</StatusPill> : null}
-                  </div>
-                  <h1>{displayedChallenge.title || selectedSummary?.title || `题目 ${displayedChallenge.id}`}</h1>
-                </div>
-                <div className={styles.challengeArt}>
-                  <ChallengeArt category={displayedChallenge.category ?? selectedSummary?.category} />
-                </div>
-              </header>
+              <PageHeader
+                title={displayedChallenge.title || selectedSummary?.title || `题目 ${displayedChallenge.id}`}
+                description={
+                  <span className={styles.challengeMeta}>
+                    <span>
+                      {displayedChallenge.category ?? selectedSummary?.category} · {meta.label}
+                    </span>
+                    {solved && <StatusPill tone="success">已完成</StatusPill>}
+                  </span>
+                }
+                illustration={
+                  <EditorialPlate slot="challenge-category">
+                    <ChallengeArt category={displayedChallenge.category ?? selectedSummary?.category} />
+                  </EditorialPlate>
+                }
+              />
 
               <div className={styles.articleBody}>
                 <MarkdownContent source={displayedChallenge.content || '暂无题目说明。'} />
 
                 {displayedChallenge.hints?.length ? (
-                  <section aria-labelledby="hint-title" className={styles.hintSection}>
-                    <header>
-                      <Lightbulb size={17} />
-                      <h2 id="hint-title">题目提示</h2>
-                    </header>
-                    <div>
-                      {displayedChallenge.hints.map((hint, index) => (
-                        <MarkdownContent key={`${index}:${hint}`} source={hint} />
-                      ))}
-                    </div>
-                  </section>
+                  <EditorSection title="题目提示">
+                    {displayedChallenge.hints.map((hint, index) => (
+                      <MarkdownContent key={`${index}:${hint}`} source={hint} />
+                    ))}
+                  </EditorSection>
                 ) : null}
 
                 {attachmentUrl ? (
-                  <section aria-labelledby="attachment-title" className={styles.attachmentSection}>
-                    <header>
-                      <h2 id="attachment-title">题目附件</h2>
-                    </header>
-                    <a href={attachmentUrl} rel="noreferrer noopener" target="_blank">
-                      <span>
-                        <FileArchive size={21} />
+                  <EditorSection title="题目附件">
+                    <a className={styles.attachment} href={attachmentUrl} rel="noreferrer noopener" target="_blank">
+                      <FileArchive aria-hidden="true" size={21} />
+                      <span className={styles.attachmentName}>
+                        {attachmentName(attachmentUrl)}
+                        <small className={styles.note}>{formatFileSize(displayedChallenge.context?.fileSize)}</small>
                       </span>
-                      <div>
-                        <strong>{attachmentName(attachmentUrl)}</strong>
-                        <small>{formatFileSize(displayedChallenge.context?.fileSize)}</small>
-                      </div>
-                      <Download size={18} />
+                      <Download aria-hidden="true" size={18} />
                     </a>
-                  </section>
+                  </EditorSection>
                 ) : null}
 
                 <InstanceControl controller={instance} />
@@ -461,7 +453,7 @@ export function ChallengesPage() {
               </div>
             </article>
           )}
-        </main>
+        </div>
 
         <aside className={styles.contextRail}>
           <ChallengeContextRail
@@ -475,6 +467,6 @@ export function ChallengesPage() {
           />
         </aside>
       </div>
-    </div>
+    </PageShell>
   )
 }

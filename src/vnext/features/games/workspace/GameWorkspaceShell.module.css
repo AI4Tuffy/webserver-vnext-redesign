@@ -78,11 +78,11 @@
   color: var(--yn-color-muted);
 }
 
-.countdown small {
+.countdownLabel {
   font-size: var(--yn-font-sm);
 }
 
-.countdown strong {
+.countdownValue {
   color: var(--yn-color-text);
   font-family: var(--yn-font-mono);
   font-size: var(--yn-font-sm);
@@ -121,7 +121,7 @@
 }
 
 @media (max-width: 1180px) {
-  .countdown small {
+  .countdownLabel {
     display: none;
   }
 }

@@ -1,6 +1,7 @@
 import { ChallengeInfo, ScoreboardItem, SubmissionType } from '@Api'
+import { DataTable, type DataColumn } from '../../../shared'
 import { useArtId } from '../../../shared/art/artIds'
-import styles from './ScoreboardPage.module.css'
+import styles from './ScoreboardViews.module.css'
 
 export interface MatrixChallenge extends ChallengeInfo {
   categoryCode: string
@@ -86,9 +87,15 @@ export function ScoreBars({
           <div className={styles.barRow} key={item.id}>
             <div className={styles.barHead}>
               <span className={styles.barRank}>{pad(item.rank)}</span>
-              <strong className={mine ? styles.mineName : undefined}>{item.name}</strong>
-              {division ? <span className={styles.barDivision}>{division}</span> : null}
-              {mine ? <span className={styles.mineTag}>← 本队</span> : null}
+              <strong className={styles.team} data-mine={mine || undefined}>
+                {item.name}
+              </strong>
+              {division ? <span className={styles.meta}>{division}</span> : null}
+              {mine ? (
+                <span className={styles.team} data-mine>
+                  本队
+                </span>
+              ) : null}
             </div>
             <div className={styles.barLine}>
               <svg aria-hidden="true" className={styles.barSvg} preserveAspectRatio="none" viewBox="0 0 1000 56">
@@ -139,7 +146,7 @@ export function SolveTimeline({
     Math.min(TIMELINE_BUCKETS - 1, Math.max(0, Math.floor(((time - start) / span) * TIMELINE_BUCKETS)))
 
   return (
-    <div className={styles.timelineViewport}>
+    <div aria-label="解题时间轴，横向滚动查看全部时段" className={styles.timelineViewport} role="region" tabIndex={0}>
       <div className={styles.timeline}>
         {items.map((item) => {
           const buckets = Array.from({ length: TIMELINE_BUCKETS }, () => [] as ReturnType<typeof accepted>)
@@ -149,7 +156,9 @@ export function SolveTimeline({
           const mine = item.id === myTeamId
           return (
             <div className={styles.lane} key={item.id}>
-              <span className={mine ? styles.laneNameMine : styles.laneName}>{item.name}</span>
+              <span className={styles.laneName} data-mine={mine || undefined} title={item.name}>
+                {item.name}
+              </span>
               <div className={styles.laneCells}>
                 {buckets.map((entries, index) => {
                   const kind = entries.some((entry) => solvePlace(bloodRank, entry.id, item.id, entry.type) === 1)
@@ -160,7 +169,12 @@ export function SolveTimeline({
                   const label =
                     entries.length > 1 ? `×${entries.length}` : (categoryOf.get(entries[0]?.id ?? -1) ?? '').slice(0, 1)
                   return (
-                    <span data-kind={kind} key={index} title={entries.length ? `${entries.length} 次解出` : undefined}>
+                    <span
+                      className={styles.cell}
+                      data-kind={kind}
+                      key={index}
+                      title={entries.length ? `${entries.length} 次解出` : undefined}
+                    >
                       {entries.length ? label : null}
                     </span>
                   )
@@ -172,7 +186,7 @@ export function SolveTimeline({
         })}
         <div className={styles.axis}>
           <span />
-          <div>
+          <div className={styles.axisTimes}>
             <span>{formatClock(start)}</span>
             <span>{formatClock(start + span / 2)}</span>
             <span>{formatClock(end)}</span>
@@ -205,62 +219,63 @@ export function SolveMatrix({
   myTeamId?: number
   divisionName: (item: ScoreboardItem) => string | undefined
 }) {
-  return (
-    <div className={styles.matrixViewport}>
-      <table className={styles.matrix}>
-        <thead>
-          <tr>
-            <th scope="col">名次</th>
-            <th scope="col">战队</th>
-            <th scope="col">赛区</th>
-            <th className={styles.numeric} scope="col">
-              总分
-            </th>
-            <th className={styles.numeric} scope="col">
-              解题
-            </th>
-            {challenges.map((challenge) => (
-              <th className={styles.challengeColumn} key={challenge.id} scope="col" title={challenge.title}>
-                <span>{challenge.title}</span>
-                <small>
-                  {challenge.categoryCode} {challenge.score}
-                </small>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item) => {
-            const mine = item.id === myTeamId
-            const solved = new Map(accepted(item).map((entry) => [entry.id, entry.type]))
-            return (
-              <tr data-mine={mine || undefined} key={item.id}>
-                <td className={styles.matrixRank}>{pad(item.rank)}</td>
-                <th scope="row">
-                  <span className={mine ? styles.mineName : undefined}>{item.name}</span>
-                  <small>最后得分 {formatStamp(item.lastSubmissionTime)}</small>
-                </th>
-                <td className={styles.matrixMuted}>{divisionName(item) ?? '默认赛区'}</td>
-                <td className={styles.matrixTotal}>{item.score}</td>
-                <td className={styles.numeric}>{item.solvedCount}</td>
-                {challenges.map((challenge) => {
-                  const type = solved.get(challenge.id)
-                  const cell = cellKind(solved.has(challenge.id), solvePlace(bloodRank, challenge.id, item.id, type))
-                  return (
-                    <td className={styles.matrixCell} key={challenge.id}>
-                      <span aria-label={`${challenge.title}：${cell.text}`} data-kind={cell.kind} role="img">
-                        {cell.label}
-                      </span>
-                    </td>
-                  )
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
-  )
+  const rows = items.map((item) => ({
+    ...item,
+    solved: new Map(accepted(item).map((entry) => [entry.id, entry.type])),
+  }))
+  type MatrixRow = (typeof rows)[number]
+  const columns: DataColumn<MatrixRow>[] = [
+    { id: 'rank', header: '名次', width: 'compact', render: (item) => pad(item.rank) },
+    {
+      id: 'team',
+      header: '战队',
+      width: 'wide',
+      render: (item) => (
+        <>
+          <strong className={styles.team} data-mine={item.id === myTeamId || undefined}>
+            {item.name}
+          </strong>
+          <small className={styles.meta}>最后得分 {formatStamp(item.lastSubmissionTime)}</small>
+        </>
+      ),
+    },
+    { id: 'division', header: '赛区', render: (item) => divisionName(item) ?? '默认赛区' },
+    { id: 'score', header: '总分', width: 'compact', align: 'right', render: (item) => item.score },
+    { id: 'solves', header: '解题', width: 'compact', align: 'right', render: (item) => item.solvedCount },
+    ...challenges.map(
+      (challenge): DataColumn<MatrixRow> => ({
+        id: String(challenge.id),
+        width: 'compact',
+        header: (
+          <>
+            <span className={styles.challengeTitle} title={challenge.title}>
+              {challenge.title}
+            </span>
+            <small className={styles.meta}>
+              {challenge.categoryCode} {challenge.score}
+            </small>
+          </>
+        ),
+        render: (item) => {
+          const place = solvePlace(bloodRank, challenge.id, item.id, item.solved.get(challenge.id))
+          const cell = cellKind(item.solved.has(challenge.id), place)
+          return (
+            <span
+              aria-label={`${challenge.title}：${cell.text}`}
+              className={styles.cell}
+              data-kind={cell.kind}
+              role="img"
+              title={cell.text}
+            >
+              {cell.label}
+            </span>
+          )
+        },
+      })
+    ),
+  ]
+
+  return <DataTable caption="各战队解题明细" columns={columns} rowKey={(item) => item.id} rows={rows} />
 }
 
 export function scoreboardTotals(items: ScoreboardItem[], bloodRank: BloodRankLookup) {

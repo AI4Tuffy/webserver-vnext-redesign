@@ -1,6 +1,7 @@
-import { ChevronDown, ChevronRight, Search, X } from 'lucide-react'
-import { ChangeEvent, useMemo, useState } from 'react'
+import { Check, ChevronDown, ChevronRight } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import { ChallengeInfo, SubmissionType } from '@Api'
+import { ActionButton, SearchInput, ToggleField } from '../../../shared'
 import styles from './ChallengeCatalog.module.css'
 import { categoryMeta } from './challengeCategories'
 
@@ -18,7 +19,6 @@ export function ChallengeCatalog({
   onQueryChange,
   onHideSolvedChange,
   onSelect,
-  onMobileClose,
 }: {
   groups: ChallengeGroup[]
   selectedId: number | null
@@ -28,7 +28,6 @@ export function ChallengeCatalog({
   onQueryChange: (value: string) => void
   onHideSolvedChange: (value: boolean) => void
   onSelect: (challenge: ChallengeInfo) => void
-  onMobileClose: () => void
 }) {
   const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set())
   const normalizedQuery = query.trim().toLocaleLowerCase('zh-CN')
@@ -60,67 +59,50 @@ export function ChallengeCatalog({
     })
   }
 
-  const onSearchChange = (event: ChangeEvent<HTMLInputElement>) => onQueryChange(event.currentTarget.value)
-
   return (
     <div className={styles.catalog}>
-      {/* 只在窄屏抽屉里出现：标题与关闭按钮 */}
-      <header className={styles.catalogHeader}>
-        <strong>题目列表</strong>
-        <button aria-label="关闭题目列表" className={styles.mobileClose} onClick={onMobileClose} type="button">
-          <X size={18} />
-        </button>
-      </header>
-
       <div className={styles.catalogControls}>
-        <label className={styles.searchBox}>
-          <Search size={16} />
-          <input aria-label="搜索题目" onChange={onSearchChange} placeholder="搜索题目" type="search" value={query} />
-        </label>
-        <label className={styles.hideSolved}>
-          <input
-            checked={hideSolved}
-            onChange={(event) => onHideSolvedChange(event.currentTarget.checked)}
-            type="checkbox"
-          />
-          <span>隐藏已解题目</span>
-        </label>
+        <SearchInput label="搜索题目" onValueChange={onQueryChange} size="sm" value={query} />
+        <ToggleField checked={hideSolved} label="隐藏已解题目" onChange={onHideSolvedChange} />
       </div>
-
       <div className={styles.groupList}>
         {visibleGroups.map((group) => {
           const meta = categoryMeta(group.category)
           const open = isOpen(group.category)
           return (
-            <section className={styles.challengeGroup} key={group.category}>
-              <button
+            <section key={group.category}>
+              <ActionButton
                 aria-expanded={open}
+                tone="ghost"
                 className={styles.categoryRow}
                 onClick={() => toggleCategory(group.category)}
                 type="button"
               >
                 {open ? <ChevronDown aria-hidden="true" size={14} /> : <ChevronRight aria-hidden="true" size={14} />}
                 <span className={styles.categoryCode}>{group.category}</span>
-                <strong>{meta.label}</strong>
-              </button>
+                <span>{meta.label}</span>
+              </ActionButton>
               {open ? (
-                <div className={styles.challengeGroupBody}>
+                <div>
                   {group.challenges.map((challenge) => {
                     const solvedType = solvedTypes.get(challenge.id)
                     const solved = solvedType !== undefined && solvedType !== SubmissionType.Unaccepted
                     return (
-                      <button
+                      <ActionButton
                         aria-current={challenge.id === selectedId ? 'true' : undefined}
-                        className={challenge.id === selectedId ? styles.challengeRowActive : styles.challengeRow}
+                        className={styles.challengeRow}
+                        tone="ghost"
+                        aria-label={`${challenge.title}，${challenge.score} 分${solved ? '，已解' : ''}`}
                         key={challenge.id}
                         onClick={() => onSelect(challenge)}
                         type="button"
                       >
-                        <span aria-hidden="true" className={solved ? styles.markSolved : styles.mark} />
+                        <span aria-hidden="true" className={styles.mark} data-solved={solved || undefined}>
+                          {solved && <Check size={12} />}
+                        </span>
                         <span className={styles.challengeName}>{challenge.title}</span>
                         <span className={styles.challengeScore}>{challenge.score}</span>
-                        {solved ? <span className={styles.srOnly}>，已解</span> : null}
-                      </button>
+                      </ActionButton>
                     )
                   })}
                 </div>
