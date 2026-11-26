@@ -20,8 +20,9 @@
 
 .categoryRow,
 .challengeRow {
+  display: grid;
   width: 100%;
-  justify-content: flex-start;
+  grid-template-columns: minmax(0, 1fr);
   text-align: left;
 }
 
@@ -41,10 +42,22 @@
 }
 
 .challengeRow {
-  display: grid;
-  grid-template-columns: 14px minmax(0, 1fr) auto;
-  gap: var(--yn-space-2);
   font-weight: 400;
+}
+
+.categoryContent,
+.challengeContent {
+  display: grid;
+  align-items: center;
+  gap: var(--yn-space-2);
+}
+
+.categoryContent {
+  grid-template-columns: 14px auto minmax(0, 1fr);
+}
+
+.challengeContent {
+  grid-template-columns: 14px minmax(0, 1fr) auto;
 }
 
 .challengeRow[aria-current='true'] {

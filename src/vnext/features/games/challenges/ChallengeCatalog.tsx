@@ -78,9 +78,11 @@ export function ChallengeCatalog({
                 onClick={() => toggleCategory(group.category)}
                 type="button"
               >
-                {open ? <ChevronDown aria-hidden="true" size={14} /> : <ChevronRight aria-hidden="true" size={14} />}
-                <span className={styles.categoryCode}>{group.category}</span>
-                <span>{meta.label}</span>
+                <span className={styles.categoryContent}>
+                  {open ? <ChevronDown aria-hidden="true" size={14} /> : <ChevronRight aria-hidden="true" size={14} />}
+                  <span className={styles.categoryCode}>{group.category}</span>
+                  <span>{meta.label}</span>
+                </span>
               </ActionButton>
               {open ? (
                 <div>
@@ -97,11 +99,13 @@ export function ChallengeCatalog({
                         onClick={() => onSelect(challenge)}
                         type="button"
                       >
-                        <span aria-hidden="true" className={styles.mark} data-solved={solved || undefined}>
-                          {solved && <Check size={12} />}
+                        <span className={styles.challengeContent}>
+                          <span aria-hidden="true" className={styles.mark} data-solved={solved || undefined}>
+                            {solved && <Check size={12} />}
+                          </span>
+                          <span className={styles.challengeName}>{challenge.title}</span>
+                          <span className={styles.challengeScore}>{challenge.score}</span>
                         </span>
-                        <span className={styles.challengeName}>{challenge.title}</span>
-                        <span className={styles.challengeScore}>{challenge.score}</span>
                       </ActionButton>
                     )
                   })}
