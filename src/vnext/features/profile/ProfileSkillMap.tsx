@@ -1,14 +1,9 @@
 import { useMemo, useState } from 'react'
+import { DataTable, SectionHeader, SurfaceCard } from '../../shared'
+import styles from './ProfileSkillMap.module.css'
 import type { UserSkillDimension } from './api/userProfileApi'
-import {
-  orderedDimensions,
-  profileDimensionLabel,
-  radarGrid,
-  radarLabelPoint,
-  radarPolygon,
-} from './profileDomain'
+import { orderedDimensions, profileDimensionLabel, radarGrid, radarLabelPoint, radarPolygon } from './profileDomain'
 import { dimensionDefinition } from './skillDimensionRegistry'
-import styles from './UserProfilePage.module.css'
 
 export function ProfileSkillMap({ dimensions }: { dimensions: UserSkillDimension[] }) {
   const ordered = useMemo(() => orderedDimensions(dimensions), [dimensions])
@@ -16,13 +11,8 @@ export function ProfileSkillMap({ dimensions }: { dimensions: UserSkillDimension
   const polygon = radarPolygon(ordered)
 
   return (
-    <section className={styles.profilePanel}>
-      <header className={styles.panelHeading}>
-        <div>
-          <h2>分类解题画像</h2>
-        </div>
-        <span>按平台 P90 基准归一化</span>
-      </header>
+    <SurfaceCard>
+      <SectionHeader title="分类解题画像" description="按平台 P90 基准归一化" />
       <div className={styles.skillLayout}>
         <div className={styles.radarWrap}>
           <svg aria-label="分类解题雷达图" className={styles.radar} role="img" viewBox="0 0 240 240">
@@ -31,10 +21,9 @@ export function ProfileSkillMap({ dimensions }: { dimensions: UserSkillDimension
             ))}
             {ordered.map((dimension, index) => {
               const label = radarLabelPoint(index, ordered.length)
-              const axis = radarLabelPoint(index, ordered.length)
               return (
-                <g data-active={activeId === dimension.id || undefined} key={dimension.id}>
-                  <line className={styles.radarAxis} x1="120" x2={axis.x} y1="120" y2={axis.y} />
+                <g className={styles.axisGroup} data-active={activeId === dimension.id || undefined} key={dimension.id}>
+                  <line className={styles.radarAxis} x1="120" x2={label.x} y1="120" y2={label.y} />
                   <text className={styles.radarLabel} textAnchor="middle" x={label.x} y={label.y + 4}>
                     {profileDimensionLabel(dimension.id)}
                   </text>
@@ -44,41 +33,35 @@ export function ProfileSkillMap({ dimensions }: { dimensions: UserSkillDimension
             <polygon className={styles.radarValue} points={polygon} />
           </svg>
         </div>
-        <div className={styles.dimensionTable} role="table" aria-label="分类解题统计">
-          <div className={styles.dimensionHeader} role="row">
-            <span role="columnheader">方向</span>
-            <span role="columnheader">解题</span>
-            <span role="columnheader">尝试</span>
-            <span role="columnheader">提交</span>
-            <span role="columnheader">正确率</span>
-          </div>
-          {ordered.map((dimension) => (
-            <div
-              className={styles.dimensionRow}
-              data-active={activeId === dimension.id || undefined}
-              key={dimension.id}
-              onMouseEnter={() => setActiveId(dimension.id)}
-              onMouseLeave={() => setActiveId(null)}
-              role="row"
-            >
-              <button
-                onBlur={() => setActiveId(null)}
-                onFocus={() => setActiveId(dimension.id)}
-                title={dimensionDefinition(dimension.id).description}
-                type="button"
-              >
-                <strong>{profileDimensionLabel(dimension.id)}</strong>
-                {!dimension.sampleSufficient ? <small>样本不足</small> : null}
-                <progress aria-label={`${profileDimensionLabel(dimension.id)}画像值`} max="100" value={dimension.radarValue} />
-              </button>
-              <span role="cell">{dimension.solved}</span>
-              <span role="cell">{dimension.attempted}</span>
-              <span role="cell">{dimension.submissions}</span>
-              <span role="cell">{dimension.successRate}%</span>
-            </div>
-          ))}
-        </div>
+        <DataTable
+          caption="分类解题统计"
+          columns={[
+            {
+              id: 'category',
+              header: '方向',
+              render: (dimension) => (
+                <span className={styles.dimension} title={dimensionDefinition(dimension.id).description}>
+                  {profileDimensionLabel(dimension.id)}
+                  {!dimension.sampleSufficient && <small className={styles.sample}>样本不足</small>}
+                  <progress
+                    className={styles.progress}
+                    aria-label={profileDimensionLabel(dimension.id) + '画像值'}
+                    value={dimension.radarValue}
+                    max={100}
+                  />
+                </span>
+              ),
+            },
+            { id: 'solved', header: '解题', render: (d) => d.solved, align: 'right' },
+            { id: 'attempted', header: '尝试', render: (d) => d.attempted, align: 'right' },
+            { id: 'submissions', header: '提交', render: (d) => d.submissions, align: 'right', visibility: 'desktop' },
+            { id: 'rate', header: '正确率', render: (d) => d.successRate + '%', align: 'right' },
+          ]}
+          rows={ordered}
+          rowKey={(dimension) => dimension.id}
+          onRowHover={(dimension) => setActiveId(dimension?.id ?? null)}
+        />
       </div>
-    </section>
+    </SurfaceCard>
   )
 }

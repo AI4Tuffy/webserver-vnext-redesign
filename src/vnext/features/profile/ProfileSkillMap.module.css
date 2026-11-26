@@ -1,0 +1,78 @@
+.skillLayout {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.75fr) minmax(0, 1.25fr);
+  gap: var(--yn-space-5);
+  align-items: center;
+}
+
+.radarWrap {
+  display: grid;
+  min-width: 0;
+  place-items: center;
+}
+
+.radar {
+  width: min(100%, 330px);
+  overflow: visible;
+}
+
+.radarGrid,
+.radarAxis {
+  fill: none;
+  stroke: var(--yn-color-border-strong);
+}
+
+.radarLabel {
+  fill: var(--yn-color-muted);
+  font-family: var(--yn-font-mono);
+  font-size: 9px;
+}
+
+.axisGroup[data-active] .radarAxis {
+  stroke: var(--yn-color-signal);
+  stroke-width: 2;
+}
+
+.axisGroup[data-active] .radarLabel {
+  fill: var(--yn-color-text);
+}
+
+.radarValue {
+  fill: color-mix(in srgb, var(--yn-color-signal) 18%, transparent);
+  stroke: var(--yn-color-signal);
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.dimension {
+  display: grid;
+  gap: 2px;
+  color: var(--yn-color-text);
+  text-align: start;
+}
+
+.sample {
+  color: var(--yn-color-muted);
+  font-size: var(--yn-font-xs);
+}
+
+.progress {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .skillLayout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .radarWrap {
+    display: none;
+  }
+
+  .progress {
+    display: block;
+    width: 52px;
+    height: 5px;
+    accent-color: var(--yn-color-signal);
+  }
+}

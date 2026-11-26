@@ -1,9 +1,8 @@
 import { BookOpenCheck, Flag, GraduationCap, Network, ShieldCheck, Trophy } from 'lucide-react'
 import { ComponentType } from 'react'
-import { Link } from 'react-router'
+import { HairlineItem, HairlineList, SectionHeader, SurfaceCard } from '../../shared'
 import { ActionButton } from '../../shared/Interaction'
 import type { UserProfileHistoryItem } from './api/userProfileApi'
-import styles from './UserProfilePage.module.css'
 
 const historyIcons: Record<string, ComponentType<{ size?: number }>> = {
   challenge: Flag,
@@ -25,22 +24,6 @@ function formatOccurredAt(value: number) {
   }).format(value)
 }
 
-function HistoryContent({ item }: { item: UserProfileHistoryItem }) {
-  const Icon = historyIcons[item.type] ?? Flag
-  return (
-    <>
-      <span className={styles.historyIcon}>
-        <Icon size={16} />
-      </span>
-      <span className={styles.historyCopy}>
-        <time>{formatOccurredAt(item.occurredAt)}</time>
-        <strong>{item.title}</strong>
-        <small>{item.summary}</small>
-      </span>
-    </>
-  )
-}
-
 export function ProfileHistory({
   items,
   loading,
@@ -57,40 +40,40 @@ export function ProfileHistory({
   onLoadMore: () => void
 }) {
   return (
-    <section className={styles.profilePanel}>
-      <header className={styles.panelHeading}>
-        <div>
-          <h2>近期经历</h2>
-        </div>
-      </header>
+    <SurfaceCard>
+      <SectionHeader title="近期经历" />
       {loading ? (
-        <div className={styles.panelLoading}>正在读取经历记录...</div>
+        <p role="status">正在读取经历记录...</p>
       ) : failed ? (
-        <div className={styles.panelLoading}>经历记录暂时无法读取。</div>
+        <p role="status">经历记录暂时无法读取。</p>
       ) : items.length ? (
-        <div className={styles.historyTimeline}>
-          {items.map((item) =>
-            item.route ? (
-              <Link className={styles.historyItem} key={item.id} to={item.route}>
-                <HistoryContent item={item} />
-              </Link>
-            ) : (
-              <div className={styles.historyItem} key={item.id}>
-                <HistoryContent item={item} />
-              </div>
+        <HairlineList aria-label="近期经历">
+          {items.map((item) => {
+            const Icon = historyIcons[item.type] ?? Flag
+            return (
+              <HairlineItem
+                key={item.id}
+                leading={<Icon size={16} />}
+                meta={
+                  <time dateTime={new Date(item.occurredAt).toISOString()}>{formatOccurredAt(item.occurredAt)}</time>
+                }
+                summary={item.summary}
+                title={item.title}
+                to={item.route || undefined}
+              />
             )
-          )}
-        </div>
+          })}
+        </HairlineList>
       ) : (
-        <div className={styles.panelLoading}>暂无公开记录。</div>
+        <p role="status">暂无公开记录。</p>
       )}
       {hasMore ? (
-        <div className={styles.historyMore}>
+        <p>
           <ActionButton disabled={loadingMore} onClick={onLoadMore} type="button">
             {loadingMore ? '正在加载...' : '加载更多'}
           </ActionButton>
-        </div>
+        </p>
       ) : null}
-    </section>
+    </SurfaceCard>
   )
 }

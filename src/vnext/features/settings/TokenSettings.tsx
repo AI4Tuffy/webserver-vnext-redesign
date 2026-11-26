@@ -1,13 +1,14 @@
 import { Copy, KeyRound } from 'lucide-react'
 import { useState } from 'react'
 import { ApiTokenModel, Role } from '@Api'
+import { DataTable, SectionHeader, type DataColumn } from '../../shared'
 import { ActionButton, InlineFeedback, VNextConfirmDialog, VNextDialog } from '../../shared/Interaction'
 import { DataState, StatusPill } from '../../shared/Primitives'
 import { errorMessage } from '../../shared/errors'
 import { useCurrentAccount } from '../account/useCurrentAccount'
-import { settingsApi, useApiTokens } from './settingsApi'
-import { TokenCreateDialog } from './TokenCreateDialog'
 import styles from './SettingsPage.module.css'
+import { TokenCreateDialog } from './TokenCreateDialog'
+import { settingsApi, useApiTokens } from './settingsApi'
 
 function formatTime(value?: number | null) {
   return value ? new Intl.DateTimeFormat('zh-CN', { dateStyle: 'medium', timeStyle: 'short' }).format(value) : '未设置'
@@ -17,60 +18,80 @@ function grantedScopes(token: ApiTokenModel) {
   return (token.resources ?? []).filter((resource) => resource.resourceType === 'teamlab-scope')
 }
 
-function TokenRow({ token, onRevoke }: { token: ApiTokenModel; onRevoke: (id: string) => void }) {
-  const expired = Boolean(token.expiresAt && token.expiresAt <= Date.now())
-  const granted = grantedScopes(token)
-  return (
-    <tr>
-      <td>
-        <strong>{token.name || '未命名'}</strong>
-        <small>{token.id}</small>
-      </td>
-      <td>
+function tokenColumns(onRevoke: (id: string) => void): DataColumn<ApiTokenModel>[] {
+  const expired = (token: ApiTokenModel) => Boolean(token.expiresAt && token.expiresAt <= Date.now())
+  return [
+    {
+      id: 'name',
+      header: '名称',
+      render: (token) => (
+        <div className={styles.tokenName}>
+          <strong>{token.name || '未命名'}</strong>
+          <small>{token.id}</small>
+        </div>
+      ),
+    },
+    {
+      id: 'scopes',
+      header: '权限范围',
+      render: (token) => (
         <div className={styles.scopeList}>
-          {(token.scopes ?? []).map((scope) => (
+          {token.scopes?.map((scope) => (
             <span key={scope}>{scope}</span>
           ))}
         </div>
-      </td>
-      <td>
-        {granted.length ? (
+      ),
+    },
+    {
+      id: 'resources',
+      header: '资源授权',
+      render: (token) => {
+        const resources = grantedScopes(token)
+        return resources.length ? (
           <div className={styles.scopeList}>
-            {granted.map((resource) => (
+            {resources.map((resource) => (
               <span key={resource.resourceId ?? resource.resourceType}>
-                {resource.resourceId ? resource.resourceId.slice(0, 8) : '—'}…
+                {resource.resourceId ? resource.resourceId.slice(0, 8) + '…' : '—'}
               </span>
             ))}
           </div>
         ) : (
-          <span className={styles.mutedText}>无</span>
-        )}
-      </td>
-      <td>{token.requestsPerMinute ?? '-'} / min</td>
-      <td>{formatTime(token.lastUsedAt)}</td>
-      <td>{formatTime(token.expiresAt)}</td>
-      <td>
-        <StatusPill tone={expired ? 'neutral' : 'success'}>{expired ? '已过期' : '有效'}</StatusPill>
-      </td>
-      <td>
-        <button
-          className={styles.revokeButton}
-          disabled={expired}
+          '无'
+        )
+      },
+    },
+    { id: 'quota', header: '配额', render: (token) => (token.requestsPerMinute ?? '-') + ' / min' },
+    { id: 'lastUsed', header: '最后使用', render: (token) => formatTime(token.lastUsedAt) },
+    { id: 'expires', header: '过期时间', render: (token) => formatTime(token.expiresAt) },
+    {
+      id: 'status',
+      header: '状态',
+      render: (token) => (
+        <StatusPill tone={expired(token) ? 'neutral' : 'success'}>{expired(token) ? '已过期' : '有效'}</StatusPill>
+      ),
+    },
+    {
+      id: 'actions',
+      header: '操作',
+      render: (token) => (
+        <ActionButton
+          disabled={expired(token) || !token.id}
           onClick={() => token.id && onRevoke(token.id)}
+          size="sm"
+          tone="ghost"
           type="button"
         >
           撤销
-        </button>
-      </td>
-    </tr>
-  )
+        </ActionButton>
+      ),
+    },
+  ]
 }
 
 function SecretDialog({ onClose, secret }: { onClose: () => void; secret: string | null }) {
   return (
     <VNextDialog
       description="关闭后无法再次查看明文，请立即存放到安全位置。"
-      eyebrow="TOKEN ISSUED"
       footer={
         <ActionButton onClick={onClose} tone="primary" type="button">
           我已保存
@@ -81,7 +102,7 @@ function SecretDialog({ onClose, secret }: { onClose: () => void; secret: string
       title="API Token 已创建"
     >
       <div className={styles.secretBox}>
-        <code>{secret}</code>
+        <code className={styles.secret}>{secret}</code>
         <ActionButton
           icon={<Copy size={16} />}
           onClick={() => secret && void navigator.clipboard.writeText(secret)}
@@ -120,60 +141,36 @@ export function TokenSettings() {
 
   if (!isTeacher) {
     return (
-      <div className={styles.settingsContent}>
-        <section className={styles.sectionIntroRow}>
-          <div>
-            <h2>API Token</h2>
-            <p>API Token 仅对教师及更高权限开放。如需程序化访问，请联系平台管理员。</p>
-          </div>
-        </section>
-      </div>
+      <SectionHeader
+        title="API Token"
+        description="API Token 仅对教师及更高权限开放。如需程序化访问，请联系平台管理员。"
+      />
     )
   }
 
   return (
     <div className={styles.settingsContent}>
-      <section className={styles.sectionIntroRow}>
-        <div>
-          <h2>API Token</h2>
-          <p>Token 明文仅在创建时显示一次。</p>
-        </div>
-        <ActionButton icon={<KeyRound size={16} />} onClick={() => setCreateOpen(true)} tone="primary" type="button">
-          创建 Token
-        </ActionButton>
-      </section>
+      <SectionHeader
+        title="API Token"
+        description="Token 明文仅在创建时显示一次。"
+        actions={
+          <ActionButton icon={<KeyRound size={16} />} onClick={() => setCreateOpen(true)} tone="primary" type="button">
+            创建 Token
+          </ActionButton>
+        }
+      />
       {feedback || error ? <InlineFeedback tone="danger">{feedback || 'Token 列表加载失败。'}</InlineFeedback> : null}
       {!tokens && !error ? (
         <DataState loading title="Token 加载中" />
       ) : (
-        <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>名称</th>
-                <th>权限范围</th>
-                <th>资源授权</th>
-                <th>配额</th>
-                <th>最后使用</th>
-                <th>过期时间</th>
-                <th>状态</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {activeTokens.map((token) => (
-                <TokenRow key={token.id} onRevoke={(id) => setRevokeId(id)} token={token} />
-              ))}
-              {!activeTokens.length ? (
-                <tr>
-                  <td className={styles.emptyCell} colSpan={8}>
-                    尚未创建 API Token。
-                  </td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          caption="API Token"
+          columns={tokenColumns(setRevokeId)}
+          emptyTitle="尚未创建 API Token。"
+          emptyDescription="创建后可在这里查看授权范围与状态。"
+          rowKey={(token) => token.id ?? token.name ?? ''}
+          rows={activeTokens}
+        />
       )}
 
       <TokenCreateDialog

@@ -1,0 +1,80 @@
+.trendLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--yn-space-5);
+}
+
+.trendChart {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: visible;
+}
+
+.trendChart:focus-visible {
+  border-radius: var(--yn-radius-sm);
+  outline: 2px solid var(--yn-color-focus);
+  outline-offset: 2px;
+}
+
+.trendGrid {
+  stroke: var(--yn-color-border);
+}
+
+.trendArea {
+  fill: color-mix(in srgb, var(--yn-color-signal) 9%, transparent);
+}
+
+.trendLine {
+  fill: none;
+  stroke: var(--yn-color-text);
+  stroke-linejoin: round;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.trendCursor {
+  stroke: var(--yn-color-border-strong);
+  stroke-dasharray: 3 4;
+}
+
+.trendDot {
+  fill: var(--yn-color-signal);
+  stroke: var(--yn-color-surface);
+  stroke-width: 2;
+}
+
+.trendReading {
+  display: grid;
+  gap: var(--yn-space-1);
+  padding-left: var(--yn-space-4);
+  border-left: 1px solid var(--yn-color-border);
+  color: var(--yn-color-muted);
+  font-size: var(--yn-font-sm);
+}
+
+.count {
+  color: var(--yn-color-text);
+  font-family: var(--yn-font-mono);
+  font-size: 32px;
+}
+
+.delta {
+  color: var(--yn-color-text-secondary);
+}
+
+@media (max-width: 620px) {
+  .trendLayout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .trendReading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--yn-space-2);
+    padding: 0;
+    border: 0;
+  }
+}

@@ -1,14 +1,24 @@
-import { Footprints, History, LogIn, Play, Settings, UserRound } from 'lucide-react'
+import { LogIn, Play, Settings, UserRound } from 'lucide-react'
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router'
 import {
   ProfileUserInfoModel,
   TrainingCourseEnrollmentStatus,
   TrainingCourseModel,
   TrainingCourseProgressStatus,
 } from '@Api'
+import {
+  ActionLink,
+  DataState,
+  EditorialPlate,
+  HairlineItem,
+  HairlineList,
+  PageHeader,
+  PageShell,
+  SectionHeader,
+  StatusBadge,
+  SurfaceCard,
+} from '../../shared'
 import { SpotIconName, SpotPalette, SpotTile } from '../../shared/art/spot'
-import { DataState } from '../../shared/Primitives'
 import { useVNextPageTitle } from '../../shared/useVNextPageTitle'
 import { useCurrentAccount } from '../account/useCurrentAccount'
 import { formatGameRange, GameCatalogItem, participationLabel, useGameCatalog } from '../games/gameCatalog'
@@ -139,7 +149,9 @@ function ActivityCalendar({ points, weeks }: { points: UserActivityPoint[]; week
     <div className={styles.calendar}>
       <div aria-hidden="true" className={styles.calendarMonths}>
         {monthLabels.map((label, week) => (
-          <span key={week}>{label}</span>
+          <span className={styles.month} key={week}>
+            {label}
+          </span>
         ))}
       </div>
       <div aria-hidden="true" className={styles.calendarWeekdays}>
@@ -147,9 +159,14 @@ function ActivityCalendar({ points, weeks }: { points: UserActivityPoint[]; week
           <span key={day}>{label}</span>
         ))}
       </div>
-      <div aria-label={`最近 ${weeks} 周的学习足迹，共 ${activeDays} 天有记录`} className={styles.activityGrid} role="img">
+      <div
+        aria-label={`最近 ${weeks} 周的学习足迹，共 ${activeDays} 天有记录`}
+        className={styles.activityGrid}
+        role="img"
+      >
         {cells.map((cell) => (
           <span
+            className={styles.day}
             data-future={cell.future ? 'true' : undefined}
             data-level={cell.level}
             key={cell.key}
@@ -160,7 +177,7 @@ function ActivityCalendar({ points, weeks }: { points: UserActivityPoint[]; week
       <div className={styles.activityLegend}>
         <span>较少</span>
         {[0, 1, 2, 3, 4].map((level) => (
-          <i aria-hidden="true" data-level={level} key={level} />
+          <i aria-hidden="true" className={styles.day} data-level={level} key={level} />
         ))}
         <span>较多</span>
       </div>
@@ -176,14 +193,8 @@ function FootprintCard({ userId }: { userId?: string }) {
   const weeks = width ? footprintWeeksFor(width) : FOOTPRINT_MIN_WEEKS
 
   return (
-    <section aria-labelledby="activity-title" className={styles.card}>
-      <div className={styles.cardMeta}>
-        <span aria-hidden="true" className={styles.cardPill}>
-          <Footprints size={14} />
-        </span>
-        <h2 id="activity-title">学习足迹</h2>
-        <span>最近 {weeks} 周</span>
-      </div>
+    <SurfaceCard className={styles.activityCard}>
+      <SectionHeader actions={<span className={styles.note}>最近 {weeks} 周</span>} title="学习足迹" />
       <div className={styles.activityBody} ref={bodyRef}>
         {activity.data ? (
           <ActivityCalendar points={activity.data} weeks={weeks} />
@@ -193,7 +204,7 @@ function FootprintCard({ userId }: { userId?: string }) {
           <DataState loading title="学习记录加载中" />
         )}
       </div>
-    </section>
+    </SurfaceCard>
   )
 }
 
@@ -205,15 +216,6 @@ function useGreeting() {
     return () => window.clearInterval(timer)
   }, [])
   return greetingFor(hour)
-}
-
-/** 估算标题宽度（中文与全角标点按 1em，其余按 0.55em），据此选择字号档位。 */
-function titleSize(title: string) {
-  const units = Array.from(title).reduce((sum, char) => sum + (/[\u3000-\u9fff\uff00-\uffef]/.test(char) ? 1 : 0.55), 0)
-  if (units <= 8) return 'xl'
-  if (units <= 11) return 'l'
-  if (units <= 15) return 'm'
-  return 's'
 }
 
 function internalRoute(route?: string | null) {
@@ -234,50 +236,49 @@ function HomeIdentity({ user }: { user?: ProfileUserInfoModel }) {
   const quote = quoteForDate(new Date())
 
   return (
-    <header className={styles.hero}>
-      <div className={styles.heroCopy}>
-        <h1 data-size={titleSize(title)}>{title}</h1>
-        {user ? (
-          <figure className={styles.quote}>
-            <figcaption className={styles.quoteLabel}>每日一言</figcaption>
-            <blockquote>{quote.text}</blockquote>
-            <p className={styles.quoteSource}>—— {quote.source}</p>
-          </figure>
-        ) : (
-          <p className={styles.bio}>登录后查看赛事预约、课程进度和学习足迹。</p>
-        )}
-        <div className={styles.actions}>
-          {user ? (
+    <div className={styles.hero}>
+      <PageHeader
+        actions={
+          user ? (
             <>
-              {resumeRoute ? (
-                <Link className={`${styles.identityAction} ${styles.primaryAction}`} to={resumeRoute}>
-                  <Play aria-hidden="true" size={16} />
+              {resumeRoute && (
+                <ActionLink icon={<Play size={16} />} shape="pill" to={resumeRoute} tone="primary">
                   从上次的地方开始
-                </Link>
-              ) : null}
-              <Link className={styles.identityAction} to="/users/me">
-                <UserRound aria-hidden="true" size={16} />
+                </ActionLink>
+              )}
+              <ActionLink icon={<UserRound size={16} />} shape="pill" to="/users/me">
                 个人档案
-              </Link>
-              <Link className={styles.identityAction} to="/settings/security">
-                <Settings aria-hidden="true" size={16} />
+              </ActionLink>
+              <ActionLink icon={<Settings size={16} />} shape="pill" to="/settings/security">
                 账户设置
-              </Link>
+              </ActionLink>
             </>
           ) : (
-            <Link className={`${styles.identityAction} ${styles.primaryAction}`} to="/account/login?returnUrl=%2F">
-              <LogIn aria-hidden="true" size={16} />
+            <ActionLink icon={<LogIn size={16} />} shape="pill" to="/account/login?returnUrl=%2F" tone="primary">
               登录
-            </Link>
-          )}
-        </div>
-      </div>
-      <div className={styles.heroArtCell}>
-        <div className={styles.heroArt}>
-          <HomeHeroArt />
-        </div>
-      </div>
-    </header>
+            </ActionLink>
+          )
+        }
+        border={false}
+        description={
+          user ? (
+            <span className={styles.quote}>
+              <span className={styles.note}>每日一言</span>
+              <span className={styles.quoteText}>{quote.text}</span>
+              <cite className={styles.quoteSource}>—— {quote.source}</cite>
+            </span>
+          ) : (
+            '登录后查看赛事预约、课程进度和学习足迹。'
+          )
+        }
+        illustration={
+          <EditorialPlate alt="夺旗游戏的演变" slot="home-hero">
+            <HomeHeroArt />
+          </EditorialPlate>
+        }
+        title={title}
+      />
+    </div>
   )
 }
 
@@ -293,58 +294,45 @@ function RecentProjectsCard({ projects }: { projects: ReturnType<typeof useRecen
   const items = ready ? projects.items : []
 
   return (
-    <section aria-labelledby="projects-title" className={styles.card}>
-      <div className={styles.cardMeta}>
-        <span aria-hidden="true" className={styles.cardPill}>
-          <History size={14} />
-        </span>
-        <h2 id="projects-title">最近参加的项目</h2>
-      </div>
+    <SurfaceCard>
+      <SectionHeader title="最近参加的项目" />
       {items.length ? (
-        <ul className={styles.projects}>
+        <HairlineList aria-label="最近参加的项目">
           {items.map((item, index) => {
             const spot = projectSpot(item.kind, index)
             return (
-              <li key={item.id}>
-                <Link className={styles.project} to={item.route}>
+              <HairlineItem
+                key={item.id}
+                leading={
                   <span aria-hidden="true" className={styles.projectTile}>
-                    <SpotTile height={100} icon={spot.icon} palette={spot.palette} seed={index + 3} width={116} />
+                    <SpotTile height={100} width={116} icon={spot.icon} palette={spot.palette} seed={index + 3} />
                   </span>
-                  <span className={styles.projectBody}>
-                    <h3>{item.title}</h3>
-                    <span className={styles.projectDetail}>
-                      <span className={styles.projectLabel} data-live={item.live ? 'true' : undefined}>
-                        {item.label}
-                      </span>
-                      {item.progress ? (
-                        <>
-                          <span aria-hidden="true"> · </span>
-                          <svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 100 4">
-                            <rect className={styles.progressTrack} height="4" width="100" />
-                            <rect
-                              className={styles.progressFill}
-                              height="4"
-                              width={Math.min(100, (item.progress.done / item.progress.total) * 100)}
-                            />
-                          </svg>
-                          已完成 {item.progress.done} / {item.progress.total} 章
-                        </>
-                      ) : item.subtitle ? (
-                        <>
-                          <span aria-hidden="true"> · </span>
-                          {item.subtitle}
-                        </>
-                      ) : null}
+                }
+                meta={<StatusBadge tone={item.live ? 'success' : 'neutral'}>{item.label}</StatusBadge>}
+                summary={
+                  item.progress ? (
+                    <span className={styles.projectProgress}>
+                      <progress
+                        className={styles.projectProgressBar}
+                        aria-label="已完成章节"
+                        max={item.progress.total}
+                        value={item.progress.done}
+                      />
+                      已完成 {item.progress.done} / {item.progress.total} 章
                     </span>
-                  </span>
-                </Link>
-              </li>
+                  ) : (
+                    item.subtitle
+                  )
+                }
+                title={item.title}
+                to={item.route}
+              />
             )
           })}
-        </ul>
+        </HairlineList>
       ) : null}
       {items.length && projects.error ? (
-        <p className={styles.panelNotice} role="status">
+        <p className={styles.note} role="status">
           部分项目加载失败，请稍后刷新重试。
         </p>
       ) : null}
@@ -353,9 +341,9 @@ function RecentProjectsCard({ projects }: { projects: ReturnType<typeof useRecen
       ) : !ready ? (
         <DataState loading title="正在加载最近参加的项目" />
       ) : (
-        <p className={styles.cardEmpty}>没有最近参加的项目</p>
+        <p className={styles.note}>没有最近参加的项目</p>
       )}
-    </section>
+    </SurfaceCard>
   )
 }
 
@@ -378,16 +366,14 @@ export function HomePage() {
   useVNextPageTitle('个人主页')
 
   return (
-    <div className={styles.page}>
+    <PageShell variant="wide">
       {account.user ? (
         <PersonalDashboard key={account.user.userId} user={account.user} />
       ) : account.isLoading ? (
-        <section className={styles.panel}>
-          <DataState loading title="正在加载个人主页" />
-        </section>
+        <DataState loading title="正在加载个人主页" />
       ) : (
         <HomeIdentity />
       )}
-    </div>
+    </PageShell>
   )
 }

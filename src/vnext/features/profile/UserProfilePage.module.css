@@ -1,41 +1,18 @@
-/*
- * 个人档案：沿用首页设计语言——衬线大标题、纸面卡片（浅底、20px 圆角）、
- * 胶囊按钮与切换、墨色数据图形，提示色只用于强调。
- */
-.page,
-.statePage {
-  width: 100%;
-  max-width: var(--yn-page-max-width);
-  margin: 0 auto;
-  padding: clamp(20px, 3vw, 36px) var(--yn-page-gutter) clamp(56px, 7vw, 96px);
-}
-
-.statePage {
-  min-height: calc(100vh - var(--yn-context-height));
-}
-
-/* 卡片共用外观 */
-.profilePanel,
-.factsRail section {
-  border: 1px solid color-mix(in srgb, var(--yn-color-border) 70%, transparent);
-  border-radius: 20px;
-  background: color-mix(in srgb, var(--yn-color-surface) 60%, var(--yn-color-canvas));
-}
-
-/* 身份区：手账页——贴着纸胶带的拍立得头像、衬线大名字，右侧手账拼贴插图 */
 .identityHero {
+  --yn-page-illustration-width: clamp(230px, 28vw, 420px);
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) clamp(320px, 34vw, 500px);
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: clamp(20px, 3vw, 44px);
-  padding-block: 0 clamp(24px, 3vw, 40px);
+  gap: clamp(22px, 3vw, 42px);
+  padding-bottom: var(--yn-space-5);
+  border-bottom: 1px solid var(--yn-color-border);
 }
 
 /* 拍立得相纸：纸色边框、底边留白、轻微倾斜，顶端一段纸胶带 */
 .profileAvatar {
   position: relative;
   display: block;
-  align-self: start;
+  justify-self: start;
   margin-top: clamp(12px, 2vw, 28px);
   padding: 8px 8px 26px;
   border-radius: 3px;
@@ -71,764 +48,71 @@
   font-weight: 700;
 }
 
-.avatarFace img {
+.avatarImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.identityCopy {
+.identityDetails,
+.profileMain,
+.factsRail {
+  display: grid;
   min-width: 0;
+  gap: var(--yn-space-5);
 }
 
-.identityArt {
-  overflow: hidden;
-  aspect-ratio: 16 / 10;
-  border-radius: var(--yn-radius-lg);
-  background: var(--yn-art-kraft);
-}
-
-.identityTags {
-  display: flex;
+.identityTags,
+.joinDate,
+.teamLink {
+  display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--yn-space-2);
 }
 
-.identityTags > span,
-.identityTags > a {
-  display: inline-flex;
-  min-height: 28px;
-  align-items: center;
-  gap: 6px;
-  padding: 0 12px;
-  border: 1px solid var(--yn-color-border);
-  border-radius: var(--yn-radius-pill);
-  background: var(--yn-color-canvas-raised);
-  color: var(--yn-color-text-secondary);
-  font-size: var(--yn-font-sm);
-  transition: background-color var(--yn-motion-fast) ease-in-out;
-}
-
-.identityTags > a:hover {
-  background: var(--yn-color-border);
-  color: var(--yn-color-text);
-}
-
-.identityCopy h1 {
-  margin: 14px 0 0;
-  font-family: var(--yn-font-serif);
-  font-size: clamp(40px, 5.6vw, 80px);
-  font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.015em;
-  overflow-wrap: anywhere;
-}
-
-.identityCopy p {
-  display: -webkit-box;
-  max-width: 30em;
-  margin: 12px 0 0;
-  overflow: hidden;
-  color: var(--yn-color-text-secondary);
-  font-family: var(--yn-font-serif);
-  font-size: clamp(17px, 1.7vw, 22px);
-  line-height: 1.45;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-}
-
-.joinedAt {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--yn-space-2);
-  margin-top: 12px;
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-sm);
-}
-
-.editProfile {
-  display: flex;
-  width: fit-content;
-  min-height: 44px;
-  align-items: center;
-  gap: var(--yn-space-2);
-  margin-top: 20px;
-  padding: 0 20px;
-  border: 1px solid var(--yn-color-border-strong);
-  border-radius: var(--yn-radius-pill);
-  color: var(--yn-color-text);
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
-  transition:
-    background-color var(--yn-motion-fast) ease-in-out,
-    border-color var(--yn-motion-fast) ease-in-out;
-}
-
-.editProfile:hover {
-  border-color: var(--yn-color-text);
-  background: var(--yn-color-surface-muted);
-}
-
-/* 统计卡片：墨色图标块、衬线数字 */
-/* 内容区：主栏卡片 + 右侧卡片栏 */
-.contentGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
-  align-items: start;
-  gap: clamp(20px, 2.4vw, 32px);
-}
-
-.profileMain {
-  display: grid;
-  min-width: 0;
-  gap: clamp(20px, 2.4vw, 32px);
-}
-
-.profilePanel {
-  min-width: 0;
-  padding: clamp(20px, 2.4vw, 32px);
-}
-
-.panelHeading {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: var(--yn-space-4);
-  margin-bottom: 20px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--yn-color-border);
-}
-
-.panelHeading > div {
-  min-width: 0;
-}
-
-/* 模块标题：与首页一致的衬线字体 */
-.panelHeading h2 {
-  margin: 0;
-  font-family: var(--yn-font-serif);
-  font-size: clamp(22px, 2vw, 28px);
-  font-weight: 400;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-}
-
-.panelHeading > span {
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-sm);
-  text-align: right;
-}
-
-.panelLoading {
-  display: grid;
-  min-height: 140px;
-  place-items: center;
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-sm);
-  text-align: center;
-}
-
-/* 活跃度热力图：墨色分级 */
-.heatmapYear {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: repeat(53, minmax(3px, 1fr));
-  grid-template-rows: repeat(7, minmax(0, 1fr));
-  gap: 3px;
-  width: 100%;
-}
-
-.heatCell,
-.heatCellOutside,
-.heatLegend i {
-  display: block;
-  aspect-ratio: 1;
-  border-radius: 2px;
-}
-
-.heatCell,
-.heatLegend i {
-  background: var(--cell, color-mix(in srgb, var(--yn-color-text) 8%, transparent));
-}
-
-.heatCell:focus-visible {
-  z-index: 1;
-  outline: 2px solid var(--yn-color-text);
-  outline-offset: 1px;
-}
-
-.page [data-level='1'] {
-  --cell: color-mix(in srgb, var(--yn-color-text) 24%, transparent);
-}
-
-.page [data-level='2'] {
-  --cell: color-mix(in srgb, var(--yn-color-text) 46%, transparent);
-}
-
-.page [data-level='3'] {
-  --cell: color-mix(in srgb, var(--yn-color-text) 70%, transparent);
-}
-
-.page [data-level='4'] {
-  --cell: var(--yn-color-text);
-}
-
-.heatmapFooter {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--yn-space-4);
-  margin-top: var(--yn-space-4);
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-sm);
-}
-
-.heatmapFooter > div:first-child,
-.heatLegend {
-  display: flex;
-  align-items: center;
-  gap: var(--yn-space-2);
-}
-
-.heatLegend {
-  gap: 3px;
-}
-
-.heatmapFooter strong {
-  color: var(--yn-color-text);
-  font-family: var(--yn-font-serif);
-  font-size: 20px;
-  font-weight: 400;
-}
-
-.heatLegend i {
-  width: 10px;
-}
-
-/* 分类解题画像：墨色雷达，提示色标出当前方向 */
-.skillLayout {
-  display: grid;
-  grid-template-columns: minmax(240px, 0.8fr) minmax(390px, 1.2fr);
-  align-items: center;
-  gap: clamp(24px, 4vw, 52px);
-}
-
-.radarWrap {
-  display: grid;
-  min-width: 0;
-  place-items: center;
-}
-
-.radar {
-  width: min(100%, 330px);
-  overflow: visible;
-}
-
-.radarGrid,
-.radarAxis {
-  fill: none;
-  stroke: var(--yn-color-border-strong);
-  stroke-width: 1;
-}
-
-.radarAxis {
-  opacity: 0.65;
-}
-
-.radar g[data-active] .radarAxis {
-  opacity: 1;
-  stroke: var(--yn-color-signal);
-  stroke-width: 2;
-}
-
-.radarLabel {
-  fill: var(--yn-color-muted);
-  font-family: var(--yn-font-mono);
-  font-size: 9px;
-}
-
-.radar g[data-active] .radarLabel {
-  fill: var(--yn-color-text);
-}
-
-.radarValue {
-  fill: color-mix(in srgb, var(--yn-color-text) 12%, transparent);
-  stroke: var(--yn-color-text);
-  stroke-linejoin: round;
-  stroke-width: 2;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: radar-enter 520ms var(--yn-ease-standard) both;
-}
-
-.dimensionTable {
-  min-width: 0;
-}
-
-.dimensionHeader,
-.dimensionRow {
-  display: grid;
-  grid-template-columns: minmax(126px, 1.5fr) repeat(4, minmax(48px, 0.65fr));
-  align-items: center;
-  gap: 8px;
-  min-height: 48px;
-  padding-inline: 8px;
-  border-bottom: 1px solid var(--yn-color-border);
-  font-size: var(--yn-font-sm);
-  font-variant-numeric: tabular-nums;
-}
-
-.dimensionRow {
-  border-radius: 10px;
-  transition: background-color var(--yn-motion-fast) ease-in-out;
-}
-
-.dimensionHeader {
-  min-height: 36px;
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-xs);
-}
-
-.dimensionHeader span:not(:first-child),
-.dimensionRow > span {
-  text-align: right;
-}
-
-.dimensionRow[data-active] {
-  background: color-mix(in srgb, var(--yn-color-text) 6%, transparent);
-}
-
-.dimensionRow button {
-  display: grid;
-  min-width: 0;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 0;
-  border: 0;
-  background: transparent;
-  color: var(--yn-color-text);
-  cursor: pointer;
-  text-align: left;
-}
-
-.dimensionRow button strong {
-  overflow: hidden;
-  font-weight: 650;
-  text-overflow: ellipsis;
-}
-
-.dimensionRow button small {
-  color: var(--yn-color-signal);
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-.dimensionRow progress {
-  display: none;
-}
-
-/* 成长趋势：墨色折线，衬线读数 */
-.trendLayout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 160px;
-  align-items: center;
-  gap: var(--yn-space-5);
-}
-
-.trendChart {
-  width: 100%;
-  min-height: 220px;
-  overflow: visible;
-}
-
-.trendChart:focus-visible {
-  border-radius: 8px;
-  outline: 2px solid var(--yn-color-text);
-  outline-offset: 4px;
-}
-
-.trendGrid {
-  stroke: var(--yn-color-border);
-  stroke-width: 1;
-}
-
-.trendArea {
-  fill: color-mix(in srgb, var(--yn-color-text) 6%, transparent);
-}
-
-.trendLine {
-  fill: none;
-  stroke: var(--yn-color-text);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2.5;
-  vector-effect: non-scaling-stroke;
-}
-
-.trendCursor {
-  stroke: var(--yn-color-border-strong);
-  stroke-dasharray: 3 4;
-  stroke-width: 1;
-}
-
-.trendDot {
-  fill: var(--yn-color-signal);
-  stroke: var(--yn-color-surface);
-  stroke-width: 3;
-}
-
-.trendReading {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding-left: var(--yn-space-5);
-  border-left: 1px solid var(--yn-color-border);
-}
-
-.trendReading span,
-.trendReading small {
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-sm);
-}
-
-.trendReading strong {
-  margin-top: var(--yn-space-3);
-  font-family: var(--yn-font-serif);
-  font-size: 48px;
-  font-weight: 400;
-  line-height: 1;
-}
-
-.trendReading em {
-  margin-top: var(--yn-space-3);
-  color: var(--yn-color-signal);
-  font-size: var(--yn-font-sm);
-  font-style: normal;
-}
-
-/* 经历：与首页项目行一致的图标块、标题与说明 */
-.historyTimeline {
-  display: grid;
-}
-
-.historyItem {
-  display: grid;
-  min-width: 0;
-  grid-template-columns: 36px minmax(0, 1fr);
-  align-items: center;
-  gap: 14px;
-  padding: 12px 8px;
-  border-radius: 12px;
-  color: var(--yn-color-text);
-  transition: background-color var(--yn-motion-fast) ease-in-out;
-}
-
-.historyItem + .historyItem {
-  border-top: 1px solid var(--yn-color-border);
-}
-
-a.historyItem:hover {
-  background: color-mix(in srgb, var(--yn-color-text) 5%, transparent);
-}
-
-.historyIcon {
-  display: grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--yn-color-text) 7%, transparent);
-  color: var(--yn-color-text-secondary);
-}
-
-.historyCopy {
-  display: grid;
-  min-width: 0;
-  gap: 2px;
-}
-
-.historyCopy time,
-.historyCopy small {
-  overflow: hidden;
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-sm);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.historyCopy time {
-  font-family: var(--yn-font-mono);
-  font-size: var(--yn-font-xs);
-}
-
-.historyCopy strong {
-  font-size: 15px;
-  font-weight: 650;
-  overflow-wrap: anywhere;
-}
-
-.historyMore {
-  display: flex;
-  justify-content: center;
-  margin-top: var(--yn-space-4);
-}
-
-/* 右侧卡片栏 */
-.factsRail {
-  position: sticky;
-  top: calc(var(--yn-context-height) + var(--yn-space-5));
-  display: grid;
-  gap: 16px;
-}
-
-.factsRail section {
-  padding: 20px 22px;
-}
-
-.factsRail h2 {
-  margin: 0;
-  font-family: var(--yn-font-serif);
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 1.3;
-}
-
+.identityTags,
+.joinDate,
 .factList,
-.privateFacts {
-  display: grid;
-  gap: 12px;
-  margin: 14px 0 0;
-  padding-top: 14px;
-  border-top: 1px solid var(--yn-color-border);
-}
-
-.factList > div {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.factList dt,
-.privateFacts dt {
+.privateNote {
   color: var(--yn-color-muted);
   font-size: var(--yn-font-sm);
 }
 
-.factList dd,
-.privateFacts dd {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 0;
-  overflow-wrap: anywhere;
+.teamLink {
   color: var(--yn-color-text);
-  font-size: var(--yn-font-md);
-  text-align: right;
-}
-
-.factList a {
   text-decoration: underline;
   text-decoration-color: var(--yn-color-border-strong);
   text-underline-offset: 3px;
+  overflow-wrap: anywhere;
 }
 
-.factList a:hover {
-  text-decoration-color: currentColor;
-}
-
-.taughtCourses {
+.factList {
   display: grid;
-  gap: 2px;
-  margin-top: 14px;
-  padding-top: 10px;
-  border-top: 1px solid var(--yn-color-border);
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--yn-space-3);
+  margin: 0;
 }
 
-.taughtCourses a {
-  display: grid;
-  min-width: 0;
-  grid-template-columns: 20px minmax(0, 1fr);
-  align-items: center;
-  gap: 10px;
-  padding: 8px;
-  border-radius: 10px;
-  color: var(--yn-color-text-secondary);
-  font-size: var(--yn-font-md);
-  transition: background-color var(--yn-motion-fast) ease-in-out;
-}
-
-.taughtCourses a:hover {
-  background: color-mix(in srgb, var(--yn-color-text) 6%, transparent);
+.factValue {
+  margin: 0;
   color: var(--yn-color-text);
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
-.taughtCourses span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.privateFacts {
-  grid-template-columns: repeat(3, 1fr);
+.metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--yn-space-2);
 }
 
-.privateFacts > div {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.privateNote {
+  margin: var(--yn-space-5) 0 var(--yn-space-2);
 }
 
-.privateFacts dd {
-  justify-content: flex-start;
-  font-family: var(--yn-font-serif);
-  font-size: 26px;
-  line-height: 1;
-  text-align: left;
-}
-
-.factsRail section > small {
-  display: block;
-  margin-top: 14px;
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-xs);
-}
-
-@keyframes radar-enter {
-  from {
-    opacity: 0;
-    transform: scale(0);
-  }
-}
-
-@media (max-width: 1100px) {
-  .contentGrid {
-    grid-template-columns: minmax(0, 1fr) 240px;
-  }
-
-  .skillLayout {
-    grid-template-columns: 230px minmax(0, 1fr);
-  }
-}
-
-/* 插图只在宽屏显示，窄屏保留拍立得头像 */
-@media (max-width: 1000px) {
+@media (max-width: 720px) {
   .identityHero {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  .identityArt {
-    display: none;
-  }
-}
-
-@media (max-width: 860px) {
-
-  .contentGrid {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .factsRail {
-    position: static;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .factsRail section:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-  }
-
-  .skillLayout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .radar {
-    display: none;
-  }
-
-  .dimensionRow progress {
-    display: block;
-    width: 100%;
-    height: 5px;
-    grid-column: 1 / -1;
-    accent-color: var(--yn-color-text);
-  }
-}
-
-@media (max-width: 620px) {
-  .identityHero {
-    grid-template-columns: 1fr;
-    justify-items: start;
-  }
-
-  .panelHeading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .panelHeading > span {
-    text-align: left;
-  }
-
-  .heatmapFooter {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .trendLayout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .trendReading {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    padding: var(--yn-space-3) 0 0;
-    border-top: 1px solid var(--yn-color-border);
-    border-left: 0;
-  }
-
-  .trendReading strong {
-    grid-row: 1 / 3;
-    grid-column: 2;
-    margin: 0;
-  }
-
-  .trendReading em {
-    grid-column: 1 / -1;
-  }
-
-  .dimensionHeader,
-  .dimensionRow {
-    grid-template-columns: minmax(112px, 1.4fr) repeat(3, minmax(42px, 0.55fr));
-  }
-
-  .dimensionHeader span:nth-child(4),
-  .dimensionRow > span:nth-of-type(3) {
-    display: none;
-  }
-
-  .factsRail {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .factsRail section:last-child:nth-child(odd) {
-    grid-column: auto;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .radarValue {
-    animation: none;
-  }
-
-  .identityTags > a,
-  .editProfile,
-  .dimensionRow,
-  .historyItem,
-  .taughtCourses a {
-    transition: none;
+    align-items: start;
   }
 }

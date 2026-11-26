@@ -1,8 +1,8 @@
-import { Save, Upload, UserRound } from 'lucide-react'
+import { Save, UserRound } from 'lucide-react'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { ProfileUpdateModel } from '@Api'
+import { DataState, FileField, SectionHeader, TextAreaField, TextField } from '../../shared'
 import { ActionButton, InlineFeedback } from '../../shared/Interaction'
-import { DataState } from '../../shared/Primitives'
 import { errorMessage } from '../../shared/errors'
 import { useCurrentAccount } from '../account/useCurrentAccount'
 import styles from './SettingsPage.module.css'
@@ -98,78 +98,59 @@ export function ProfileSettings() {
 
   return (
     <div className={styles.settingsContent}>
-      <section className={styles.sectionIntro}>
-        <h2>个人资料</h2>
-        <p>公开资料用于平台内展示；真实姓名、学号和手机号仅用于内部管理。</p>
-      </section>
+      <SectionHeader title="个人资料" description="公开资料用于平台内展示，真实姓名、学号和手机号仅用于内部管理。" />
       {feedback ? <InlineFeedback tone={feedback.tone}>{feedback.message}</InlineFeedback> : null}
-      <section className={styles.avatarSection}>
+      <section className={styles.avatarSection} aria-label="头像">
         <div className={styles.avatarPreview}>
           {avatarPreview || account.user.avatar ? (
-            <img alt="头像预览" src={avatarPreview || account.user.avatar || ''} />
+            <img className={styles.avatarImage} alt="头像预览" src={avatarPreview || account.user.avatar || ''} />
           ) : (
             <UserRound size={28} />
           )}
         </div>
-        <div>
-          <strong>头像</strong>
-          <p>支持常见图片格式，文件不超过 3MB。</p>
-          <div className={styles.inlineActions}>
-            <label className={styles.fileButton}>
-              <Upload size={16} />
-              选择图片
-              <input
-                accept="image/*"
-                onChange={(event) => setAvatarFile(event.currentTarget.files?.[0] ?? null)}
-                type="file"
-              />
-            </label>
-            <ActionButton
-              disabled={!avatarFile || saving}
-              onClick={() => uploadAvatar()}
-              tone="secondary"
-              type="button"
-            >
-              上传头像
-            </ActionButton>
-          </div>
-        </div>
+        <FileField
+          accept="image/*"
+          label="选择头像"
+          hint="支持常见图片格式，文件不超过 3MB。"
+          onChange={setAvatarFile}
+        />
+        <ActionButton disabled={!avatarFile || saving} onClick={uploadAvatar} type="button">
+          上传头像
+        </ActionButton>
       </section>
       <form className={styles.form} onSubmit={(event) => void saveProfile(event)}>
         <div className={styles.formGrid}>
-          <label>
-            <span>用户名</span>
-            <input
-              maxLength={15}
-              minLength={3}
-              onChange={updateField('userName')}
-              required
-              value={model.userName ?? ''}
-            />
-          </label>
-          <label>
-            <span>
-              真实姓名 <small>内部资料</small>
-            </span>
-            <input maxLength={128} onChange={updateField('realName')} value={model.realName ?? ''} />
-          </label>
-          <label>
-            <span>
-              学号 <small>内部资料</small>
-            </span>
-            <input maxLength={64} onChange={updateField('stdNumber')} value={model.stdNumber ?? ''} />
-          </label>
-          <label>
-            <span>
-              手机号 <small>内部资料</small>
-            </span>
-            <input onChange={updateField('phone')} value={model.phone ?? ''} />
-          </label>
+          <TextField
+            label="用户名"
+            maxLength={15}
+            minLength={3}
+            onChange={updateField('userName')}
+            required
+            value={model.userName ?? ''}
+          />
+          <TextField
+            label="真实姓名"
+            hint="内部资料"
+            maxLength={128}
+            onChange={updateField('realName')}
+            value={model.realName ?? ''}
+          />
+          <TextField
+            label="学号"
+            hint="内部资料"
+            maxLength={64}
+            onChange={updateField('stdNumber')}
+            value={model.stdNumber ?? ''}
+          />
+          <TextField label="手机号" hint="内部资料" onChange={updateField('phone')} value={model.phone ?? ''} />
         </div>
-        <label>
-          <span>个人简介</span>
-          <textarea maxLength={128} onChange={updateField('bio')} rows={4} value={model.bio ?? ''} />
-        </label>
+        <TextAreaField
+          label="个人简介"
+          maxLength={128}
+          onChange={updateField('bio')}
+          rows={4}
+          value={model.bio ?? ''}
+        />
         <div className={styles.formActions}>
           <ActionButton loading={saving} disabled={saving} icon={<Save size={16} />} tone="primary" type="submit">
             保存资料
@@ -177,12 +158,14 @@ export function ProfileSettings() {
         </div>
       </form>
       <section className={styles.emailSection}>
-        <div>
-          <strong>登录邮箱</strong>
-          <p>修改后需要通过新邮箱完成确认。</p>
-        </div>
         <div className={styles.emailControl}>
-          <input onChange={(event) => setEmail(event.currentTarget.value)} type="email" value={email} />
+          <TextField
+            label="登录邮箱"
+            hint="修改后需要通过新邮箱完成确认。"
+            onValueChange={setEmail}
+            type="email"
+            value={email}
+          />
           <ActionButton
             disabled={saving || !email.trim() || email === account.user.email}
             onClick={() => changeEmail()}

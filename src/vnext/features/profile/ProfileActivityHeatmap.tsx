@@ -1,6 +1,7 @@
+import { SectionHeader, SurfaceCard } from '../../shared'
+import styles from './ProfileActivityHeatmap.module.css'
 import type { UserActivityPoint } from './api/userProfileApi'
 import { buildHeatmapCells } from './profileDomain'
-import styles from './UserProfilePage.module.css'
 
 function activityLabel(date: string, point: UserActivityPoint | null) {
   const formatted = new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric' }).format(
@@ -28,24 +29,15 @@ export function ProfileActivityHeatmap({
   const totalEvents = points?.reduce((sum, point) => sum + point.total, 0) ?? 0
 
   return (
-    <section className={styles.profilePanel}>
-      <header className={styles.panelHeading}>
-        <div>
-          <h2>学习与解题活跃度</h2>
-        </div>
-        <span>最近 52 周</span>
-      </header>
+    <SurfaceCard>
+      <SectionHeader title="学习与解题活跃度" description="最近 52 周" />
       {loading ? (
-        <div className={styles.panelLoading}>正在汇总公开活动...</div>
+        <p role="status">正在汇总公开活动...</p>
       ) : failed ? (
-        <div className={styles.panelLoading}>活动记录暂时无法读取。</div>
+        <p role="status">活动记录暂时无法读取。</p>
       ) : (
         <>
-          <div
-            aria-label="最近 52 周活动热力图"
-            className={styles.heatmapYear}
-            role="img"
-          >
+          <div aria-label="最近 52 周活动热力图" className={styles.heatmapYear} role="img">
             {cells.map((cell) =>
               cell.date ? (
                 <span
@@ -62,7 +54,7 @@ export function ProfileActivityHeatmap({
             )}
           </div>
           <footer className={styles.heatmapFooter}>
-            <div>
+            <div className={styles.metrics}>
               <strong>{activeDays}</strong>
               <span>活跃天</span>
               <strong>{totalEvents}</strong>
@@ -71,13 +63,13 @@ export function ProfileActivityHeatmap({
             <div className={styles.heatLegend} aria-label="活跃度由低到高">
               <span>低</span>
               {[0, 1, 2, 3, 4].map((level) => (
-                <i data-level={level} key={level} />
+                <i className={styles.heatCell} data-level={level} key={level} />
               ))}
               <span>高</span>
             </div>
           </footer>
         </>
       )}
-    </section>
+    </SurfaceCard>
   )
 }

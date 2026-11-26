@@ -1,10 +1,10 @@
 import { KeyRound, LockKeyhole, UserRound } from 'lucide-react'
 import { NavLink, Navigate, useParams } from 'react-router'
+import { PageHeader, PageShell, SplitWorkspace, SurfaceCard } from '../../shared'
 import { SegmentedControl, segmentedItemClassName } from '../../shared/SegmentedControl'
 import { useVNextPageTitle } from '../../shared/useVNextPageTitle'
 import { ProfileSettings } from './ProfileSettings'
 import { SecuritySettings } from './SecuritySettings'
-import styles from './SettingsPage.module.css'
 import { TokenSettings } from './TokenSettings'
 
 type SettingsSection = 'profile' | 'security' | 'tokens'
@@ -23,12 +23,13 @@ export function SettingsPage() {
   if (!validSection) return <Navigate replace to="/settings/profile" />
 
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <h1>账户设置</h1>
-      </header>
-      <div className={styles.layout}>
-        <div className={styles.sideNav}>
+    <PageShell>
+      <PageHeader title="账户设置" />
+      <SplitWorkspace
+        asidePosition="left"
+        asideWidth="narrow"
+        mobileAsideFirst
+        aside={
           <SegmentedControl activeKey={validSection} aria-label="设置分类" as="nav" orientation="vertical">
             {sections.map((item) => {
               const Icon = item.icon
@@ -40,13 +41,14 @@ export function SettingsPage() {
               )
             })}
           </SegmentedControl>
-        </div>
-        <main className={styles.panel}>
+        }
+      >
+        <SurfaceCard>
           {validSection === 'profile' ? <ProfileSettings /> : null}
           {validSection === 'security' ? <SecuritySettings /> : null}
           {validSection === 'tokens' ? <TokenSettings /> : null}
-        </main>
-      </div>
-    </div>
+        </SurfaceCard>
+      </SplitWorkspace>
+    </PageShell>
   )
 }

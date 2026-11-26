@@ -1,3 +1,5 @@
+import { TextField } from '../../shared/FormControls'
+
 export function TokenResourceGrant({
   className,
   resourceId,
@@ -13,19 +15,29 @@ export function TokenResourceGrant({
 }) {
   return (
     <div className={className}>
-      <label>
-        <span>资源类型</span>
-        <input maxLength={64} onChange={(event) => onResourceTypeChange(event.currentTarget.value)} placeholder="game" value={resourceType} />
-      </label>
-      <label>
-        <span>资源 ID</span>
-        <input maxLength={128} onChange={(event) => onResourceIdChange(event.currentTarget.value)} placeholder="赛事 ID，例如 42" value={resourceId} />
-      </label>
+      <TextField
+        label="资源类型"
+        maxLength={64}
+        onValueChange={onResourceTypeChange}
+        placeholder="game"
+        value={resourceType}
+      />
+      <TextField
+        label="资源 ID"
+        maxLength={128}
+        onValueChange={onResourceIdChange}
+        placeholder="赛事 ID，例如 42"
+        value={resourceId}
+      />
     </div>
   )
 }
 
-export function TokenResourceList({ resources }: { resources?: { resourceType?: string; resourceId?: string }[] | null }) {
+export function TokenResourceList({
+  resources,
+}: {
+  resources?: { resourceType?: string; resourceId?: string }[] | null
+}) {
   if (!resources?.length) return <small>未限制</small>
   return resources.map((resource) => (
     <span key={`${resource.resourceType}:${resource.resourceId}`}>

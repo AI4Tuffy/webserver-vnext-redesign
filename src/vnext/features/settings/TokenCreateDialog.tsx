@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { ApiTokenCreateModel } from '@Api'
+import { TextField, ToggleField } from '../../shared'
 import { ActionButton, InlineFeedback, VNextDialog } from '../../shared/Interaction'
 import { errorMessage } from '../../shared/errors'
-import { settingsApi } from './settingsApi'
-import { TokenResourceGrant } from './TokenResourceGrant'
 import styles from './SettingsPage.module.css'
+import { TokenResourceGrant } from './TokenResourceGrant'
+import { settingsApi } from './settingsApi'
 
 export const tokenScopeOptions = [
   ['images:read', '读取镜像'],
@@ -43,9 +44,7 @@ export function TokenCreateDialog({ canGrantScopes, onClose, onIssued, open }: T
   const [expiresAt, setExpiresAt] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [feedback, setFeedback] = useState<string | null>(null)
-  const visibleScopeOptions = canGrantScopes
-    ? [...tokenScopeOptions, ...adminTokenScopeOptions]
-    : tokenScopeOptions
+  const visibleScopeOptions = canGrantScopes ? [...tokenScopeOptions, ...adminTokenScopeOptions] : tokenScopeOptions
 
   const submit = async () => {
     const model: ApiTokenCreateModel = {
@@ -83,7 +82,6 @@ export function TokenCreateDialog({ canGrantScopes, onClose, onIssued, open }: T
   return (
     <VNextDialog
       description="选择最小必要权限；镜像写入和题目导入建议使用不同 Token。"
-      eyebrow="ISSUE TOKEN"
       footer={
         <>
           <ActionButton onClick={onClose} type="button">
@@ -104,36 +102,28 @@ export function TokenCreateDialog({ canGrantScopes, onClose, onIssued, open }: T
       title="创建 API Token"
     >
       <div className={styles.dialogForm}>
-        <label>
-          <span>名称</span>
-          <input
-            maxLength={128}
-            onChange={(event) => setName(event.currentTarget.value)}
-            placeholder="例如：镜像上传脚本"
-            value={name}
-          />
-        </label>
-        <fieldset>
+        <TextField label="名称" maxLength={128} onValueChange={setName} placeholder="例如：镜像上传脚本" value={name} />
+        <fieldset className={styles.fieldset}>
           <legend>权限范围</legend>
           <div className={styles.checkGrid}>
             {visibleScopeOptions.map(([value, label]) => (
-              <label key={value}>
-                <input
-                  checked={scopes.includes(value)}
-                  onChange={(event) => toggleScope(value, event.currentTarget.checked)}
-                  type="checkbox"
-                />
-                <span>
-                  <strong>{label}</strong>
-                  <small>{value}</small>
-                </span>
-              </label>
+              <ToggleField
+                key={value}
+                checked={scopes.includes(value)}
+                description={value}
+                label={label}
+                onChange={(checked) => toggleScope(value, checked)}
+              />
             ))}
           </div>
         </fieldset>
-        <fieldset>
+        <fieldset className={styles.fieldset}>
           <legend>外部资源授权</legend>
-          <p className={styles.hintText}>练习题库使用 <code>exercise:*</code>，培训课程使用 <code>training-course:*</code>，理论题库使用 <code>theory-bank:*</code>，比赛题目或理论试卷使用 <code>game:比赛 ID</code>；管理员导入战队使用 <code>team:*</code>。</p>
+          <p className={styles.hintText}>
+            练习题库使用 <code>exercise:*</code>，培训课程使用 <code>training-course:*</code>，理论题库使用{' '}
+            <code>theory-bank:*</code>，比赛题目或理论试卷使用 <code>game:比赛 ID</code>；管理员导入战队使用{' '}
+            <code>team:*</code>。
+          </p>
           <TokenResourceGrant
             className={styles.formGrid}
             onResourceIdChange={setResourceId}
@@ -143,24 +133,15 @@ export function TokenCreateDialog({ canGrantScopes, onClose, onIssued, open }: T
           />
         </fieldset>
         <div className={styles.formGrid}>
-          <label>
-            <span>每分钟请求数</span>
-            <input
-              max={10000}
-              min={1}
-              onChange={(event) => setRequestsPerMinute(Number(event.currentTarget.value) || 60)}
-              type="number"
-              value={requestsPerMinute}
-            />
-          </label>
-          <label>
-            <span>过期时间</span>
-            <input
-              onChange={(event) => setExpiresAt(event.currentTarget.value)}
-              type="datetime-local"
-              value={expiresAt}
-            />
-          </label>
+          <TextField
+            label="每分钟请求数"
+            max={10000}
+            min={1}
+            onValueChange={(value) => setRequestsPerMinute(Number(value) || 60)}
+            type="number"
+            value={requestsPerMinute}
+          />
+          <TextField label="过期时间" onValueChange={setExpiresAt} type="datetime-local" value={expiresAt} />
         </div>
         {feedback ? <InlineFeedback tone="danger">{feedback}</InlineFeedback> : null}
       </div>

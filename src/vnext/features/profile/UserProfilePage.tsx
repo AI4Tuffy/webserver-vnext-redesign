@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from 'react-router'
-import { DataState } from '../../shared/Primitives'
+import { DataState, PageShell, SplitWorkspace } from '../../shared'
 import { useVNextPageTitle } from '../../shared/useVNextPageTitle'
 import { ProfileActivityHeatmap } from './ProfileActivityHeatmap'
 import { ProfileGrowthChart } from './ProfileGrowthChart'
@@ -22,24 +22,34 @@ export function UserProfilePage() {
   }
   if (!controller.resolvedUserId || controller.profileLoading || controller.overviewLoading) {
     return (
-      <div className={styles.statePage}>
+      <PageShell>
         <DataState loading title="个人主页加载中" />
-      </div>
+      </PageShell>
     )
   }
   if (controller.profileError || controller.overviewError || !controller.profile || !controller.overview) {
     return (
-      <div className={styles.statePage}>
+      <PageShell>
         <DataState description="用户不存在，或个人统计暂时无法读取。" title="无法打开个人主页" />
-      </div>
+      </PageShell>
     )
   }
 
   return (
-    <div className={styles.page}>
+    <PageShell>
       <ProfileIdentity isOwnProfile={controller.isOwnProfile} profile={controller.profile} />
-      <div className={styles.contentGrid}>
-        <main className={styles.profileMain}>
+      <SplitWorkspace
+        asideWidth="narrow"
+        aside={
+          <ProfileFacts
+            isOwnProfile={controller.isOwnProfile}
+            metrics={controller.overview.metrics}
+            privateOverview={controller.privateOverview}
+            profile={controller.profile}
+          />
+        }
+      >
+        <div className={styles.profileMain}>
           <div ref={controller.activityRef}>
             <ProfileActivityHeatmap
               failed={Boolean(controller.activityError)}
@@ -61,14 +71,8 @@ export function UserProfilePage() {
               onLoadMore={controller.loadMoreHistory}
             />
           </div>
-        </main>
-        <ProfileFacts
-          isOwnProfile={controller.isOwnProfile}
-          metrics={controller.overview.metrics}
-          privateOverview={controller.privateOverview}
-          profile={controller.profile}
-        />
-      </div>
-    </div>
+        </div>
+      </SplitWorkspace>
+    </PageShell>
   )
 }

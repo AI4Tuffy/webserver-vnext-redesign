@@ -1,7 +1,8 @@
 import { KeyboardEvent, PointerEvent, useEffect, useMemo, useState } from 'react'
+import { SectionHeader, SurfaceCard } from '../../shared'
+import styles from './ProfileGrowthChart.module.css'
 import type { UserProfileTrendPoint } from './api/userProfileApi'
 import { buildTrendGeometry } from './profileDomain'
-import styles from './UserProfilePage.module.css'
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }).format(
@@ -26,19 +27,12 @@ export function ProfileGrowthChart({ trend }: { trend: UserProfileTrendPoint[] }
   const onKeyDown = (event: KeyboardEvent<SVGSVGElement>) => {
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
     event.preventDefault()
-    setActiveIndex((current) =>
-      Math.min(trend.length - 1, Math.max(0, current + (event.key === 'ArrowLeft' ? -1 : 1)))
-    )
+    setActiveIndex((current) => Math.min(trend.length - 1, Math.max(0, current + (event.key === 'ArrowLeft' ? -1 : 1))))
   }
 
   return (
-    <section className={styles.profilePanel}>
-      <header className={styles.panelHeading}>
-        <div>
-          <h2>个人解题成长趋势</h2>
-        </div>
-        <span>最近一年</span>
-      </header>
+    <SurfaceCard>
+      <SectionHeader title="个人解题成长趋势" description="最近一年" />
       {active && geometry.line ? (
         <div className={styles.trendLayout}>
           <svg
@@ -60,14 +54,14 @@ export function ProfileGrowthChart({ trend }: { trend: UserProfileTrendPoint[] }
           </svg>
           <div className={styles.trendReading} aria-live="polite">
             <span>{formatDate(active.point.date)}</span>
-            <strong>{active.point.cumulativeSolved}</strong>
+            <strong className={styles.count}>{active.point.cumulativeSolved}</strong>
             <small>累计个人解题</small>
-            <em>当日新增 {active.point.delta}</em>
+            <span className={styles.delta}>当日新增 {active.point.delta}</span>
           </div>
         </div>
       ) : (
-        <div className={styles.panelLoading}>当前时间窗还没有个人解题趋势。</div>
+        <p>当前时间窗还没有个人解题趋势。</p>
       )}
-    </section>
+    </SurfaceCard>
   )
 }

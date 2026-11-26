@@ -1,418 +1,140 @@
-/*
- * 个人主页。默认纵向排列；横屏（宽度大于 1000、高度至少 560）时压进一屏：
- * 上行左侧问候、每日一言与按钮，右侧 16:10 插图；下行最近参加的项目与学习足迹两张卡片。
- * 一屏模式下字号与间距随视口高度缩放。
- */
-.page {
-  width: 100%;
-  max-width: var(--yn-page-max-width);
-  margin-inline: auto;
-  padding: clamp(20px, 3vw, 40px) var(--yn-page-gutter) clamp(40px, 6vw, 72px);
-}
-
 .hero {
+  --yn-page-illustration-width: clamp(300px, 34vw, 540px);
+  --yn-page-title-size: clamp(36px, 4.6vw, 72px);
+  min-width: 0;
+}
+
+.quote {
   display: grid;
-  min-width: 0;
-  grid-template-columns: minmax(0, 1fr);
-  align-items: center;
-  gap: 24px;
+  max-width: 42ch;
+  gap: var(--yn-space-1);
 }
 
-.heroCopy {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-  container-type: inline-size;
-}
-
-/* 问候与昵称在同一行；按标题估算宽度分档，字号随左栏宽度缩放。 */
-.hero h1 {
-  max-width: 100%;
-  margin: 0;
-  font-family: var(--yn-font-serif);
-  font-weight: 400;
-  line-height: 1.08;
-  letter-spacing: -0.015em;
-  overflow-wrap: anywhere;
-}
-
-.hero h1[data-size='xl'] {
-  font-size: clamp(34px, 12cqi, 96px);
-}
-
-.hero h1[data-size='l'] {
-  font-size: clamp(30px, 9.4cqi, 80px);
-}
-
-.hero h1[data-size='m'] {
-  font-size: clamp(28px, 7cqi, 64px);
-}
-
-.hero h1[data-size='s'] {
-  font-size: clamp(26px, 5.8cqi, 52px);
-}
-
-.bio,
-.quote blockquote {
-  margin: 0;
+.quoteText {
   color: var(--yn-color-text-secondary);
   font-family: var(--yn-font-serif);
-  font-size: clamp(17px, 1.8vw, 23px);
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-  text-wrap: pretty;
+  font-size: clamp(18px, 1.7vw, 24px);
+  line-height: 1.45;
 }
 
-.bio {
-  max-width: 24em;
-}
-
-/* 每日一言：小标签、引文、出处。 */
-.quote {
-  display: flex;
-  max-width: 26em;
-  flex-direction: column;
-  gap: 4px;
-  margin: 0;
-}
-
-.quoteLabel {
+.quoteSource,
+.note {
   color: var(--yn-color-muted);
-  font-family: var(--yn-font-mono);
   font-size: var(--yn-font-sm);
-}
-
-.quoteSource {
-  margin: 0;
-  color: var(--yn-color-muted);
-  font-size: 13px;
-}
-
-.actions {
-  display: flex;
-  max-width: 100%;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.identityAction {
-  display: inline-flex;
-  min-height: 44px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 0 clamp(14px, 1.4vw, 22px);
-  border: 1px solid var(--yn-color-border-strong);
-  border-radius: var(--yn-radius-pill);
-  background: transparent;
-  color: var(--yn-color-text);
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
-  transition:
-    background-color var(--yn-motion-fast) var(--yn-ease-standard),
-    border-color var(--yn-motion-fast) var(--yn-ease-standard);
-}
-
-.identityAction:hover {
-  border-color: var(--yn-color-text);
-  background: var(--yn-color-surface-muted);
-}
-
-.primaryAction {
-  border-color: var(--yn-color-control-strong);
-  background: var(--yn-color-control-strong);
-  color: var(--yn-color-control-strong-text);
-}
-
-.primaryAction:hover {
-  border-color: var(--yn-color-control-strong-hover);
-  background: var(--yn-color-control-strong-hover);
-}
-
-/* 插图固定 16:10；一屏模式下按可用高度整体缩小，靠右对齐，不裁切。 */
-.heroArtCell {
-  min-width: 0;
-  container-type: inline-size;
-}
-
-.heroArt {
-  width: 100%;
-  overflow: hidden;
-  aspect-ratio: 16 / 10;
-  margin-inline-start: auto;
-  border-radius: var(--yn-radius-lg);
-  background: var(--yn-art-blue);
+  font-style: normal;
 }
 
 .dashboard {
   display: grid;
-  min-width: 0;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 20px;
-  margin-top: 28px;
-}
-
-.panel {
-  padding: 20px;
-  border: 1px solid var(--yn-color-border);
-  border-radius: 20px;
-}
-
-/* 卡片：元信息行 + 内容区。 */
-.card {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  padding: clamp(20px, 2.4vw, 32px);
-  border: 1px solid color-mix(in srgb, var(--yn-color-border) 70%, transparent);
-  border-radius: 20px;
-  background: color-mix(in srgb, var(--yn-color-surface) 60%, var(--yn-color-canvas));
-}
-
-.cardMeta {
-  display: flex;
-  min-width: 0;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 14px;
-  color: var(--yn-color-muted);
-  font-size: 14px;
-}
-
-.cardMeta h2 {
-  margin: 0;
-  color: var(--yn-color-muted);
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.cardPill {
-  display: inline-flex;
-  height: 28px;
-  min-width: 44px;
-  align-items: center;
-  justify-content: center;
-  padding: 0 12px;
-  border: 1px solid var(--yn-color-border);
-  border-radius: var(--yn-radius-pill);
-  background: var(--yn-color-canvas-raised);
-  color: var(--yn-color-text-secondary);
-}
-
-/* 没有项目时，空状态文字在卡片内容区居中。 */
-.cardEmpty {
-  margin: auto;
-  padding: 24px 0;
-  color: var(--yn-color-muted);
-  font-size: clamp(16px, 1.5vw, 20px);
-  font-weight: 600;
-  text-align: center;
-}
-
-/*
- * 最近参加的项目：横向学院式卡片，上下排列。左侧是色底手绘图标，右侧是衬线标题与一行「状态 · 说明」。
- * 各张平分卡片高度，单张高度有上限，避免一两项时被拉得过高。悬停或获得焦点时轻微上抬。
- */
-.projects {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  gap: 10px;
-  margin: 16px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.projects li {
-  display: flex;
-  min-height: 62px;
-  max-height: 88px;
-  flex: 1 1 auto;
-}
-
-.project {
-  display: flex;
-  width: 100%;
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--yn-color-border) 80%, transparent);
-  border-radius: 14px;
-  background: var(--yn-color-surface);
-  color: var(--yn-color-text);
-  transition:
-    transform var(--yn-motion-fast) ease-in-out,
-    box-shadow var(--yn-motion-fast) ease-in-out,
-    border-color var(--yn-motion-fast) ease-in-out;
-}
-
-.project:hover,
-.project:focus-visible {
-  border-color: var(--yn-color-border-strong);
-  box-shadow: 0 8px 20px -14px rgb(0 0 0 / 35%);
-  transform: translateY(-2px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--yn-space-5);
 }
 
 .projectTile {
   display: block;
-  width: clamp(72px, 22%, 104px);
-  flex: 0 0 auto;
-}
-
-.projectTile svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.projectBody {
-  display: flex;
-  min-width: 0;
-  flex: 1 1 auto;
-  flex-direction: column;
-  justify-content: center;
-  gap: 3px;
-  padding: 8px 16px;
-}
-
-.projectBody h3 {
-  margin: 0;
+  width: 54px;
+  aspect-ratio: 1;
   overflow: hidden;
-  font-family: var(--yn-font-serif);
-  font-size: 17px;
-  font-weight: 400;
-  line-height: 1.3;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  border-radius: var(--yn-radius-md);
 }
 
-.projectLabel {
-  color: var(--yn-color-muted);
-}
-
-.projectLabel[data-live='true'] {
-  color: var(--yn-color-signal);
-}
-
-.projectDetail {
-  display: block;
-  overflow: hidden;
-  color: var(--yn-color-muted);
-  font-size: 13px;
-  line-height: 1.45;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.projectDetail svg {
-  display: inline-block;
-  width: min(80px, 24%);
-  height: 3px;
-  margin-inline-end: 8px;
-  vertical-align: middle;
-}
-
-.progressTrack {
-  fill: color-mix(in srgb, var(--yn-color-text) 12%, transparent);
-}
-
-.progressFill {
-  fill: var(--yn-color-text);
-}
-
-.panelNotice {
-  margin: var(--yn-space-3) 0 0;
-  color: var(--yn-color-muted);
-  font-size: var(--yn-font-sm);
-}
-
-/*
- * 学习足迹：方格与 GitHub 相近（11px、间距 3px），按周排列，月份在上、星期在左、图例在右下。
- * 显示的周数由卡片宽度决定（见 footprint.ts），整组在卡片内居中。
- */
-.activityBody {
+.projectProgress {
   display: flex;
-  width: 100%;
-  min-width: 0;
-  flex: 1 1 auto;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
+  gap: var(--yn-space-2);
+}
+
+.projectProgressBar {
+  width: 60px;
+  height: 5px;
+  accent-color: var(--yn-color-signal);
+}
+
+.activityCard {
+  display: flex;
+  flex-direction: column;
+}
+
+.activityBody {
+  display: grid;
+  min-width: 0;
+  min-height: 170px;
+  flex: 1;
+  align-content: center;
   justify-content: center;
-  padding-top: 16px;
 }
 
 .calendar {
   --day: 11px;
   --day-gap: 3px;
-
   display: grid;
-  grid-template-areas:
-    '. months'
-    'weekdays grid'
-    '. legend';
+  grid-template-areas: '. months' 'weekdays grid' '. legend';
   grid-template-columns: auto auto;
   gap: 4px 6px;
   color: var(--yn-color-muted);
   font-size: 11px;
 }
 
-.calendarMonths {
+.calendarMonths,
+.activityGrid {
   display: grid;
-  grid-area: months;
   grid-auto-columns: var(--day);
   grid-auto-flow: column;
   gap: var(--day-gap);
-  line-height: 14px;
 }
 
-.calendarMonths span {
+.calendarMonths {
+  grid-area: months;
+}
+
+.month {
   white-space: nowrap;
+}
+
+.calendarWeekdays,
+.activityGrid {
+  grid-template-rows: repeat(7, var(--day));
 }
 
 .calendarWeekdays {
   display: grid;
   grid-area: weekdays;
-  grid-template-rows: repeat(7, var(--day));
   gap: var(--day-gap);
   font-size: 10px;
   line-height: var(--day);
 }
 
 .activityGrid {
-  display: grid;
   grid-area: grid;
-  grid-auto-columns: var(--day);
-  grid-auto-flow: column;
-  grid-template-rows: repeat(7, var(--day));
-  gap: var(--day-gap);
 }
 
-.activityGrid span,
-.activityLegend i {
+.day {
+  display: block;
+  width: var(--day);
+  height: var(--day);
   border-radius: 2px;
-  background: var(--cell, color-mix(in srgb, var(--yn-color-text) 8%, transparent));
+  background: var(--yn-color-surface-stone);
 }
 
-.activityGrid span[data-future='true'] {
+.day[data-level='1'] {
+  background: color-mix(in srgb, var(--yn-color-signal) 28%, var(--yn-color-surface-stone));
+}
+
+.day[data-level='2'] {
+  background: color-mix(in srgb, var(--yn-color-signal) 53%, var(--yn-color-surface-stone));
+}
+
+.day[data-level='3'] {
+  background: var(--yn-color-signal);
+}
+
+.day[data-level='4'] {
+  background: color-mix(in srgb, var(--yn-color-signal) 68%, var(--yn-color-text));
+}
+
+.day[data-future='true'] {
   visibility: hidden;
-}
-
-.page [data-level='1'] {
-  --cell: color-mix(in srgb, var(--yn-color-text) 24%, transparent);
-}
-
-.page [data-level='2'] {
-  --cell: color-mix(in srgb, var(--yn-color-text) 46%, transparent);
-}
-
-.page [data-level='3'] {
-  --cell: color-mix(in srgb, var(--yn-color-text) 70%, transparent);
-}
-
-.page [data-level='4'] {
-  --cell: var(--yn-color-text);
 }
 
 .activityLegend {
@@ -420,130 +142,12 @@
   grid-area: legend;
   align-items: center;
   justify-self: end;
-  gap: 3px;
+  gap: var(--day-gap);
   margin-top: 6px;
 }
 
-.activityLegend i {
-  width: 10px;
-  height: 10px;
-}
-
-.activityLegend span {
-  margin-inline: 3px;
-}
-
-@media (max-width: 560px) {
-  .actions {
-    width: 100%;
-  }
-
-  .identityAction {
-    flex: 1 1 0;
-  }
-
-  .primaryAction {
-    flex-basis: 100%;
-  }
-}
-
-@media (min-width: 1001px) and (min-height: 560px) {
-  /* 大屏随视口放宽，避免整体过小、上下留白过多。 */
-  .page {
-    display: grid;
-    max-width: clamp(var(--yn-page-max-width), 86vw, 1880px);
-    min-height: calc(100dvh - var(--yn-context-height));
-    grid-template-rows: auto auto;
-    align-content: center;
-    row-gap: clamp(16px, 3.4vh, 44px);
-    padding-block: clamp(14px, 3vh, 40px);
-  }
-
-  .hero {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: clamp(24px, 3.4vw, 56px);
-  }
-
-  .heroCopy {
-    gap: clamp(8px, 2vh, 20px);
-  }
-
-  .hero h1[data-size='xl'] {
-    font-size: clamp(30px, min(12cqi, 10vh), 96px);
-  }
-
-  .hero h1[data-size='l'] {
-    font-size: clamp(28px, min(9.4cqi, 8.4vh), 80px);
-  }
-
-  .hero h1[data-size='m'] {
-    font-size: clamp(26px, min(7cqi, 7vh), 64px);
-  }
-
-  .hero h1[data-size='s'] {
-    font-size: clamp(24px, min(5.8cqi, 6vh), 52px);
-  }
-
-  .bio,
-  .quote blockquote {
-    font-size: clamp(15px, 2.5vh, 22px);
-  }
-
-  .quote {
-    gap: clamp(2px, 0.5vh, 5px);
-  }
-
-  .identityAction {
-    min-height: clamp(36px, 5.4vh, 46px);
-    padding: 0 clamp(12px, 1.2vw, 22px);
-    font-size: clamp(13px, 1.9vh, 14px);
-  }
-
-  .heroArt {
-    width: min(100cqi, clamp(170px, 34vh, 440px) * 1.6);
-  }
-
+@media (max-width: 900px) {
   .dashboard {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-    align-items: stretch;
-    gap: clamp(16px, 1.8vw, 28px);
-    margin-top: 0;
-  }
-
-  .card {
-    padding: clamp(12px, 2.2vh, 30px) clamp(18px, 2vw, 30px);
-  }
-
-  .cardMeta,
-  .cardMeta h2 {
-    font-size: clamp(12px, 1.9vh, 14px);
-  }
-
-  .cardPill {
-    height: clamp(24px, 3.6vh, 28px);
-  }
-
-  .projects {
-    gap: clamp(6px, 1.1vh, 10px);
-    margin-top: clamp(6px, 1.4vh, 16px);
-  }
-
-  .projectBody h3 {
-    font-size: clamp(15px, 2.3vh, 18px);
-  }
-
-  .projectLabel,
-  .projectDetail {
-    font-size: clamp(12px, 1.8vh, 13px);
-  }
-
-  .activityBody {
-    padding-top: clamp(8px, 1.6vh, 16px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .project {
-    transition: none;
+    grid-template-columns: minmax(0, 1fr);
   }
 }

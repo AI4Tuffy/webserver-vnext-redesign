@@ -1,5 +1,6 @@
 import { ShieldCheck } from 'lucide-react'
 import { FormEvent, useState } from 'react'
+import { PasswordField, SectionHeader } from '../../shared'
 import { ActionButton, InlineFeedback } from '../../shared/Interaction'
 import { errorMessage } from '../../shared/errors'
 import { useAccountLogout } from '../account/useCurrentAccount'
@@ -34,49 +35,38 @@ export function SecuritySettings() {
 
   return (
     <div className={styles.settingsContent}>
-      <section className={styles.sectionIntro}>
-        <h2>账户安全</h2>
-        <p>修改密码后当前会话会退出，需要使用新密码重新登录。</p>
-      </section>
+      <SectionHeader title="账户安全" description="修改密码后当前会话会退出，需要使用新密码重新登录。" />
       {feedback ? <InlineFeedback tone="danger">{feedback}</InlineFeedback> : null}
       <form className={styles.form} onSubmit={(event) => void submit(event)}>
-        <label>
-          <span>当前密码</span>
-          <input
-            autoComplete="current-password"
-            minLength={6}
-            onChange={(event) => setOldPassword(event.currentTarget.value)}
-            required
-            type="password"
-            value={oldPassword}
-          />
-        </label>
+        <PasswordField
+          label="当前密码"
+          autoComplete="current-password"
+          minLength={6}
+          onValueChange={setOldPassword}
+          required
+          value={oldPassword}
+        />
         <div className={styles.formGrid}>
-          <label>
-            <span>新密码</span>
-            <input
-              autoComplete="new-password"
-              minLength={6}
-              onChange={(event) => setNewPassword(event.currentTarget.value)}
-              required
-              type="password"
-              value={newPassword}
-            />
-          </label>
-          <label>
-            <span>确认新密码</span>
-            <input
-              autoComplete="new-password"
-              minLength={6}
-              onChange={(event) => setConfirmation(event.currentTarget.value)}
-              required
-              type="password"
-              value={confirmation}
-            />
-          </label>
+          <PasswordField
+            label="新密码"
+            autoComplete="new-password"
+            minLength={6}
+            onValueChange={setNewPassword}
+            required
+            value={newPassword}
+          />
+          <PasswordField
+            label="确认新密码"
+            autoComplete="new-password"
+            minLength={6}
+            onValueChange={setConfirmation}
+            required
+            value={confirmation}
+          />
         </div>
         <div className={styles.formActions}>
-          <ActionButton loading={saving}
+          <ActionButton
+            loading={saving}
             disabled={saving || !oldPassword || !newPassword || !confirmation}
             icon={<ShieldCheck size={16} />}
             tone="primary"
