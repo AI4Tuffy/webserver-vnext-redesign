@@ -13,6 +13,69 @@ const walk = (directory) =>
     return entry.isDirectory() ? walk(path) : [path]
   })
 
+const tagPattern =
+  /(?<![.#\w\-@:])(?:div|span|p|h[1-6]|button|input|select|textarea|label|ul|ol|li|table|thead|tbody|tr|th|td|section|article|header|footer|aside|nav|main|small|strong|em|i|a|img|dl|dt|dd|form|figure|figcaption|progress|dialog)(?![\w\-])/g
+
+function stripFunctionalPseudos(selector) {
+  let out = ''
+  let depth = 0
+  for (let i = 0; i < selector.length; i += 1) {
+    const ch = selector[i]
+    if (ch === '(') {
+      depth += 1
+      continue
+    }
+    if (ch === ')') {
+      depth = Math.max(0, depth - 1)
+      continue
+    }
+    if (depth === 0) out += ch
+  }
+  return out
+}
+
+function analyzeCssModule(content) {
+  const withoutComments = content.replace(/\/\*[\s\S]*?\*\//g, '')
+  const withoutKeyframes = withoutComments.replace(
+    /@keyframes\s+[\w-]+\s*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g,
+    ''
+  )
+  let tagViolations = 0
+  let chainViolations = 0
+
+  for (const rawBlock of withoutKeyframes.split('}')) {
+    const braceIndex = rawBlock.lastIndexOf('{')
+    if (braceIndex < 0) continue
+    const selector = rawBlock
+      .slice(0, braceIndex)
+      .replace(/@media[^{]+\{/g, '')
+      .replace(/@supports[^{]+\{/g, '')
+      .replace(/@starting-style\s*\{/g, '')
+      .trim()
+    if (!selector || selector.startsWith('@')) continue
+
+    for (const part of selector.split(',')) {
+      const cleaned = stripFunctionalPseudos(part.replace(/\[[^\]]*\]/g, '[]')).trim()
+      if (!cleaned) continue
+      const tags = cleaned.match(tagPattern)
+      if (tags) tagViolations += tags.length
+      const combinators = cleaned
+        .replace(/\s*([>+~])\s*/g, ' $1 ')
+        .trim()
+        .split(/\s+/)
+        .filter((token) => /^[>+~]$/.test(token)).length
+      const spaceTokens = cleaned.replace(/\s*[>+~]\s*/g, '|').trim().split(/\s+/).length - 1
+      if (combinators + spaceTokens >= 2) chainViolations += 1
+    }
+  }
+
+  return {
+    lines: content.split(/\r?\n/).length,
+    selectorViolations: tagViolations + chainViolations,
+    hexColors: (withoutComments.match(/#[0-9a-fA-F]{3,8}\b/g) || []).length,
+  }
+}
+
 const sourceFiles = walk(sourceRoot).filter((path) => /\.(?:ts|tsx|css)$/.test(path))
 const normalized = (path) => relative(root, path).replaceAll('\\', '/')
 const failures = []
@@ -24,6 +87,14 @@ let vnextInlineStyles = 0
 if (/postcss-preset-mantine|mantine-breakpoint/.test(postcssConfig)) {
   failures.push('postcss.config.mjs: vNext build must not depend on Mantine unit or breakpoint transforms')
 }
+
+const allowedSvgFiles = new Set(baseline.vnext.allowedSvgFiles ?? [])
+const legacyRawTableFiles = new Set(baseline.vnext.legacyRawTableFiles ?? [])
+const legacyCssLineBudgets = baseline.vnext.legacyCssLineBudgets ?? {}
+const legacyCssSelectorBudgets = baseline.vnext.legacyCssSelectorBudgets ?? {}
+const legacyCssHexBudgets = baseline.vnext.legacyCssHexBudgets ?? {}
+const sharedMaxCssLines = baseline.vnext.sharedMaxCssLines ?? 220
+const featureMaxCssLines = baseline.vnext.featureMaxCssLines ?? 180
 
 for (const path of sourceFiles) {
   const file = normalized(path)
@@ -57,6 +128,13 @@ for (const path of sourceFiles) {
     if (file.startsWith('src/vnext/')) {
       const imports = [...content.matchAll(/(?:from\s+|import\s+)['"]([^'"]+)['"]/g)].map((match) => match[1])
       if (!netlabSource) vnextInlineStyles += (content.match(/\bstyle=\{/g) || []).length
+
+      if (
+        file.startsWith('src/vnext/shared/') &&
+        imports.some((specifier) => /(?:^|\/)(?:features|app)(?:\/|$)/.test(specifier.replaceAll('\\', '/')))
+      ) {
+        failures.push(`${file}: src/vnext/shared may not import features or app`)
+      }
 
       if (!netlabSource && imports.some((specifier) => specifier.startsWith('@mantine/'))) {
         failures.push(`${file}: vNext may not depend on Mantine`)
@@ -117,7 +195,39 @@ for (const path of sourceFiles) {
         if (!netlabSource && lines > baseline.vnext.maxTsxLines) {
           failures.push(`${file}: ${lines} lines exceeds vNext budget ${baseline.vnext.maxTsxLines}`)
         }
+        const isTest = /\.(?:test|spec)\.tsx$/.test(file)
+        if (!netlabSource && !isTest && !file.startsWith('src/vnext/shared/')) {
+          if (/<svg\b/.test(content) && !allowedSvgFiles.has(file)) {
+            failures.push(`${file}: use lucide-react or shared/art EditorialPlate/SpotTile instead of raw <svg>`)
+          }
+          if (/<table\b/.test(content) && !legacyRawTableFiles.has(file)) {
+            failures.push(`${file}: use shared DataTable or HairlineList instead of raw <table>`)
+          }
+        }
       }
+    }
+  }
+
+  if (file.startsWith('src/vnext/') && !netlabSource && file.endsWith('.module.css')) {
+    const metrics = analyzeCssModule(content)
+    const isShared = file.startsWith('src/vnext/shared/')
+    const lineBudget = isShared ? sharedMaxCssLines : (legacyCssLineBudgets[file] ?? featureMaxCssLines)
+    if (metrics.lines > lineBudget) {
+      failures.push(`${file}: ${metrics.lines} lines exceeds CSS module budget ${lineBudget}`)
+    }
+
+    if (file !== 'src/vnext/shared/MarkdownContent.module.css') {
+      const selectorBudget = isShared ? 0 : (legacyCssSelectorBudgets[file] ?? 0)
+      if (metrics.selectorViolations > selectorBudget) {
+        failures.push(
+          `${file}: ${metrics.selectorViolations} bare-tag/deep-nested CSS selectors exceed budget ${selectorBudget}`
+        )
+      }
+    }
+
+    const hexBudget = isShared ? 0 : (legacyCssHexBudgets[file] ?? 0)
+    if (metrics.hexColors > hexBudget) {
+      failures.push(`${file}: ${metrics.hexColors} hardcoded hex colors exceed budget ${hexBudget}`)
     }
   }
 

@@ -1,0 +1,119 @@
+.specStrip {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(auto-fit, minmax(156px, 1fr));
+  gap: var(--yn-space-4) var(--yn-space-6);
+}
+
+.specItem {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 6px;
+  padding-top: var(--yn-space-3);
+  border-top: 1px solid var(--yn-color-border-strong);
+}
+
+.specStrip[data-density='comfortable'] .specItem {
+  gap: 8px;
+  padding-top: var(--yn-space-4);
+}
+
+.specItem[data-tone='success'] {
+  border-top-color: var(--yn-color-brand);
+}
+
+.specItem[data-tone='info'] {
+  border-top-color: var(--yn-color-info);
+}
+
+.specItem[data-tone='warning'] {
+  border-top-color: var(--yn-color-warning);
+}
+
+.specItem[data-tone='danger'] {
+  border-top-color: var(--yn-color-danger);
+}
+
+.specItem[data-tone='accent'] {
+  border-top-color: var(--yn-color-signal);
+}
+
+.specLabel,
+.specDetail {
+  overflow: hidden;
+  color: var(--yn-color-muted);
+  font-size: var(--yn-font-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.specValue {
+  overflow: hidden;
+  color: var(--yn-color-text);
+  font-family: var(--yn-font-mono);
+  font-size: 22px;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-weight: 500;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.specStrip[data-density='comfortable'] .specValue {
+  font-family: var(--yn-font-serif);
+  font-size: clamp(26px, 2.4vw, 34px);
+  font-weight: 400;
+}
+
+.meter {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+.meterHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--yn-space-3);
+}
+
+.meterLabel {
+  color: var(--yn-color-text-secondary);
+  font-size: var(--yn-font-xs);
+  font-weight: 600;
+}
+
+.meterDetail {
+  color: var(--yn-color-muted);
+  font-family: var(--yn-font-mono);
+  font-size: var(--yn-font-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.meterProgress {
+  width: 100%;
+  height: 5px;
+  border: 0;
+  border-radius: var(--yn-radius-pill);
+  background: var(--yn-color-surface-stone);
+  overflow: hidden;
+}
+
+.meterProgress::-webkit-progress-bar {
+  background: var(--yn-color-surface-stone);
+}
+
+.meterProgress::-webkit-progress-value {
+  background: var(--yn-color-text);
+}
+
+.meter[data-level='warning'] .meterProgress::-webkit-progress-value {
+  background: var(--yn-color-warning);
+}
+
+.meter[data-level='danger'] .meterProgress::-webkit-progress-value {
+  background: var(--yn-color-danger);
+}

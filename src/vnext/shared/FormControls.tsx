@@ -21,10 +21,14 @@ function FieldChrome({ label, hint, error, required, children }: FieldChromeProp
     <label className={styles.field}>
       <span className={styles.label}>
         {label}
-        {required ? <em>必填</em> : null}
+        {required ? <em className={styles.requiredMark}>必填</em> : null}
       </span>
       {children}
-      {error ? <small className={styles.error}>{error}</small> : hint ? <small>{hint}</small> : null}
+      {error ? (
+        <small className={styles.error}>{error}</small>
+      ) : hint ? (
+        <small className={styles.hint}>{hint}</small>
+      ) : null}
     </label>
   )
 }
@@ -36,6 +40,7 @@ export function TextField({
   required,
   onChange,
   onValueChange,
+  className,
   ...props
 }: FieldChromeProps &
   InputHTMLAttributes<HTMLInputElement> & {
@@ -51,7 +56,13 @@ export function TextField({
 
   return (
     <FieldChrome error={error} hint={hint} label={label} required={required}>
-      <input aria-invalid={Boolean(error)} onChange={handleChange} required={required} {...props} />
+      <input
+        aria-invalid={Boolean(error)}
+        className={className ? `${styles.input} ${className}` : styles.input}
+        onChange={handleChange}
+        required={required}
+        {...props}
+      />
     </FieldChrome>
   )
 }
@@ -63,6 +74,7 @@ export function PasswordField({
   required,
   onChange,
   onValueChange,
+  className,
   ...props
 }: FieldChromeProps &
   Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
@@ -82,6 +94,7 @@ export function PasswordField({
       <span className={styles.passwordControl}>
         <input
           aria-invalid={Boolean(error)}
+          className={className ? `${styles.input} ${styles.passwordInput} ${className}` : `${styles.input} ${styles.passwordInput}`}
           onChange={handleChange}
           required={required}
           type={visible ? 'text' : 'password'}
@@ -89,6 +102,7 @@ export function PasswordField({
         />
         <button
           aria-label={visible ? '隐藏密码' : '显示密码'}
+          className={styles.passwordToggle}
           onClick={() => setVisible((current) => !current)}
           type="button"
         >
@@ -106,6 +120,7 @@ export function TextAreaField({
   required,
   onChange,
   onValueChange,
+  className,
   ...props
 }: FieldChromeProps &
   TextareaHTMLAttributes<HTMLTextAreaElement> & {
@@ -121,7 +136,13 @@ export function TextAreaField({
 
   return (
     <FieldChrome error={error} hint={hint} label={label} required={required}>
-      <textarea aria-invalid={Boolean(error)} onChange={handleChange} required={required} {...props} />
+      <textarea
+        aria-invalid={Boolean(error)}
+        className={className ? `${styles.textarea} ${className}` : styles.textarea}
+        onChange={handleChange}
+        required={required}
+        {...props}
+      />
     </FieldChrome>
   )
 }
@@ -134,6 +155,7 @@ export function SelectField({
   children,
   onChange,
   onValueChange,
+  className,
   ...props
 }: FieldChromeProps &
   SelectHTMLAttributes<HTMLSelectElement> & {
@@ -149,7 +171,13 @@ export function SelectField({
 
   return (
     <FieldChrome error={error} hint={hint} label={label} required={required}>
-      <select aria-invalid={Boolean(error)} onChange={handleChange} required={required} {...props}>
+      <select
+        aria-invalid={Boolean(error)}
+        className={className ? `${styles.input} ${className}` : styles.input}
+        onChange={handleChange}
+        required={required}
+        {...props}
+      >
         {children}
       </select>
     </FieldChrome>
@@ -171,7 +199,7 @@ export function FileField({
     <FieldChrome hint={hint} label={label}>
       <input
         accept={accept}
-        className={styles.fileInput}
+        className={`${styles.input} ${styles.fileInput}`}
         onChange={(event) => onChange(event.currentTarget.files?.[0] ?? null)}
         type="file"
       />
@@ -194,17 +222,18 @@ export function ToggleField({
 }) {
   return (
     <label className={styles.toggleField}>
-      <span>
-        <strong>{label}</strong>
-        {description ? <small>{description}</small> : null}
+      <span className={styles.toggleCopy}>
+        <strong className={styles.toggleLabel}>{label}</strong>
+        {description ? <small className={styles.toggleDescription}>{description}</small> : null}
       </span>
       <input
         checked={checked}
+        className={styles.toggleInput}
         disabled={disabled}
         onChange={(event) => onChange(event.currentTarget.checked)}
         type="checkbox"
       />
-      <i aria-hidden="true" />
+      <i aria-hidden="true" className={styles.toggleTrack} />
     </label>
   )
 }

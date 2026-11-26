@@ -116,7 +116,7 @@
 }
 
 .flagForm button:hover:not(:disabled) {
-  background: #ffffff;
+  background: var(--yn-color-surface);
 }
 
 .flagForm button:focus-visible {

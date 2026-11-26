@@ -1,48 +1,55 @@
 /*
- * YINYU 解题手账：纸面底色、墨色控件、单一提示色。
- * [data-yn-band] 是反相色带：日间主题下为深色，夜间主题下为浅色。
+ * YINYU Anthropic 学术 · 博物 · 工程风格语义 Token。
+ * 90% 画面由暖白羊皮纸与深炭墨色构成；赤陶橙负责信号点睛，森林绿收口为语义成功态。
+ * [data-yn-band] 是反相色带：日间主题下为深炭，夜间主题下为暖白。
  */
 :root,
 :root[data-yinyu-theme='dark'] [data-yn-band] {
   color-scheme: light;
-  --yn-color-canvas: #f4f3ee;
-  --yn-color-canvas-raised: #eae8e0;
-  --yn-color-surface: #fbfaf7;
-  --yn-color-surface-muted: #f0eee7;
-  --yn-color-surface-strong: #151514;
-  --yn-color-border: #dad8cf;
-  --yn-color-border-strong: #b4b1a6;
-  --yn-color-text: #151514;
-  --yn-color-text-secondary: #3e3d39;
-  --yn-color-muted: #67655d;
-  --yn-color-dim: #85827a;
-  --yn-color-brand: #2b744c;
-  --yn-color-brand-strong: #1f5a3a;
-  --yn-color-brand-soft: #e1eddf;
+  --yn-color-canvas: #faf9f5;
+  --yn-color-canvas-raised: #f0eee6;
+  --yn-color-surface: #ffffff;
+  --yn-color-surface-muted: #f5f4ed;
+  --yn-color-surface-stone: #e8e6dc;
+  --yn-color-surface-strong: #141413;
+  --yn-color-border: #dedcd1;
+  --yn-color-border-strong: #c2c0b6;
+  --yn-color-text: #141413;
+  --yn-color-text-secondary: #3d3d3a;
+  --yn-color-muted: #5e5d59;
+  --yn-color-dim: #87867f;
+  --yn-color-brand: #2e6f4e;
+  --yn-color-brand-strong: #21543a;
+  --yn-color-brand-soft: #e3efe7;
   --yn-color-info: #3263b8;
   --yn-color-info-soft: #e3eaf7;
   --yn-color-warning: #8a5600;
   --yn-color-warning-soft: #f5e8d0;
   --yn-color-danger: #b3402a;
   --yn-color-danger-soft: #f6e0da;
-  --yn-color-signal: #8a5600;
-  --yn-color-ink: #151514;
-  --yn-color-on-ink: #f4f3ee;
-  --yn-color-hatch: rgba(21, 21, 20, 0.45);
-  --yn-color-control-strong: #151514;
-  --yn-color-control-strong-hover: #2e2e2a;
-  --yn-color-control-strong-text: #f4f3ee;
-  --yn-color-nav-active: #151514;
-  --yn-color-nav-active-text: #f4f3ee;
-  --yn-color-header: rgba(244, 243, 238, 0.94);
-  --yn-color-grid: rgba(21, 21, 20, 0.045);
+  --yn-color-signal: #d97757;
+  --yn-color-signal-hover: #c6613f;
+  --yn-color-signal-soft: #f9ebe5;
+  --yn-color-focus: #154c92;
+  --yn-color-ink: #141413;
+  --yn-color-on-ink: #faf9f5;
+  --yn-color-hatch: rgba(20, 20, 19, 0.45);
+  --yn-color-control-strong: #141413;
+  --yn-color-control-strong-hover: #30302e;
+  --yn-color-control-strong-text: #faf9f5;
+  --yn-color-nav-active: #141413;
+  --yn-color-nav-active-text: #faf9f5;
+  --yn-color-header: rgba(250, 249, 245, 0.92);
+  --yn-color-grid: rgba(20, 20, 19, 0.045);
   --yn-color-game-ongoing: #2f8a5b;
   --yn-color-game-upcoming: #3263b8;
-  --yn-color-game-ended: #3e3d39;
+  --yn-color-game-ended: #3d3d3a;
   --yn-color-game-visual-text: #efe8d8;
-  --yn-shadow-surface: 0 1px 0 rgba(21, 21, 20, 0.04);
-  --yn-shadow-overlay: 0 24px 64px rgba(21, 21, 20, 0.16);
-  --yn-shadow-focus: 0 0 0 3px rgba(21, 21, 20, 0.16);
+  --yn-shadow-surface: 0 1px 0 rgba(20, 20, 19, 0.04);
+  --yn-shadow-overlay: 0 24px 64px rgba(20, 20, 19, 0.16);
+  --yn-shadow-focus: 0 0 0 3px rgba(21, 76, 146, 0.18);
+  --yn-art-frame-bg: #f0eee6;
+  --yn-art-frame-border: #dedcd1;
   /* 小组件手绘图标（shared/art/spot.tsx）：低饱和图块、浅色不规则徽章、墨线图标与一处同色系点缀。 */
   --yn-spot-ink: #141413;
   --yn-spot-peach: #ebc9b7;
@@ -65,17 +72,18 @@
 :root[data-yinyu-theme='dark'],
 :root:not([data-yinyu-theme='dark']) [data-yn-band] {
   color-scheme: dark;
-  --yn-color-canvas: #121211;
-  --yn-color-canvas-raised: #191917;
-  --yn-color-surface: #1c1c1a;
-  --yn-color-surface-muted: #242421;
-  --yn-color-surface-strong: #edebe4;
-  --yn-color-border: #2e2d2a;
-  --yn-color-border-strong: #4a4944;
-  --yn-color-text: #edebe4;
-  --yn-color-text-secondary: #c4c2ba;
-  --yn-color-muted: #9c9a91;
-  --yn-color-dim: #6e6c65;
+  --yn-color-canvas: #141413;
+  --yn-color-canvas-raised: #1a1918;
+  --yn-color-surface: #1f1e1d;
+  --yn-color-surface-muted: #262624;
+  --yn-color-surface-stone: #30302e;
+  --yn-color-surface-strong: #faf9f5;
+  --yn-color-border: #30302e;
+  --yn-color-border-strong: #4d4c48;
+  --yn-color-text: #faf9f5;
+  --yn-color-text-secondary: #c2c0b6;
+  --yn-color-muted: #9c9a92;
+  --yn-color-dim: #73726c;
   --yn-color-brand: #8fd6a6;
   --yn-color-brand-strong: #b4e6c4;
   --yn-color-brand-soft: #1d3326;
@@ -85,16 +93,19 @@
   --yn-color-warning-soft: #3d2e14;
   --yn-color-danger: #f2937a;
   --yn-color-danger-soft: #45231b;
-  --yn-color-signal: #f0b44c;
-  --yn-color-ink: #edebe4;
-  --yn-color-on-ink: #121211;
-  --yn-color-hatch: rgba(237, 235, 228, 0.5);
-  --yn-color-control-strong: #edebe4;
-  --yn-color-control-strong-hover: #d6d4cc;
-  --yn-color-control-strong-text: #121211;
-  --yn-color-nav-active: #edebe4;
-  --yn-color-nav-active-text: #121211;
-  --yn-color-header: rgba(18, 18, 17, 0.94);
+  --yn-color-signal: #e08668;
+  --yn-color-signal-hover: #eba086;
+  --yn-color-signal-soft: #3d2720;
+  --yn-color-focus: #90c3f6;
+  --yn-color-ink: #faf9f5;
+  --yn-color-on-ink: #141413;
+  --yn-color-hatch: rgba(250, 249, 245, 0.5);
+  --yn-color-control-strong: #faf9f5;
+  --yn-color-control-strong-hover: #dedcd1;
+  --yn-color-control-strong-text: #141413;
+  --yn-color-nav-active: #faf9f5;
+  --yn-color-nav-active-text: #141413;
+  --yn-color-header: rgba(20, 20, 19, 0.92);
   --yn-color-grid: rgba(255, 255, 255, 0.035);
   --yn-color-game-ongoing: #2f8a5b;
   --yn-color-game-upcoming: #3263b8;
@@ -102,7 +113,9 @@
   --yn-color-game-visual-text: #efe8d8;
   --yn-shadow-surface: 0 1px 0 rgba(0, 0, 0, 0.3);
   --yn-shadow-overlay: 0 28px 72px rgba(0, 0, 0, 0.42);
-  --yn-shadow-focus: 0 0 0 3px rgba(237, 235, 228, 0.22);
+  --yn-shadow-focus: 0 0 0 3px rgba(144, 195, 246, 0.24);
+  --yn-art-frame-bg: #1f1e1d;
+  --yn-art-frame-border: #30302e;
   --yn-spot-ink: #141413;
   --yn-spot-peach: #5a4036;
   --yn-spot-peach-badge: #e6d6ce;
@@ -127,7 +140,7 @@
 }
 
 :root {
-  /* 拼贴插图使用的固定印刷色，不随主题变化。 */
+  /* 现有保留 SVG 图版使用的固定印刷色，维持原貌不破坏。 */
   --yn-art-ink: #1b1b19;
   --yn-art-paper: #efe8d8;
   --yn-art-kraft: #d9c29c;
@@ -138,17 +151,27 @@
   --yn-art-red: #d3472c;
   --yn-art-term-green: #8fd6a6;
   --yn-art-term-red: #f2937a;
-  --yn-font-sans: Lexend, 'Microsoft YaHei', 'PingFang SC', system-ui, sans-serif;
-  --yn-font-serif: Newsreader, 'Noto Serif SC', 'Songti SC', 'STSong', serif;
-  --yn-font-display: Archivo, Lexend, 'Microsoft YaHei', sans-serif;
-  --yn-font-hand: Caveat, 'Comic Sans MS', cursive;
-  --yn-font-mono: 'JetBrains Mono', 'IBM Plex Mono', Consolas, monospace;
-  --yn-font-xs: 11px;
-  --yn-font-sm: 12px;
-  --yn-font-md: 13px;
-  --yn-font-lg: 16px;
-  --yn-font-xl: 21px;
-  --yn-font-2xl: 30px;
+  /* Anthropic 矿物辅色板 */
+  --yn-mineral-oat: #e3dacc;
+  --yn-mineral-clay: #d97757;
+  --yn-mineral-olive: #788c5d;
+  --yn-mineral-cactus: #bcd1ca;
+  --yn-mineral-sky: #6a9bcc;
+  --yn-mineral-heather: #cbcadb;
+  --yn-mineral-fig: #c46686;
+  /* 三层排版字体栈：Plus Jakarta Sans / Newsreader + Noto Serif SC / JetBrains Mono */
+  --yn-font-sans: 'Plus Jakarta Sans', 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei UI', system-ui, sans-serif;
+  --yn-font-serif: Newsreader, 'Noto Serif SC', 'Songti SC', 'STSong', Georgia, serif;
+  --yn-font-display: var(--yn-font-sans);
+  --yn-font-hand: var(--yn-font-serif);
+  --yn-font-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  --yn-font-xs: 12px;
+  --yn-font-sm: 13px;
+  --yn-font-md: 14px;
+  --yn-font-reading: 16.5px;
+  --yn-font-lg: 18px;
+  --yn-font-xl: 22px;
+  --yn-font-2xl: 32px;
   --yn-space-1: 4px;
   --yn-space-2: 8px;
   --yn-space-3: 12px;
@@ -157,6 +180,7 @@
   --yn-space-6: 24px;
   --yn-space-7: 32px;
   --yn-space-8: 40px;
+  --yn-space-9: 56px;
   --yn-radius-sm: 6px;
   --yn-radius-md: 10px;
   --yn-radius-lg: 14px;

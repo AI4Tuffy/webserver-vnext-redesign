@@ -76,9 +76,8 @@ export default defineConfig(({ mode }) => {
       banner(BANNER),
       webfontDownload(
         [
-          'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend:wght@100..900&display=swap',
-          'https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap',
-          'https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,700;125,800&family=Caveat:wght@600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Noto+Serif+SC:wght@400&display=swap',
+          'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap',
+          'https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Noto+Serif+SC:wght@400;500&display=swap',
         ],
         {
           injectAsStyleTag: false,

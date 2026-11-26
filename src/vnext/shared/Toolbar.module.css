@@ -1,0 +1,158 @@
+.toolbar {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--yn-space-3);
+}
+
+.toolbarGroup {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--yn-space-2);
+}
+
+.toolbarGroup[data-grow='true'] {
+  flex: 1 1 260px;
+}
+
+.toolbarGroup[data-align='end'] {
+  justify-content: flex-end;
+}
+
+.searchBox {
+  display: flex;
+  width: min(100%, 420px);
+  min-width: 0;
+  min-height: 44px;
+  flex: 1 1 220px;
+  align-items: center;
+  gap: var(--yn-space-2);
+  padding: 0 var(--yn-space-4);
+  border: 1px solid var(--yn-color-border-strong);
+  border-radius: var(--yn-radius-pill);
+  background: var(--yn-color-surface);
+  color: var(--yn-color-muted);
+  transition:
+    background-color var(--yn-motion-fast) ease-in-out,
+    border-color var(--yn-motion-fast) ease-in-out,
+    box-shadow var(--yn-motion-fast) ease-in-out;
+}
+
+.searchBox[data-shape='rounded'] {
+  border-color: var(--yn-color-border);
+  border-radius: var(--yn-radius-md);
+}
+
+.searchBox[data-size='sm'] {
+  min-height: 38px;
+  padding: 0 var(--yn-space-3);
+}
+
+.searchBox:hover {
+  background: var(--yn-color-surface-muted);
+}
+
+.searchBox:focus-within {
+  border-color: var(--yn-color-text);
+  background: var(--yn-color-surface);
+  box-shadow: var(--yn-shadow-focus);
+}
+
+.searchField {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--yn-color-text);
+  font-size: var(--yn-font-md);
+}
+
+.searchField:focus-visible {
+  box-shadow: none;
+}
+
+.searchField::placeholder {
+  color: var(--yn-color-muted);
+}
+
+.clearButton {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--yn-radius-pill);
+  background: transparent;
+  color: var(--yn-color-muted);
+  cursor: pointer;
+}
+
+.clearButton:hover {
+  background: var(--yn-color-surface-stone);
+  color: var(--yn-color-text);
+}
+
+.iconButton {
+  display: inline-grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--yn-color-border-strong);
+  border-radius: var(--yn-radius-pill);
+  background: transparent;
+  color: var(--yn-color-text-secondary);
+  cursor: pointer;
+  transition:
+    background-color var(--yn-motion-fast) ease-in-out,
+    border-color var(--yn-motion-fast) ease-in-out,
+    box-shadow var(--yn-motion-fast) ease-in-out,
+    color var(--yn-motion-fast) ease-in-out;
+}
+
+.iconButton[data-size='sm'] {
+  width: 36px;
+  height: 36px;
+}
+
+.iconButton[data-shape='rounded'] {
+  border-radius: var(--yn-radius-md);
+}
+
+.iconButton[data-tone='ghost'] {
+  border-color: transparent;
+}
+
+.iconButton[data-tone='strong'],
+.iconButton[data-active='true'] {
+  border-color: var(--yn-color-control-strong);
+  background: var(--yn-color-control-strong);
+  color: var(--yn-color-control-strong-text);
+}
+
+.iconButton:hover:not(:disabled, [data-active='true'], [data-tone='strong']) {
+  border-color: var(--yn-color-border);
+  background: var(--yn-color-surface-stone);
+  box-shadow: 0 0 0 1px var(--yn-color-border);
+  color: var(--yn-color-text);
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid var(--yn-color-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .searchBox,
+  .iconButton {
+    transition: none;
+  }
+}

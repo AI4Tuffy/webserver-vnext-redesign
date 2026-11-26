@@ -1,0 +1,210 @@
+.pageShell {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  max-width: var(--yn-page-max-width);
+  flex-direction: column;
+  margin-inline: auto;
+  padding: clamp(24px, 3vw, 44px) var(--yn-page-gutter) clamp(56px, 7vw, 96px);
+}
+
+.pageShell[data-variant='reading'] {
+  max-width: min(var(--yn-page-max-width), 820px);
+}
+
+.pageShell[data-variant='wide'] {
+  max-width: 1680px;
+}
+
+.pageShell[data-variant='studio'] {
+  max-width: none;
+  padding: clamp(20px, 2.5vw, 32px) clamp(16px, 3vw, 40px) 64px;
+}
+
+.pageShell[data-gap='none'] {
+  gap: 0;
+}
+
+.pageShell[data-gap='md'] {
+  gap: var(--yn-space-6);
+}
+
+.pageShell[data-gap='lg'] {
+  gap: var(--yn-space-8);
+}
+
+.splitWorkspace {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) clamp(280px, 26vw, 360px);
+  align-items: start;
+  gap: clamp(28px, 4vw, 64px);
+}
+
+.splitWorkspace[data-aside='left'] {
+  grid-template-columns: clamp(220px, 22vw, 300px) minmax(0, 1fr);
+}
+
+.splitWorkspace[data-aside-width='narrow'] {
+  grid-template-columns: minmax(0, 1fr) clamp(240px, 22vw, 300px);
+}
+
+.splitWorkspace[data-aside='left'][data-aside-width='narrow'] {
+  grid-template-columns: clamp(210px, 19vw, 260px) minmax(0, 1fr);
+}
+
+.splitWorkspace[data-aside-width='wide'] {
+  grid-template-columns: minmax(0, 1fr) clamp(320px, 30vw, 420px);
+}
+
+.splitWorkspace[data-aside='left'][data-aside-width='wide'] {
+  grid-template-columns: clamp(280px, 26vw, 380px) minmax(0, 1fr);
+}
+
+.splitMain,
+.splitAside {
+  min-width: 0;
+}
+
+.splitAside[data-sticky='true'] {
+  position: sticky;
+  top: calc(var(--yn-context-height) + var(--yn-space-5));
+}
+
+.surfaceCard {
+  min-width: 0;
+  border: 1px solid var(--yn-color-border);
+  border-radius: var(--yn-radius-lg);
+  background: var(--yn-color-surface);
+  color: var(--yn-color-text);
+}
+
+.surfaceCard[data-tone='muted'] {
+  background: var(--yn-color-surface-muted);
+}
+
+.surfaceCard[data-tone='stone'] {
+  background: var(--yn-color-canvas-raised);
+}
+
+.surfaceCard[data-padding='none'] {
+  padding: 0;
+}
+
+.surfaceCard[data-padding='sm'] {
+  padding: var(--yn-space-4);
+}
+
+.surfaceCard[data-padding='md'] {
+  padding: clamp(18px, 2vw, 24px);
+}
+
+.surfaceCard[data-padding='lg'] {
+  padding: clamp(22px, 2.6vw, 32px);
+}
+
+.editorSection {
+  display: grid;
+  min-width: 0;
+  gap: var(--yn-space-4);
+  padding: var(--yn-space-6) 0;
+  border-top: 1px solid var(--yn-color-border);
+}
+
+.editorHeader {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--yn-space-3);
+}
+
+.editorCopy {
+  display: grid;
+  min-width: 0;
+  gap: var(--yn-space-1);
+}
+
+.editorTitle {
+  margin: 0;
+  color: var(--yn-color-text);
+  font-family: var(--yn-font-serif);
+  font-size: var(--yn-font-xl);
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.editorDescription {
+  max-width: 68ch;
+  margin: 0;
+  color: var(--yn-color-muted);
+  font-size: var(--yn-font-sm);
+  line-height: 1.6;
+}
+
+.editorActions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: var(--yn-space-2);
+}
+
+.editorBody {
+  display: grid;
+  min-width: 0;
+  gap: var(--yn-space-4);
+}
+
+.editorActionBar {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--yn-space-3);
+  padding: var(--yn-space-4) 0;
+  border-top: 1px solid var(--yn-color-border);
+  background: var(--yn-color-canvas);
+}
+
+.editorActionBar[data-sticky='true'] {
+  position: sticky;
+  z-index: 10;
+  bottom: 0;
+  padding-inline: var(--yn-space-1);
+}
+
+.editorStatus {
+  min-width: 0;
+  color: var(--yn-color-muted);
+  font-size: var(--yn-font-sm);
+}
+
+.editorButtons {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--yn-space-2);
+}
+
+@media (max-width: 960px) {
+  .splitWorkspace,
+  .splitWorkspace[data-aside='left'],
+  .splitWorkspace[data-aside-width='narrow'],
+  .splitWorkspace[data-aside-width='wide'],
+  .splitWorkspace[data-aside='left'][data-aside-width='narrow'],
+  .splitWorkspace[data-aside='left'][data-aside-width='wide'] {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--yn-space-6);
+  }
+
+  .splitAside[data-sticky='true'] {
+    position: static;
+  }
+
+  .splitWorkspace[data-mobile-aside-first='true'] .splitAside {
+    order: -1;
+  }
+}

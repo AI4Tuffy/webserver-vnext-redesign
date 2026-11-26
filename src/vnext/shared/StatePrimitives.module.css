@@ -1,0 +1,90 @@
+.statusPill {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px;
+  border-radius: var(--yn-radius-pill);
+  font-size: var(--yn-font-xs);
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+.statusIcon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.statusPill[data-tone='success'] { background: var(--yn-color-brand-soft); color: var(--yn-color-brand-strong); }
+.statusPill[data-tone='info'] { background: var(--yn-color-info-soft); color: var(--yn-color-info); }
+.statusPill[data-tone='warning'] { background: var(--yn-color-warning-soft); color: var(--yn-color-warning); }
+.statusPill[data-tone='danger'] { background: var(--yn-color-danger-soft); color: var(--yn-color-danger); }
+.statusPill[data-tone='accent'] { background: var(--yn-color-signal-soft); color: var(--yn-color-signal-hover); }
+.statusPill[data-tone='neutral'] { background: var(--yn-color-surface-stone); color: var(--yn-color-text-secondary); }
+.statusPill[data-pulse='true'] { box-shadow: inset 0 0 0 1px currentColor; }
+
+.dataState {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  align-content: center;
+  padding: var(--yn-space-7);
+  border: 1px solid var(--yn-color-border);
+  border-radius: var(--yn-radius-lg);
+  background: var(--yn-color-surface);
+  text-align: center;
+}
+
+.dataStateTitle {
+  margin-top: var(--yn-space-4);
+  font-family: var(--yn-font-serif);
+  font-size: var(--yn-font-lg);
+  font-weight: 400;
+}
+
+.dataStateDescription {
+  max-width: 46ch;
+  margin: var(--yn-space-2) 0 0;
+  color: var(--yn-color-muted);
+  font-size: var(--yn-font-sm);
+  line-height: 1.65;
+}
+
+.emptyMark {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--yn-color-border-strong);
+  border-radius: 50%;
+}
+
+.loadingMark {
+  display: flex;
+  gap: 6px;
+}
+
+.loadingDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--yn-color-text-secondary);
+  animation: primitive-loading 800ms var(--yn-ease-standard) infinite alternate;
+}
+
+.loadingDot:nth-child(2) { animation-delay: 120ms; }
+.loadingDot:nth-child(3) { animation-delay: 240ms; }
+
+.posterImage,
+.posterArt {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.posterImage {
+  object-fit: cover;
+}
+
+@keyframes primitive-loading {
+  from { opacity: 0.35; transform: translateY(1px); }
+  to { opacity: 1; transform: translateY(-2px); }
+}

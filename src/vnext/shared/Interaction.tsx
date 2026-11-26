@@ -2,6 +2,7 @@ import { LoaderCircle, X } from 'lucide-react'
 import { ReactNode, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styles from './Interaction.module.css'
+import overlayStyles from './Overlay.module.css'
 
 export type ActionTone = 'primary' | 'secondary' | 'danger' | 'ghost'
 export type DrawerSide = 'left' | 'right'
@@ -28,6 +29,8 @@ function acquireBodyScrollLock() {
 export function ActionButton({
   children,
   tone = 'secondary',
+  shape = 'rounded',
+  size = 'md',
   icon,
   className,
   loading = false,
@@ -37,6 +40,8 @@ export function ActionButton({
   ...props
 }: Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> & {
   tone?: ActionTone
+  shape?: 'rounded' | 'pill'
+  size?: 'sm' | 'md'
   icon?: ReactNode
   loading?: boolean
   loadingLabel?: string
@@ -74,14 +79,34 @@ export function ActionButton({
         {...props}
         aria-busy={busy || undefined}
         className={`${styles.actionButton} ${styles[`actionButton_${tone}`]} ${className ?? ''}`}
+        data-shape={shape}
+        data-size={size}
         disabled={disabled || busy}
         onClick={handleClick}
       >
-        {busy ? <LoaderCircle aria-hidden="true" className={`${styles.actionSpinner} ${!icon && !loadingLabel ? styles.actionSpinnerOverlay : ''}`} size={16} /> : icon}
-        <span className={busy && !icon && !loadingLabel ? styles.actionLabelPending : undefined}>{busy && loadingLabel ? loadingLabel : children}</span>
+        {busy ? (
+          <LoaderCircle
+            aria-hidden="true"
+            className={`${styles.actionSpinner} ${!icon && !loadingLabel ? styles.actionSpinnerOverlay : ''}`}
+            size={16}
+          />
+        ) : (
+          icon
+        )}
+        <span className={busy && !icon && !loadingLabel ? styles.actionLabelPending : undefined}>
+          {busy && loadingLabel ? loadingLabel : children}
+        </span>
       </button>
-      {busy ? <span className={styles.actionAnnouncement} role="status">正在处理，请稍候</span> : null}
-      {failed ? <span className={styles.actionError} role="alert">操作未完成，请重试。</span> : null}
+      {busy ? (
+        <span className={styles.actionAnnouncement} role="status">
+          正在处理，请稍候
+        </span>
+      ) : null}
+      {failed ? (
+        <span className={styles.actionError} role="alert">
+          操作未完成，请重试。
+        </span>
+      ) : null}
     </>
   )
 }
@@ -93,7 +118,15 @@ export function InlineFeedback({
   tone?: 'success' | 'danger' | 'neutral'
   children: ReactNode
 }) {
-  return <div aria-live={tone === 'danger' ? 'assertive' : 'polite'} className={`${styles.feedback} ${styles[`feedback_${tone}`]}`} role={tone === 'danger' ? 'alert' : 'status'}>{children}</div>
+  return (
+    <div
+      aria-live={tone === 'danger' ? 'assertive' : 'polite'}
+      className={`${styles.feedback} ${styles[`feedback_${tone}`]}`}
+      role={tone === 'danger' ? 'alert' : 'status'}
+    >
+      {children}
+    </div>
+  )
 }
 
 export function VNextDialog({
@@ -108,7 +141,7 @@ export function VNextDialog({
   closeDisabled = false,
 }: {
   open: boolean
-  eyebrow: string
+  eyebrow?: string
   title: string
   description?: string
   onClose: () => void
@@ -137,7 +170,7 @@ export function VNextDialog({
     <dialog
       aria-describedby={description ? descriptionId : undefined}
       aria-labelledby={titleId}
-      className={`${styles.dialog} ${wide ? styles.dialogWide : ''}`}
+      className={`${overlayStyles.dialog} ${wide ? overlayStyles.dialogWide : ''}`}
       onCancel={(event) => {
         event.preventDefault()
         if (!closeDisabled) onClose()
@@ -147,19 +180,31 @@ export function VNextDialog({
       }}
       ref={ref}
     >
-      <div className={styles.dialogPanel}>
-        <header className={styles.dialogHeader}>
-          <div>
-            <span>{eyebrow}</span>
-            <h2 id={titleId}>{title}</h2>
-            {description ? <p id={descriptionId}>{description}</p> : null}
+      <div className={overlayStyles.dialogPanel}>
+        <header className={overlayStyles.dialogHeader}>
+          <div className={overlayStyles.dialogHeadingCopy}>
+            {eyebrow ? <span className={overlayStyles.dialogEyebrow}>{eyebrow}</span> : null}
+            <h2 className={overlayStyles.dialogTitle} id={titleId}>
+              {title}
+            </h2>
+            {description ? (
+              <p className={overlayStyles.dialogDescription} id={descriptionId}>
+                {description}
+              </p>
+            ) : null}
           </div>
-          <button aria-label="关闭" disabled={closeDisabled} onClick={onClose} type="button">
+          <button
+            aria-label="关闭"
+            className={overlayStyles.dialogClose}
+            disabled={closeDisabled}
+            onClick={onClose}
+            type="button"
+          >
             <X size={19} />
           </button>
         </header>
-        <div className={styles.dialogBody}>{children}</div>
-        {footer ? <footer className={styles.dialogFooter}>{footer}</footer> : null}
+        <div className={overlayStyles.dialogBody}>{children}</div>
+        {footer ? <footer className={overlayStyles.dialogFooter}>{footer}</footer> : null}
       </div>
     </dialog>,
     document.body
@@ -208,8 +253,8 @@ export function VNextConfirmDialog({
 
   return (
     <VNextDialog
+      closeDisabled={confirming}
       description={description}
-      eyebrow="CONFIRM ACTION"
       footer={
         <>
           <ActionButton disabled={confirming} onClick={onClose} type="button">
@@ -225,14 +270,18 @@ export function VNextConfirmDialog({
       }}
       open={open}
       title={title}
-      closeDisabled={confirming}
     >
-      <div className={styles.confirmContent}>
-        <p>{message}</p>
+      <div className={overlayStyles.confirmContent}>
+        <p className={overlayStyles.confirmMessage}>{message}</p>
         {confirmationText ? (
-          <label className={styles.confirmField}>
-            <span>请输入“{confirmationText}”确认</span>
-            <input autoComplete="off" onChange={(event) => setInput(event.currentTarget.value)} value={input} />
+          <label className={overlayStyles.confirmField}>
+            <span className={overlayStyles.confirmFieldLabel}>请输入“{confirmationText}”确认</span>
+            <input
+              autoComplete="off"
+              className={overlayStyles.confirmInput}
+              onChange={(event) => setInput(event.currentTarget.value)}
+              value={input}
+            />
           </label>
         ) : null}
       </div>
@@ -253,7 +302,7 @@ export function VNextDrawer({
   bodyPadding = 'default',
 }: {
   open: boolean
-  eyebrow: string
+  eyebrow?: string
   title: string
   description?: string
   onClose: () => void
@@ -352,13 +401,13 @@ export function VNextDrawer({
     <dialog
       aria-describedby={description ? descriptionId : undefined}
       aria-labelledby={titleId}
-      className={`${styles.drawer} ${styles[`drawer_${side}`]} ${styles[`drawer_${size}`]} ${
+      className={`${overlayStyles.drawer} ${overlayStyles[`drawer_${side}`]} ${overlayStyles[`drawer_${size}`]} ${
         drawerState === 'opening'
-          ? styles.drawerOpening
+          ? overlayStyles.drawerOpening
           : drawerState === 'open'
-            ? styles.drawerOpen
+            ? overlayStyles.drawerOpen
             : drawerState === 'closing'
-              ? styles.drawerClosing
+              ? overlayStyles.drawerClosing
               : ''
       }`}
       onCancel={(event) => {
@@ -371,11 +420,11 @@ export function VNextDrawer({
       ref={ref}
     >
       <div
-        className={`${styles.drawerPanel} ${
+        className={`${overlayStyles.drawerPanel} ${
           drawerState === 'opening'
-            ? styles.drawerPanelOpening
+            ? overlayStyles.drawerPanelOpening
             : drawerState === 'closing'
-              ? styles.drawerPanelClosing
+              ? overlayStyles.drawerPanelClosing
               : ''
         }`}
         onAnimationEnd={(event) => {
@@ -387,25 +436,69 @@ export function VNextDrawer({
           if (drawerState === 'opening') setDrawerState('open')
         }}
       >
-        <header className={styles.dialogHeader}>
-          <div>
-            <span>{eyebrow}</span>
-            <h2 id={titleId}>{title}</h2>
-            {description ? <p id={descriptionId}>{description}</p> : null}
+        <header className={overlayStyles.dialogHeader}>
+          <div className={overlayStyles.dialogHeadingCopy}>
+            {eyebrow ? <span className={overlayStyles.dialogEyebrow}>{eyebrow}</span> : null}
+            <h2 className={overlayStyles.dialogTitle} id={titleId}>
+              {title}
+            </h2>
+            {description ? (
+              <p className={overlayStyles.dialogDescription} id={descriptionId}>
+                {description}
+              </p>
+            ) : null}
           </div>
-          <button aria-label="关闭" onClick={() => requestClose()} type="button">
+          <button
+            aria-label="关闭"
+            className={overlayStyles.dialogClose}
+            onClick={() => requestClose()}
+            type="button"
+          >
             <X size={19} />
           </button>
         </header>
-        <div className={`${styles.drawerBody} ${bodyPadding === 'none' ? styles.drawerBodyFlush : ''}`}>
+        <div className={`${overlayStyles.drawerBody} ${bodyPadding === 'none' ? overlayStyles.drawerBodyFlush : ''}`}>
           {typeof children === 'function' ? children(requestClose) : children}
         </div>
         {footer ? (
-          <footer className={styles.dialogFooter}>
+          <footer className={overlayStyles.dialogFooter}>
             {typeof footer === 'function' ? footer(requestClose) : footer}
           </footer>
         ) : null}
       </div>
     </dialog>
+  )
+}
+
+/** 通用实体详情侧抽屉：前后台详情预览共用，默认不强制渲染英文 eyebrow。 */
+export function DetailDrawer({
+  open,
+  title,
+  description,
+  eyebrow,
+  onClose,
+  children,
+  footer,
+}: {
+  open: boolean
+  title: string
+  description?: string
+  eyebrow?: string
+  onClose: () => void
+  children: DrawerContent
+  footer?: DrawerContent
+}) {
+  return (
+    <VNextDrawer
+      description={description}
+      eyebrow={eyebrow}
+      footer={footer}
+      onClose={onClose}
+      open={open}
+      size="wide"
+      title={title}
+    >
+      {children}
+    </VNextDrawer>
   )
 }

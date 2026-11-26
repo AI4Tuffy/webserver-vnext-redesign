@@ -1,5 +1,6 @@
 .pagination {
   display: flex;
+  min-width: 0;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
@@ -9,6 +10,18 @@
   font-size: var(--yn-font-sm);
 }
 
+.summary,
+.singlePageCount {
+  color: var(--yn-color-muted);
+  font-family: var(--yn-font-mono);
+  font-size: var(--yn-font-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.singlePageCount {
+  margin-top: var(--yn-space-3);
+}
+
 .pageSize,
 .actions {
   display: flex;
@@ -16,12 +29,21 @@
   gap: var(--yn-space-3);
 }
 
-.pageSize select {
-  padding: var(--yn-space-2) var(--yn-space-3);
+.pageSizeSelect {
+  padding: 6px 10px;
   border: 1px solid var(--yn-color-border);
   border-radius: var(--yn-radius-sm);
   background: var(--yn-color-surface);
   color: var(--yn-color-text);
+  font: inherit;
+}
+
+.pageIndicator {
+  color: var(--yn-color-text-secondary);
+  font-family: var(--yn-font-mono);
+  font-size: var(--yn-font-xs);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
 }
 
 @media (max-width: 479px) {

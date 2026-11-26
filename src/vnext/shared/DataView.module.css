@@ -1,0 +1,211 @@
+.hairlineList {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--yn-color-border);
+  list-style: none;
+}
+
+.hairlineRow {
+  border-bottom: 1px solid var(--yn-color-border);
+  transition: opacity 200ms ease-out;
+}
+
+.hairlineAction,
+.hairlineStatic {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--yn-space-2) var(--yn-space-5);
+  padding: clamp(16px, 2vw, 24px) var(--yn-space-1);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.hairlineAction {
+  cursor: pointer;
+}
+
+.hairlineAction:focus-visible {
+  outline: 2px solid var(--yn-color-focus);
+  outline-offset: -2px;
+}
+
+.hairlineLeading {
+  min-width: 0;
+  color: var(--yn-color-muted);
+  font-family: var(--yn-font-mono);
+  font-size: var(--yn-font-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.hairlineBody {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+.hairlineTitle {
+  color: var(--yn-color-text);
+  font-family: var(--yn-font-serif);
+  font-size: clamp(18px, 1.6vw, 22px);
+  font-weight: 400;
+  line-height: 1.28;
+}
+
+.hairlineSummary {
+  margin: 0;
+  color: var(--yn-color-text-secondary);
+  font-size: var(--yn-font-md);
+  line-height: 1.6;
+}
+
+.hairlineMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  color: var(--yn-color-muted);
+  font-size: var(--yn-font-xs);
+}
+
+.hairlineTrailing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--yn-space-2);
+  color: var(--yn-color-muted);
+}
+
+.hairlineArrow {
+  transition: transform var(--yn-motion-fast) var(--yn-ease-standard);
+}
+
+.hairlineAction:hover .hairlineArrow {
+  color: var(--yn-color-text);
+  transform: translateX(2px);
+}
+
+.tableFrame {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  border-top: 1px solid var(--yn-color-border-strong);
+  border-bottom: 1px solid var(--yn-color-border);
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--yn-font-md);
+  font-variant-numeric: tabular-nums;
+}
+
+.tableCaption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.tableHeadCell {
+  padding: 11px var(--yn-space-3);
+  border-bottom: 1px solid var(--yn-color-border-strong);
+  color: var(--yn-color-muted);
+  font-family: var(--yn-font-mono);
+  font-size: var(--yn-font-xs);
+  font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tableCell {
+  padding: 12px var(--yn-space-3);
+  border-bottom: 1px solid var(--yn-color-border);
+  color: var(--yn-color-text-secondary);
+  vertical-align: middle;
+}
+
+.dataTable[data-density='comfortable'] .tableCell {
+  padding-block: 16px;
+}
+
+.tableHeadCell[data-align='right'],
+.tableCell[data-align='right'] {
+  text-align: right;
+}
+
+.tableHeadCell[data-width='compact'],
+.tableCell[data-width='compact'] {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.tableHeadCell[data-width='wide'],
+.tableCell[data-width='wide'] {
+  min-width: 220px;
+}
+
+.tableRow {
+  transition:
+    background-color var(--yn-motion-fast) var(--yn-ease-standard),
+    opacity 200ms ease-out;
+}
+
+.tableRow[data-clickable='true'] {
+  cursor: pointer;
+}
+
+.tableRow:hover {
+  background: var(--yn-color-surface-muted);
+}
+
+.tableRow[data-clickable='true']:focus-visible {
+  outline: 2px solid var(--yn-color-focus);
+  outline-offset: -2px;
+}
+
+@media (hover: hover) {
+  .hairlineList[data-dim-siblings='true']:has(.hairlineRow[data-interactive='true']:hover) .hairlineRow:not(:hover) {
+    opacity: 0.56;
+  }
+
+  .dataTable[data-dim-siblings='true']:has(.tableRow[data-clickable='true']:hover) .tableRow:not(:hover) {
+    opacity: 0.62;
+  }
+}
+
+@media (max-width: 1180px) {
+  .tableHeadCell[data-visibility='wide'],
+  .tableCell[data-visibility='wide'] {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .tableHeadCell[data-visibility='desktop'],
+  .tableCell[data-visibility='desktop'] {
+    display: none;
+  }
+
+  .hairlineAction,
+  .hairlineStatic {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .hairlineLeading {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hairlineRow,
+  .hairlineArrow,
+  .tableRow {
+    transition: none;
+  }
+}
